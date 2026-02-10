@@ -1,9 +1,15 @@
 import { WebSocketServer, WebSocket } from 'ws';
+import jwt from 'jsonwebtoken';
 import { type Request, type Response, type NextFunction } from 'express';
 import express from "express";
 import { userMiddleware } from './middleware.js';
 import cookieParser from 'cookie-parser';
 import http from 'http';
+import { SECRET } from './middleware.js';
+import { type SocketMessage } from './types/SocketMessage.js';
+import { GameManager } from './gameManager.js';
+import { type Room } from './roomManager.js';
+import { WebSocketManager, type AuthenticatedWebSocket } from './websocketManager.js';
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -15,21 +21,33 @@ const expressPort = 3000;
 
 interface JwtPayloadCustom {
     userId: string;
+    name: string;
 }
 
-interface Room {
+// export interface Room {
+//     id: string;
+//     ownerId: string;
+//     guestId?: string;
+//     state: "waiting" | "active";
+//     createdAt: number;
+// }
+
+// interface AuthenticatedWebSocket extends WebSocket {
+//     userId?: string;
+//     roomId?: string;
+// }
+
+interface User {
     id: string;
-    ownerId: string;
-    guestId?: string;
-    state: "waiting" | "active";
-    createdAt: number;
+    name?: string;
 }
 
-interface AuthenticatedWebSocket extends WebSocket {
-    userId?: string;
-    roomId?: string;
+//SERVER WS MESSAGES
+interface GameMessage {
+    type: "game_start",
+    owner: string,
+    guest: string,
 }
-
 
 // ============================================================================
 // STATE MANAGEMENT
@@ -37,9 +55,10 @@ interface AuthenticatedWebSocket extends WebSocket {
 
 
 
-class RoomManager {
-    private rooms = new Map<string, Room>();
+export class RoomManager {
+    private rooms = new Map<string, Room>(); //RoomId, Room
     private userToRoom = new Map<string, string>(); // userId -> roomId
+
 
     createRoom(ownerId: string): string {
         // Clean up any existing room for this user
@@ -118,93 +137,116 @@ class RoomManager {
     }
 }
 
-const roomManager = new RoomManager();
+//Utility
+
+const decodeJwt = (token: string): JwtPayloadCustom => {
+    let decoded = jwt.verify(token, SECRET) as JwtPayloadCustom;
+    return decoded;
+}
 
 // ============================================================================
 // WEBSOCKET MANAGEMENT
 // ============================================================================
 
-class WebSocketManager {
-    private clients = new Map<string, AuthenticatedWebSocket>();
 
-    addClient(userId: string, ws: AuthenticatedWebSocket): void {
-        // Disconnect existing connection for this user
-        const existingWs = this.clients.get(userId);
-        if (existingWs && existingWs.readyState === WebSocket.OPEN) {
-            existingWs.close(1000, "New connection established");
-        }
 
-        this.clients.set(userId, ws);
-        console.log(`[WS] User ${userId} connected`);
-    }
-
-    removeClient(userId: string): void {
-        this.clients.delete(userId);
-        console.log(`[WS] User ${userId} disconnected`);
-    }
-
-    getClient(userId: string): AuthenticatedWebSocket | undefined {
-        return this.clients.get(userId);
-    }
-
-    sendToUser(userId: string, message: any): boolean {
-        const ws = this.clients.get(userId);
-        if (ws && ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(message));
-            return true;
-        }
-        return false;
-    }
-
-    broadcastToRoom(roomId: string, message: any, excludeUserId?: string): void {
-        const room = roomManager.getRoom(roomId);
-        if (!room) return;
-
-        const userIds = [room.ownerId, room.guestId].filter(id => id && id !== excludeUserId);
-
-        for (const userId of userIds) {
-            this.sendToUser(userId as string, message);
-        }
-    }
-}
-
-const wsManager = new WebSocketManager();
-
+//Instances
+export const roomManager = new RoomManager();
+export const wsManager = new WebSocketManager();
+export let gameManager = new GameManager();
 
 wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
     console.log("Client connected");
 
-    console.log(req.headers.cookie);
     const cookies = parseCookies(req.headers.cookie);
-    const userId = cookies.userToken; // or whatever your cookie name is
+    const token = cookies.userToken; // This is the JWT token
 
-    // If you're using JWT in a cookie:
-    // const token = cookies.token;
-    // Then decode the JWT to get userId
-
-    if (!userId) {
+    if (!token) {
         console.log("Couldn't find the userToken on the cookie. Closing.");
-        ws.close(1008, 'No user ID found');
+        ws.close(1008, 'No token found');
         return;
     }
 
-    console.log(`User ${userId} connected via WebSocket`);
+    try {
+        // Decode the JWT to get the actual userId
+        const decoded = decodeJwt(token);
+        const userId = decoded.userId; // Extract userId from decoded token
 
-    // Store the connection
-    ws.userId = userId;
-    wsManager.addClient(userId, ws);
+        console.log(`User ${userId} (${decoded.name}) connected via WebSocket`);
 
-    ws.on('message', (message) => {
-        console.log(`Received from ${userId}:`, message.toString());
-        // Handle messages here
-    });
+        // Store the connection with the actual userId
+        ws.userId = userId;
+        wsManager.addClient(userId, ws);
+        // ws.roomId = 
+        ws.on('message', (rawMessage) => {
+            console.log(rawMessage);
+            try {
+                let messageString: string;
+                console.log("message: " + rawMessage);
+                // Convert to string depending on type
+                if (typeof rawMessage === 'string') {
+                    messageString = rawMessage;
+                } else if (rawMessage instanceof Buffer) {
+                    messageString = rawMessage.toString('utf-8');
+                } else if (rawMessage instanceof ArrayBuffer) {
+                    messageString = Buffer.from(rawMessage).toString('utf-8');
+                } else if (Array.isArray(rawMessage)) { // Buffer[]
+                    messageString = Buffer.concat(rawMessage).toString('utf-8');
+                } else {
+                    throw new Error('Unsupported message type');
+                }
 
-    ws.on('close', () => {
-        if (ws.userId) {
-            wsManager.removeClient(ws.userId);
-            roomManager.removeUserRooms(ws.userId);
-        }
-    });
+                // Parse JSON safely
+                const msg = JSON.parse(messageString) as SocketMessage;
+
+                console.log('Received typed message:', msg);
+
+
+                // Example switch
+                switch (msg.type) {
+                    case 'request_game_update':
+                        let room: Room | undefined = roomManager.getRoom(msg.roomId as string);
+                        if (!room) {
+                            console.log("[WS] Room doesn't exist");
+
+                        }
+                        if (msg.roomId && room?.state === 'active' && room?.ownerId == ws.userId || room?.guestId == ws.userId) {
+                            let gameState = gameManager.getGame(msg.roomId as string);
+                            let playerState = gameState?.players[ws.userId as string];
+                            if (gameState) {
+                                ws.send(JSON.stringify({ type: 'game_update', playerState }));
+                            }
+                        }
+                        else if (!msg.roomId) {
+                            console.log("[WS] Room ID doesn't exist");
+                        }
+
+                        break;
+                    case 'ping':
+                        ws.send(JSON.stringify({ type: 'pong' }));
+                        break;
+                    default:
+                        console.warn('Unknown message type', msg.type);
+                }
+            } catch (err) {
+                console.error('Failed to handle message', err);
+            }
+        });
+
+
+        ws.on('close', () => {
+            if (ws.userId) {
+                wsManager.removeClient(ws.userId);
+                // DON'T remove rooms here - let them persist
+                // Rooms will be cleaned up by the periodic cleanup interval
+                console.log(`[WS] User ${ws.userId} disconnected, but room persists`);
+            }
+        });
+    } catch (error) {
+        console.error("JWT verification failed:", error);
+        ws.close(1008, 'Invalid token');
+        return;
+    }
 });
 function parseCookies(cookieHeader?: string): Record<string, string> {
     const cookies: Record<string, string> = {};
@@ -324,6 +366,28 @@ app.get('/friend-room', (req, res) => {
         state: 'active',
         message: 'Successfully joined room'
     });
+
+    //Create the game.
+    //Create the game.
+    let newGameState = gameManager.createGame(room);
+
+    let ownerState = newGameState.players[room.ownerId];
+    let guestState = newGameState.players[room.guestId as string];
+
+    let message_owner = { type: "game_start", playerState: ownerState }
+    let message_guest = { type: "game_start", playerState: guestState }
+
+    // Add delay to ensure WebSocket is connected
+    setTimeout(() => {
+        const ownerSent = wsManager.sendToUser(room.ownerId, message_owner);
+        const guestSent = wsManager.sendToUser(room.guestId as string, message_guest);
+
+        console.log(`[GAME] Messages sent - Owner: ${ownerSent}, Guest: ${guestSent}`);
+    }, 100); // 100ms delay
+
+
+
+
 });
 
 app.get('/user', (req, res) => {
