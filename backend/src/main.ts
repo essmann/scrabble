@@ -8,8 +8,10 @@ import http from 'http';
 import { SECRET } from './middleware.js';
 import { type SocketMessage } from './types/SocketMessage.js';
 import { GameManager } from './gameManager.js';
-import { type Room } from './roomManager.js';
-import { WebSocketManager, type AuthenticatedWebSocket } from './websocketManager.js';
+import { RoomManager, type Room } from './roomManager.js';
+import { WebSocketManager, type AuthenticatedWebSocket } from './ws/websocketManager.js';
+import { WSMessageHandler } from './ws/WSMessageHandler.js';
+import { parseMessage, parseCookies } from './utils/index.js';
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -24,18 +26,6 @@ interface JwtPayloadCustom {
     name: string;
 }
 
-// export interface Room {
-//     id: string;
-//     ownerId: string;
-//     guestId?: string;
-//     state: "waiting" | "active";
-//     createdAt: number;
-// }
-
-// interface AuthenticatedWebSocket extends WebSocket {
-//     userId?: string;
-//     roomId?: string;
-// }
 
 interface User {
     id: string;
@@ -49,93 +39,7 @@ interface GameMessage {
     guest: string,
 }
 
-// ============================================================================
-// STATE MANAGEMENT
-// ============================================================================
 
-
-
-export class RoomManager {
-    private rooms = new Map<string, Room>(); //RoomId, Room
-    private userToRoom = new Map<string, string>(); // userId -> roomId
-
-
-    createRoom(ownerId: string): string {
-        // Clean up any existing room for this user
-        this.removeUserRooms(ownerId);
-
-        const roomId = crypto.randomUUID();
-        const room: Room = {
-            id: roomId,
-            ownerId,
-            state: "waiting",
-            createdAt: Date.now()
-        };
-
-        this.rooms.set(roomId, room);
-        this.userToRoom.set(ownerId, roomId);
-
-        console.log(`[ROOM] Created room ${roomId} for user ${ownerId}`);
-        return roomId;
-    }
-
-    getRoom(roomId: string): Room | undefined {
-        return this.rooms.get(roomId);
-    }
-
-    joinRoom(roomId: string, guestId: string): boolean {
-        const room = this.rooms.get(roomId);
-
-        if (!room) {
-            console.log(`[ROOM] Room ${roomId} does not exist`);
-            return false;
-        }
-
-        if (room.state !== "waiting") {
-            console.log(`[ROOM] Room ${roomId} is not in waiting state`);
-            return false;
-        }
-
-        if (room.ownerId === guestId) {
-            console.log(`[ROOM] User ${guestId} is the owner, cannot join as guest`);
-            return false;
-        }
-
-        room.guestId = guestId;
-        room.state = "active";
-        this.userToRoom.set(guestId, roomId);
-
-        console.log(`[ROOM] User ${guestId} joined room ${roomId}`);
-        return true;
-    }
-
-    removeUserRooms(userId: string): void {
-        const roomId = this.userToRoom.get(userId);
-        if (roomId) {
-            const room = this.rooms.get(roomId);
-            if (room) {
-                // Clean up all participants
-                this.userToRoom.delete(room.ownerId);
-                if (room.guestId) {
-                    this.userToRoom.delete(room.guestId);
-                }
-                this.rooms.delete(roomId);
-                console.log(`[ROOM] Removed room ${roomId}`);
-            }
-        }
-    }
-
-    cleanup(): void {
-        const now = Date.now();
-        const maxAge = 30 * 60 * 1000; // 30 minutes
-
-        for (const [roomId, room] of this.rooms) {
-            if (room.state === "waiting" && now - room.createdAt > maxAge) {
-                this.removeUserRooms(room.ownerId);
-            }
-        }
-    }
-}
 
 //Utility
 
@@ -144,15 +48,9 @@ const decodeJwt = (token: string): JwtPayloadCustom => {
     return decoded;
 }
 
-// ============================================================================
-// WEBSOCKET MANAGEMENT
-// ============================================================================
-
-
 
 //Instances
 export const roomManager = new RoomManager();
-export const wsManager = new WebSocketManager();
 export let gameManager = new GameManager();
 
 wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
@@ -176,58 +74,22 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
 
         // Store the connection with the actual userId
         ws.userId = userId;
-        wsManager.addClient(userId, ws);
+        WebSocketManager.addClient(userId, ws);
         // ws.roomId = 
         ws.on('message', (rawMessage) => {
             console.log(rawMessage);
             try {
-                let messageString: string;
                 console.log("message: " + rawMessage);
                 // Convert to string depending on type
-                if (typeof rawMessage === 'string') {
-                    messageString = rawMessage;
-                } else if (rawMessage instanceof Buffer) {
-                    messageString = rawMessage.toString('utf-8');
-                } else if (rawMessage instanceof ArrayBuffer) {
-                    messageString = Buffer.from(rawMessage).toString('utf-8');
-                } else if (Array.isArray(rawMessage)) { // Buffer[]
-                    messageString = Buffer.concat(rawMessage).toString('utf-8');
-                } else {
-                    throw new Error('Unsupported message type');
-                }
+                const msg = parseMessage(rawMessage);
 
                 // Parse JSON safely
-                const msg = JSON.parse(messageString) as SocketMessage;
+
 
                 console.log('Received typed message:', msg);
 
 
-                // Example switch
-                switch (msg.type) {
-                    case 'request_game_update':
-                        let room: Room | undefined = roomManager.getRoom(msg.roomId as string);
-                        if (!room) {
-                            console.log("[WS] Room doesn't exist");
-
-                        }
-                        if (msg.roomId && room?.state === 'active' && room?.ownerId == ws.userId || room?.guestId == ws.userId) {
-                            let gameState = gameManager.getGame(msg.roomId as string);
-                            let playerState = gameState?.players[ws.userId as string];
-                            if (gameState) {
-                                ws.send(JSON.stringify({ type: 'game_update', playerState }));
-                            }
-                        }
-                        else if (!msg.roomId) {
-                            console.log("[WS] Room ID doesn't exist");
-                        }
-
-                        break;
-                    case 'ping':
-                        ws.send(JSON.stringify({ type: 'pong' }));
-                        break;
-                    default:
-                        console.warn('Unknown message type', msg.type);
-                }
+                WSMessageHandler.handle(ws, msg);
             } catch (err) {
                 console.error('Failed to handle message', err);
             }
@@ -236,7 +98,7 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
 
         ws.on('close', () => {
             if (ws.userId) {
-                wsManager.removeClient(ws.userId);
+                WebSocketManager.removeClient(ws.userId);
                 // DON'T remove rooms here - let them persist
                 // Rooms will be cleaned up by the periodic cleanup interval
                 console.log(`[WS] User ${ws.userId} disconnected, but room persists`);
@@ -248,18 +110,8 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
         return;
     }
 });
-function parseCookies(cookieHeader?: string): Record<string, string> {
-    const cookies: Record<string, string> = {};
-    if (cookieHeader) {
-        cookieHeader.split(';').forEach(cookie => {
-            const [name, value] = cookie.trim().split('=');
-            if (name && value) {
-                cookies[name] = decodeURIComponent(value);
-            }
-        });
-    }
-    return cookies;
-}
+
+
 // ============================================================================
 // MIDDLEWARE
 // ============================================================================
@@ -334,6 +186,14 @@ app.get('/friend-room', (req, res) => {
 
     // Guest attempting to join
     if (room.state === 'active' && room.guestId !== userId) {
+        console.log(req.name);
+        console.log("[FULL ROOM] :" + req.name);
+        console.log("[FULL ROOM] userID received:" + req.userId);
+        console.log("[FULL ROOM] userID in Room:" + room.guestId);
+
+
+
+
         console.log("Full room.");
 
         return res.status(409).json({ error: 'Room is already full' });
@@ -356,7 +216,7 @@ app.get('/friend-room', (req, res) => {
     }
 
     // Notify owner that guest has joined
-    wsManager.sendToUser(room.ownerId, {
+    WebSocketManager.sendToUser(room.ownerId, {
         type: 'guest_joined',
         guestId: userId
     });
@@ -379,8 +239,8 @@ app.get('/friend-room', (req, res) => {
 
     // Add delay to ensure WebSocket is connected
     setTimeout(() => {
-        const ownerSent = wsManager.sendToUser(room.ownerId, message_owner);
-        const guestSent = wsManager.sendToUser(room.guestId as string, message_guest);
+        const ownerSent = WebSocketManager.sendToUser(room.ownerId, message_owner);
+        const guestSent = WebSocketManager.sendToUser(room.guestId as string, message_guest);
 
         console.log(`[GAME] Messages sent - Owner: ${ownerSent}, Guest: ${guestSent}`);
     }, 100); // 100ms delay
@@ -390,9 +250,6 @@ app.get('/friend-room', (req, res) => {
 
 });
 
-app.get('/user', (req, res) => {
-    res.json({ userId: req.userId });
-});
 
 // ============================================================================
 // WEBSOCKET SERVER

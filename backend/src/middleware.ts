@@ -45,9 +45,11 @@ export function userMiddleware(req: Request, res: Response, next: NextFunction) 
 
     // No token or invalid → create new user
     const newUserId = crypto.randomUUID();
-    const newToken = jwt.sign({ userId: newUserId, name: uniqueNamesGenerator(customConfig) }, SECRET, { expiresIn: '7d' });
+    let name = uniqueNamesGenerator(customConfig);
+    const newToken = jwt.sign({ userId: newUserId, name: name }, SECRET, { expiresIn: '7d' });
     res.cookie('userToken', newToken, { httpOnly: true });
     req.userId = newUserId;
+    req.name = name;
 
     // console.log("[Auth] generated token for new user");
     next();

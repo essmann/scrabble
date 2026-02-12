@@ -1,6 +1,6 @@
 export interface SocketMessage {
-    roomId?: string;
     type: string,
+    roomId?: string;
     message: string
 }
 

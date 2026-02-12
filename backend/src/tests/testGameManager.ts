@@ -1,4 +1,4 @@
-import { GameManager, RoomManager, type Room } from "../main.js";
+import { GameManager, RoomManager, type Room } from "../src/main.js";
 
 // Fake rooms for testing
 const roomManager = new RoomManager();

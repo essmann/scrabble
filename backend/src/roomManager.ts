@@ -1,3 +1,5 @@
+import { WebSocketManager } from "./ws/websocketManager.js";
+
 export interface Room {
     id: string;
     ownerId: string;
@@ -5,10 +7,11 @@ export interface Room {
     state: "waiting" | "active";
     createdAt: number;
 }
+
 export class RoomManager {
     private rooms = new Map<string, Room>(); //RoomId, Room
     private userToRoom = new Map<string, string>(); // userId -> roomId
-
+    // private messages = new Map<string, >
 
     createRoom(ownerId: string): string {
         // Clean up any existing room for this user
@@ -56,6 +59,7 @@ export class RoomManager {
         this.userToRoom.set(guestId, roomId);
 
         console.log(`[ROOM] User ${guestId} joined room ${roomId}`);
+
         return true;
     }
 
