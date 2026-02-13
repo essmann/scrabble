@@ -2,6 +2,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import FriendRoom from './pages/FriendRoom'
+import { Sidebar } from './components/Sidebar';
 
 function App() {
   // const [user, setUser] = useState("");
@@ -23,6 +24,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <Sidebar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/friend-room" element={<FriendRoom />} />

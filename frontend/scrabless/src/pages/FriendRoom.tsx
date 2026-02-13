@@ -3,8 +3,9 @@ import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiManager } from '../api/apiManager';
 import { wsManager } from '../api/WebSocketManager';
 import { useWebSocket } from '../hooks/useWebSocket';
-import { Board } from '../components/Board';
-import { RightPanel } from '../components/Chat';
+import { Board } from '../components/Game/Board';
+import { RightPanel } from '../components/Game/RightPanel';
+import { InputPanel } from '../components/Game/InputPanel';
 
 interface RoomData {
     role: 'owner' | 'guest';
@@ -110,11 +111,12 @@ export function FriendRoom() {
     }
 
     return (
-        <div className='bg-red-600 flex lg:flex-row  p-1 justify-center h-screen   items-center' id='game-wrapper'>
+        <div className='bg-red-600 flex flex-col  p-1 justify-center h-screen   items-center' id='game-wrapper'>
             <div className='flex flex-col-reverse lg:flex-row  gap-4 w-full max-w-full justify-center  items-center bg-pink  lg:flex-row'>
                 <Board className="bg-amber-50 flex   aspect-square max-w-3xl w-full  " />
                 <RightPanel className="bg-blue-500  lg:max-w-md lg:w-[50%] w-full lg:max-h-3xl max-w-3xl lg:self-stretch" />
             </div>
+            <InputPanel />
 
         </div>
     );
