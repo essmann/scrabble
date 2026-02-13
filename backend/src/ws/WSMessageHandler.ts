@@ -30,9 +30,13 @@ export class WSMessageHandler {
         }
         if (msg.roomId && room?.state === 'active' && room?.ownerId == ws.userId || room?.guestId == ws.userId) {
             let gameState = gameManager.getGame(msg.roomId as string);
-            let playerState = gameState?.players[ws.userId as string];
+            if (!gameState) return;
+            // let playerState = { ...gameState?.players[ws.userId as string, game: ...[gameState, ...rest]] };
+
+            const { [ws.userId as string]: removedPlayer, ...filteredPlayers } = gameState?.players;
+            const filteredGameState = { ...gameState, players: filteredPlayers };
             if (gameState) {
-                ws.send(JSON.stringify({ type: 'game_update', playerState }));
+                ws.send(JSON.stringify({ type: 'game_update', filteredGameState }));
             }
         }
         else if (!msg.roomId) {
