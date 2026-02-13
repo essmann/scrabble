@@ -1,20 +1,20 @@
 import { useEffect, useState } from "react";
 import { wsManager } from "../api/WebSocketManager";
+import type { WebsocketMessage } from "../types/websocket";
 
-
-export function useWebSocket(roomId?: string) {
-    const [wsMessage, setWsMessage] = useState<string>("");
+export function useWebSocket(roomId?: string): [WebsocketMessage, string] {
+    const [wsMessage, setWsMessage] = useState<WebsocketMessage>({} as WebsocketMessage);
     const [gameState, setGameState] = useState<string>("");
     useEffect(() => {
         console.log("Setting up WebSocket subscription");
 
         // Subscribe to messages
-        const unsubscribe = wsManager.subscribe((message: any) => {
+        const unsubscribe = wsManager.subscribe((message: WebsocketMessage) => {
             console.log("Message received in hook:", message);
             if (message.type && message.type == "game_update") {
                 setGameState(JSON.stringify(message));
             }
-            setWsMessage(JSON.stringify(message)); // Convert to string for display
+            setWsMessage(message as WebsocketMessage); // Convert to string for display
         });
 
         // Connect and send initial message
@@ -35,5 +35,5 @@ export function useWebSocket(roomId?: string) {
     }, []);
 
     // Return the latest message so the component can use it
-    return [wsMessage, gameState];
+    return [wsMessage as WebsocketMessage, gameState];
 }

@@ -13,6 +13,9 @@ interface RoomData {
     message: string;
 }
 
+interface WebsocketMessage {
+
+}
 interface GameState {
     hand: string[],
     score: number,
@@ -41,12 +44,13 @@ export function FriendRoom() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [roomData, setRoomData] = useState<RoomData | null>(null);
+    const [waitingForOpponent, setWaitingForOpponent] = useState(true);
     // const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [messageInput, setMessageInput] = useState('');
 
     const roomId = searchParams.get('roomId');
 
-    const [gameState, wsMessage] = useWebSocket(roomId as string); //Subscribes to websocket messages and refreshes automatically.
+    const [wsMessage, gameState] = useWebSocket(roomId as string); //Subscribes to websocket messages and refreshes automatically.
 
     useEffect(() => {
         if (!roomId) {
@@ -79,7 +83,12 @@ export function FriendRoom() {
     }, [roomId, navigate]);
 
     useEffect(() => {
-        console.log(wsMessage);
+        switch (wsMessage.type) {
+            case "game_start":
+                setRoomData((prev) => {
+                    return prev ? { ...prev, state: "active" } : prev;
+                })
+        }
     }, [wsMessage])
 
 
@@ -112,16 +121,49 @@ export function FriendRoom() {
 
     return (
         <div className='bg-[#16161E] flex flex-col  p-1 justify-center h-screen w-screen  items-center' id='game-wrapper'>
-            <div className='flex flex-col-reverse lg:flex-row  gap-4 w-full max-w-full justify-center  items-center bg-pink  lg:flex-row'>
+            {roomData?.state == "active" ? <div className='flex flex-col-reverse lg:flex-row  gap-4 w-full max-w-full justify-center  items-center bg-pink  lg:flex-row'>
                 <div className='max-w-full max-h-full'>
                     <Board className="bg-amber-50 flex   aspect-square max-w-3xl w-full  " />
                     <InputPanel />
                 </div>
                 <RightPanel className="bg-[#22222B]  lg:max-w-md lg:w-[50%] w-full lg:max-h-3xl max-w-3xl lg:self-stretch" />
-            </div>
+            </div> :
+
+                <div className='flex  max-h-full w-full justify-center '>
+                    <WaitingPanel />
+                    <Board className="bg-amber-50 flex   aspect-square max-w-3xl w-full  " />
+                </div>
+            }
 
         </div>
     );
 }
 
 export default FriendRoom;
+
+function WaitingPanel() {
+
+    return (
+        <div className='bg-green-500 max-w-3xl w-full items-center justify-center flex-col gap-5 p-5'>
+            <h1 className='text-4xl'>Challenge a friend</h1>
+
+            <div className='bg-green-100 p-4 border-green-400 '>
+                <div>Time: </div>
+                <div>Untimed</div>
+            </div>
+
+            <div className='flex gap-3 items-center '>
+                <div className='text-xl'>Copy link</div>
+                <div>http://localhost:5173/friend-room?roomId=ce2aedfe-36cd-4080-ad67-520d4f447f1d</div>
+
+            </div>
+
+
+            <div>
+                <button className='bg-red-600 p-5 rounded-md'>Cancel</button>
+            </div>
+        </div>
+    )
+
+
+}

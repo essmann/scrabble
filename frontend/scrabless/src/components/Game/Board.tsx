@@ -44,7 +44,7 @@ function Tile({ letter, type }: { letter: string | null, type: string | null }) 
     }
 
     return (
-        <div className={`${styling} aspect-square min-w-full min-h-full flex justify-center items-center text-white border-black border rounded-sm `}>
+        <div className={`${styling} select-none hover:cursor-pointer hover:bg-gray-400 aspect-square min-w-full min-h-full flex justify-center items-center text-white border-black border rounded-sm `}>
             {letter || (type && type !== 'STAR' ? type : '')}
         </div>
     );

@@ -1,5 +1,7 @@
+import type { WebsocketMessage } from "../types/websocket";
+
 // WebSocketManager.ts
-type MessageCallback = (data: any) => void;
+type MessageCallback = (data: WebsocketMessage) => void;
 
 class WebSocketManager {
     private static instance: WebSocketManager;
