@@ -28,23 +28,23 @@ function Tile({ letter, type }: { letter: string | null, type: string | null }) 
 
     switch (type) {
         case "DW":
-            styling = "bg-red-500";
+            styling = "bg-[#e4a2a3]";
             break;
         case "TW":
-            styling = "bg-blue-500";
+            styling = "bg-[#bf4e4e]";
             break;
         case "TL":
-            styling = "bg-green-500";
+            styling = "bg-[#0c679c]";
             break;
         case "DL":
-            styling = "bg-purple-500";
+            styling = "bg-[#68a2c3]";
             break;
         default:
-            styling = "bg-yellow-100 border border-yellow-300";
+            styling = "bg-[#c4c4d1] border rounded-sm";
     }
 
     return (
-        <div className={`${styling} aspect-square min-w-full min-h-full flex justify-center items-center`}>
+        <div className={`${styling} aspect-square min-w-full min-h-full flex justify-center items-center text-white border-black border rounded-sm `}>
             {letter || (type && type !== 'STAR' ? type : '')}
         </div>
     );

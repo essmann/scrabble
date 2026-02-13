@@ -23,13 +23,15 @@ function App() {
   // }, []);
 
   return (
-    <BrowserRouter>
+    <div className='h-full w-full flex'>
       <Sidebar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/friend-room" element={<FriendRoom />} />
-      </Routes>
-    </BrowserRouter>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/friend-room" element={<FriendRoom />} />
+        </Routes>
+      </BrowserRouter>
+    </div>
   )
 }
 

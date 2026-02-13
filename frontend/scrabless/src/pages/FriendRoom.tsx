@@ -111,12 +111,14 @@ export function FriendRoom() {
     }
 
     return (
-        <div className='bg-red-600 flex flex-col  p-1 justify-center h-screen   items-center' id='game-wrapper'>
+        <div className='bg-[#16161E] flex flex-col  p-1 justify-center h-screen w-screen  items-center' id='game-wrapper'>
             <div className='flex flex-col-reverse lg:flex-row  gap-4 w-full max-w-full justify-center  items-center bg-pink  lg:flex-row'>
-                <Board className="bg-amber-50 flex   aspect-square max-w-3xl w-full  " />
-                <RightPanel className="bg-blue-500  lg:max-w-md lg:w-[50%] w-full lg:max-h-3xl max-w-3xl lg:self-stretch" />
+                <div className='max-w-full max-h-full'>
+                    <Board className="bg-amber-50 flex   aspect-square max-w-3xl w-full  " />
+                    <InputPanel />
+                </div>
+                <RightPanel className="bg-[#22222B]  lg:max-w-md lg:w-[50%] w-full lg:max-h-3xl max-w-3xl lg:self-stretch" />
             </div>
-            <InputPanel />
 
         </div>
     );

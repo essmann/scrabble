@@ -1,6 +1,6 @@
 export function Sidebar() {
     return (
-        <div>
+        <div className="z-50">
             sidebar
         </div>
     )
