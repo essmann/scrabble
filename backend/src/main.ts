@@ -12,6 +12,8 @@ import { RoomManager, type Room } from './roomManager.js';
 import { WebSocketManager, type AuthenticatedWebSocket } from './ws/websocketManager.js';
 import { WSMessageHandler } from './ws/WSMessageHandler.js';
 import { parseMessage, parseCookies } from './utils/index.js';
+import { logger } from './logger.js';
+
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -26,7 +28,6 @@ interface JwtPayloadCustom {
     name: string;
 }
 
-
 interface User {
     id: string;
     name?: string;
@@ -39,15 +40,11 @@ interface GameMessage {
     guest: string,
 }
 
-
-
 //Utility
-
 const decodeJwt = (token: string): JwtPayloadCustom => {
     let decoded = jwt.verify(token, SECRET) as JwtPayloadCustom;
     return decoded;
 }
-
 
 //Instances
 export const roomManager = new RoomManager();
@@ -58,9 +55,16 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
 
     const cookies = parseCookies(req.headers.cookie);
     const token = cookies.userToken; // This is the JWT token
+    const ipAddress = req.socket.remoteAddress;
 
     if (!token) {
         console.log("Couldn't find the userToken on the cookie. Closing.");
+        logger.logConnectionFailure({
+            userId: 'unknown',
+            success: false,
+            reason: 'No token found',
+            ipAddress
+        });
         ws.close(1008, 'No token found');
         return;
     }
@@ -68,33 +72,40 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
     try {
         // Decode the JWT to get the actual userId
         const decoded = decodeJwt(token);
-        const userId = decoded.userId; // Extract userId from decoded token
+        const userId = decoded.userId;
+        const userName = decoded.name;
 
-        console.log(`User ${userId} (${decoded.name}) connected via WebSocket`);
+        // Log connection attempt
+        logger.logConnectionAttempt(userId, userName, ipAddress);
+
+        console.log(`User ${userId} (${userName}) connected via WebSocket`);
 
         // Store the connection with the actual userId
         ws.userId = userId;
         WebSocketManager.addClient(userId, ws);
-        // ws.roomId = 
+
+        // Log successful connection
+        logger.logConnectionSuccess({
+            userId,
+            userName,
+            success: true,
+            ipAddress
+        });
+
         ws.on('message', (rawMessage) => {
             console.log(rawMessage);
             try {
                 console.log("message: " + rawMessage);
                 // Convert to string depending on type
                 const msg = parseMessage(rawMessage);
-
                 // Parse JSON safely
-
-
                 console.log('Received typed message:', msg);
-
-
                 WSMessageHandler.handle(ws, msg);
             } catch (err) {
                 console.error('Failed to handle message', err);
+                logger.logError('MESSAGE_HANDLING', 'Failed to handle WebSocket message', err);
             }
         });
-
 
         ws.on('close', () => {
             if (ws.userId) {
@@ -102,15 +113,23 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
                 // DON'T remove rooms here - let them persist
                 // Rooms will be cleaned up by the periodic cleanup interval
                 console.log(`[WS] User ${ws.userId} disconnected, but room persists`);
+                logger.logDisconnection(ws.userId, userName);
             }
         });
+
     } catch (error) {
         console.error("JWT verification failed:", error);
+        logger.logConnectionFailure({
+            userId: 'unknown',
+            success: false,
+            reason: 'Invalid token',
+            ipAddress
+        });
+        logger.logError('JWT_VERIFICATION', 'JWT verification failed', error);
         ws.close(1008, 'Invalid token');
         return;
     }
 });
-
 
 // ============================================================================
 // MIDDLEWARE
@@ -140,20 +159,22 @@ app.post('/create-room', (req, res) => {
     const userId = req.userId;
 
     if (!userId) {
+        logger.logError('ROOM_CREATION', 'Unauthorized room creation attempt');
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const roomId = roomManager.createRoom(userId);
 
-    res.json({
-        roomId,
-        message: "Successfully created room"
-    });
+    // Log room creation
+    logger.logRoomCreation(roomId, userId, req.name);
+
+    res.json({ roomId, message: "Successfully created room" });
 });
 
 app.get('/friend-room', (req, res) => {
     const { roomId } = req.query;
     const userId = req.userId;
+    const userName = req.name;
 
     if (!roomId || typeof roomId !== 'string') {
         console.log("Missing or invalid roomId");
@@ -162,7 +183,6 @@ app.get('/friend-room', (req, res) => {
 
     if (!userId) {
         console.log("UnAuthorized, no userId");
-
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
@@ -170,12 +190,25 @@ app.get('/friend-room', (req, res) => {
 
     if (!room) {
         console.log("Room does not exist");
-
+        logger.logRoomJoinFailure({
+            userId,
+            userName,
+            roomId,
+            role: 'guest',
+            success: false,
+            reason: 'Room does not exist'
+        });
         return res.status(404).json({ error: 'Room does not exist' });
     }
 
     // Owner checking their own room
     if (userId === room.ownerId) {
+        logger.logRoomJoinAttempt({
+            userId,
+            userName,
+            roomId,
+            role: 'owner'
+        });
         return res.json({
             role: 'owner',
             state: room.state,
@@ -183,23 +216,36 @@ app.get('/friend-room', (req, res) => {
         });
     }
 
-
     // Guest attempting to join
     if (room.state === 'active' && room.guestId !== userId) {
         console.log(req.name);
         console.log("[FULL ROOM] :" + req.name);
         console.log("[FULL ROOM] userID received:" + req.userId);
         console.log("[FULL ROOM] userID in Room:" + room.guestId);
-
-
-
-
         console.log("Full room.");
+
+        logger.logRoomJoinFailure({
+            userId,
+            userName,
+            roomId,
+            role: 'guest',
+            success: false,
+            reason: 'Room is already full'
+        });
 
         return res.status(409).json({ error: 'Room is already full' });
     }
+
     if (room.guestId == userId) {
         console.log("Same user trying to REjoin");
+        logger.logRoomJoinSuccess({
+            userId,
+            userName,
+            roomId,
+            role: 'guest',
+            success: true,
+            reason: 'Rejoining existing room'
+        });
         res.json({
             role: 'guest',
             state: 'active',
@@ -207,13 +253,38 @@ app.get('/friend-room', (req, res) => {
         });
         return;
     }
+
+    // Log join attempt
+    logger.logRoomJoinAttempt({
+        userId,
+        userName,
+        roomId,
+        role: 'guest'
+    });
+
     const joined = roomManager.joinRoom(roomId, userId);
 
     if (!joined) {
         console.log("joinRoom() failed");
-
+        logger.logRoomJoinFailure({
+            userId,
+            userName,
+            roomId,
+            role: 'guest',
+            success: false,
+            reason: 'joinRoom() method failed'
+        });
         return res.status(400).json({ error: 'Could not join room' });
     }
+
+    // Log successful join
+    logger.logRoomJoinSuccess({
+        userId,
+        userName,
+        roomId,
+        role: 'guest',
+        success: true
+    });
 
     // Notify owner that guest has joined
     WebSocketManager.sendToUser(room.ownerId, {
@@ -228,33 +299,38 @@ app.get('/friend-room', (req, res) => {
     });
 
     //Create the game.
-    //Create the game.
     let newGameState = gameManager.createGame(room);
-
     let ownerState = newGameState.players[room.ownerId];
     let guestState = newGameState.players[room.guestId as string];
 
-    let message_owner = { type: "game_start", playerState: ownerState }
-    let message_guest = { type: "game_start", playerState: guestState }
+    // Log game start
+    logger.logGameStart({
+        roomId,
+        ownerId: room.ownerId,
+        guestId: room.guestId as string
+    });
+
+    let message_owner = {
+        type: "game_start",
+        playerState: ownerState
+    }
+
+    let message_guest = {
+        type: "game_start",
+        playerState: guestState
+    }
 
     // Add delay to ensure WebSocket is connected
     setTimeout(() => {
         const ownerSent = WebSocketManager.sendToUser(room.ownerId, message_owner);
         const guestSent = WebSocketManager.sendToUser(room.guestId as string, message_guest);
-
         console.log(`[GAME] Messages sent - Owner: ${ownerSent}, Guest: ${guestSent}`);
     }, 100); // 100ms delay
-
-
-
-
 });
-
 
 // ============================================================================
 // WEBSOCKET SERVER
 // ============================================================================
-
 
 // ============================================================================
 // CLEANUP & STARTUP
@@ -268,11 +344,13 @@ setInterval(() => {
 server.listen(expressPort, () => {
     console.log(`HTTP server listening on port ${expressPort}`);
     console.log(`WebSocket server listening on port ${expressPort}`);
+    logger.logError('SERVER_STARTUP', `Server started on port ${expressPort}`);
 });
 
 // Graceful shutdown
 process.on('SIGTERM', () => {
     console.log('SIGTERM received, closing servers...');
+    logger.logError('SERVER_SHUTDOWN', 'Server shutting down gracefully');
     wss.close();
     process.exit(0);
 });

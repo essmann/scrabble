@@ -1,0 +1,26 @@
+[2026-02-14T12:12:51.246Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:12:51.247Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:22.217Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
+[2026-02-14T12:13:27.486Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:27.486Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:38.811Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
+[2026-02-14T12:13:39.083Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:39.084Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:40.347Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
+[2026-02-14T12:13:40.566Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:40.566Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:53.952Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:56.988Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:13:56.988Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:34.586Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
+[2026-02-14T12:15:34.901Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:34.901Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:42.077Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
+[2026-02-14T12:15:42.367Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:42.367Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:50.270Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia"}
+[2026-02-14T12:15:50.337Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:50.338Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:55.418Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia"}
+[2026-02-14T12:15:55.487Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T12:15:55.488Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","success":true,"ipAddress":"::ffff:127.0.0.1"}
