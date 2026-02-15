@@ -27,11 +27,11 @@ interface ConnectionLogData {
 
 interface RoomJoinLogData {
     userId: string;
-    userName?: string;
+    userName?: string | undefined;
     roomId: string;
     role: 'owner' | 'guest';
     success: boolean;
-    reason?: string;
+    reason?: string | undefined;
 }
 
 interface GameStartLogData {

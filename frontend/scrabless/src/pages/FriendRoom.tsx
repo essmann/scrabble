@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiManager } from '../api/apiManager';
 import { wsManager } from '../api/WebSocketManager';
@@ -47,32 +47,31 @@ export function FriendRoom() {
     const [waitingForOpponent, setWaitingForOpponent] = useState(true);
     // const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     const [messageInput, setMessageInput] = useState('');
+    const hasJoined = useRef<boolean>(false);
 
+    const joinedRooms = new Set<string>();
     const roomId = searchParams.get('roomId');
 
     const [wsMessage, gameState] = useWebSocket(roomId as string); //Subscribes to websocket messages and refreshes automatically.
-
     useEffect(() => {
         if (!roomId) {
-            console.error("No room ID provided");
             navigate('/');
             return;
-
         }
+
+        if (joinedRooms.has(roomId)) return;
+
+        joinedRooms.add(roomId);
 
         const joinRoom = async () => {
             try {
                 setLoading(true);
                 setError(null);
 
-                console.log("Attempting to join room:", roomId);
                 const data = await apiManager.connectToRoom("friend", roomId);
-
-                console.log("Room join response:", data);
                 setRoomData(data);
 
             } catch (err) {
-                console.error("Failed to join room:", err);
                 setError(err instanceof Error ? err.message : "Failed to join room");
             } finally {
                 setLoading(false);
@@ -80,6 +79,7 @@ export function FriendRoom() {
         };
 
         joinRoom();
+
     }, [roomId, navigate]);
 
     useEffect(() => {

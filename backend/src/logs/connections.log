@@ -1,26 +1,82 @@
-[2026-02-14T12:12:51.246Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:12:51.247Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:22.217Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
-[2026-02-14T12:13:27.486Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:27.486Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:38.811Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
-[2026-02-14T12:13:39.083Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:39.084Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:40.347Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
-[2026-02-14T12:13:40.566Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:40.566Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:53.952Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:56.988Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:13:56.988Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:34.586Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
-[2026-02-14T12:15:34.901Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:34.901Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:42.077Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime"}
-[2026-02-14T12:15:42.367Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:42.367Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e3b79654-071a-45b4-b062-8aefa77d0688","userName":"usual-lime","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:50.270Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia"}
-[2026-02-14T12:15:50.337Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:50.338Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","success":true,"ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:55.418Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia"}
-[2026-02-14T12:15:55.487Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-14T12:15:55.488Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"e1eae8aa-443f-47b8-9654-8531a0f154d0","userName":"ripe-fuchsia","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T20:04:31.257Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T20:04:31.257Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T20:05:31.782Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T20:05:34.809Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"ab3ac10b-f551-46a1-a3f0-b6eee4e240e4","userName":"fancy-indigo","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-14T20:05:34.811Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"ab3ac10b-f551-46a1-a3f0-b6eee4e240e4","userName":"fancy-indigo","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:04:30.899Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:04:30.900Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:04:40.710Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:04:43.757Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"d7e2bfc1-ff50-4de5-a0fc-9b2e4aa16677","userName":"proud-yellow","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:04:43.758Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"d7e2bfc1-ff50-4de5-a0fc-9b2e4aa16677","userName":"proud-yellow","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:04:43.865Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"d7e2bfc1-ff50-4de5-a0fc-9b2e4aa16677","userName":"proud-yellow"}
+[2026-02-15T19:06:14.862Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:06:38.133Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:06:38.134Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:06:44.064Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:06:47.111Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:06:47.111Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:07:02.964Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral"}
+[2026-02-15T19:07:03.153Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:07:03.154Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:07:14.791Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral"}
+[2026-02-15T19:07:22.028Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:07:24.518Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:07:24.518Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:07:30.382Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:07:30.383Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:08:19.794Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"26593962-3529-4d15-b480-9185046a73df","userName":"cool-coral"}
+[2026-02-15T19:08:31.620Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:08:32.850Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:08:32.851Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:08:35.354Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:08:38.407Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"39e57b8d-3e47-4807-90cc-028c250ae891","userName":"zany-crimson","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:08:38.407Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"39e57b8d-3e47-4807-90cc-028c250ae891","userName":"zany-crimson","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:09:38.473Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:09:39.886Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:09:39.887Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:09:42.649Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"39e57b8d-3e47-4807-90cc-028c250ae891","userName":"zany-crimson"}
+[2026-02-15T19:09:45.546Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:09:48.607Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"c90f4e8c-faca-47d1-bb06-f2a629f93649","userName":"gentle-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:09:48.608Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"c90f4e8c-faca-47d1-bb06-f2a629f93649","userName":"gentle-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:09:59.873Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:09:59.877Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"c90f4e8c-faca-47d1-bb06-f2a629f93649","userName":"gentle-red"}
+[2026-02-15T19:10:02.894Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:02.894Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:02.896Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"c90f4e8c-faca-47d1-bb06-f2a629f93649","userName":"gentle-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:02.897Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"c90f4e8c-faca-47d1-bb06-f2a629f93649","userName":"gentle-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:03.690Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:10:04.202Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:04.203Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:06.327Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"c90f4e8c-faca-47d1-bb06-f2a629f93649","userName":"gentle-red"}
+[2026-02-15T19:10:08.099Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:10:08.285Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:08.285Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:14.842Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:17.922Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"5109d72a-dbf9-41cb-af30-ff86a8829bc0","userName":"cool-teal","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:17.923Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"5109d72a-dbf9-41cb-af30-ff86a8829bc0","userName":"cool-teal","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:23.949Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"5109d72a-dbf9-41cb-af30-ff86a8829bc0","userName":"cool-teal"}
+[2026-02-15T19:10:39.176Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:10:42.189Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:42.190Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:45.289Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:48.335Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"9be25c18-9b82-4f75-b10a-f942d0f32cb8","userName":"merry-silver","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:48.335Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"9be25c18-9b82-4f75-b10a-f942d0f32cb8","userName":"merry-silver","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:10:55.044Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"9be25c18-9b82-4f75-b10a-f942d0f32cb8","userName":"merry-silver"}
+[2026-02-15T19:13:59.976Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:14:01.221Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:01.221Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:03.730Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:06.782Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"4a01dcfb-db58-43ed-9727-0d3f059ad43f","userName":"fancy-pink","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:06.783Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"4a01dcfb-db58-43ed-9727-0d3f059ad43f","userName":"fancy-pink","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:09.918Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"4a01dcfb-db58-43ed-9727-0d3f059ad43f","userName":"fancy-pink"}
+[2026-02-15T19:14:09.980Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"4a01dcfb-db58-43ed-9727-0d3f059ad43f","userName":"fancy-pink","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:09.981Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"4a01dcfb-db58-43ed-9727-0d3f059ad43f","userName":"fancy-pink","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:42.595Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"4a01dcfb-db58-43ed-9727-0d3f059ad43f","userName":"fancy-pink"}
+[2026-02-15T19:14:48.603Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:48.604Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:48.620Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange"}
+[2026-02-15T19:14:51.698Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:51.699Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"0175a781-5706-47cb-beb3-5ca226c5bcb6","userName":"eager-orange","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:55.315Z] [WARN] [CONNECTION_FAILURE] User connection failed | {"userId":"unknown","success":false,"reason":"No token found","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:58.351Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"d635c256-43af-447b-9b84-d30d19347f28","userName":"kind-gold","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-15T19:14:58.352Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"d635c256-43af-447b-9b84-d30d19347f28","userName":"kind-gold","success":true,"ipAddress":"::ffff:127.0.0.1"}
