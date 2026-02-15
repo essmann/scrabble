@@ -1,27 +1,36 @@
 import { useEffect, useState } from "react";
 import { wsManager } from "../api/WebSocketManager";
 import type { WebsocketMessage } from "../types/websocket";
+import type { GameState } from "../types/game";
 
-export function useWebSocket(roomId?: string): [WebsocketMessage, string] {
+interface GameStateResponse {
+    type: string;
+    gameState: GameState;
+}
+export function useWebSocket(roomId?: string): [WebsocketMessage, GameState | null] {
     const [wsMessage, setWsMessage] = useState<WebsocketMessage>({} as WebsocketMessage);
-    const [gameState, setGameState] = useState<string>("");
+    const [gameState, setGameState] = useState<GameState | null>(null);
+
     useEffect(() => {
         console.log("Setting up WebSocket subscription");
 
         // Subscribe to messages
         const unsubscribe = wsManager.subscribe((message: WebsocketMessage) => {
             console.log("Message received in hook:", message);
-            if (message.type && message.type == "game_update") {
-                setGameState(JSON.stringify(message));
+
+            if (message.type === "game_state") {
+                const gameMsg = message as GameStateResponse;
+                setGameState(gameMsg.gameState); // <-- only store the actual game state
             }
-            setWsMessage(message as WebsocketMessage); // Convert to string for display
+
+            setWsMessage(message);
         });
 
         // Connect and send initial message
         wsManager.connect()
             .then(() => {
                 console.log("WebSocket connected, sending request");
-                wsManager.sendMessage({ type: "request_game_update", roomId: roomId });
+                wsManager.sendMessage({ type: "request_game_state", roomId: roomId });
             })
             .catch((err) => {
                 console.error("WebSocket connection failed:", err);
@@ -32,8 +41,7 @@ export function useWebSocket(roomId?: string): [WebsocketMessage, string] {
             console.log("Cleaning up WebSocket subscription");
             unsubscribe();
         };
-    }, []);
+    }, [roomId]); // Added roomId to dependency array
 
-    // Return the latest message so the component can use it
-    return [wsMessage as WebsocketMessage, gameState];
+    return [wsMessage, gameState];
 }

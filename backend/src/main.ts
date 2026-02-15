@@ -8,7 +8,7 @@ import http from 'http';
 import { SECRET } from './middleware.js';
 import { type SocketMessage } from './types/SocketMessage.js';
 import { GameManager } from './gameManager.js';
-import { RoomManager, type Room } from './roomManager.js';
+import { RoomManager, type Room, type User } from './roomManager.js';
 import { WebSocketManager, type AuthenticatedWebSocket } from './ws/websocketManager.js';
 import { WSMessageHandler } from './ws/WSMessageHandler.js';
 import { parseMessage, parseCookies } from './utils/index.js';
@@ -28,33 +28,30 @@ interface JwtPayloadCustom {
     name: string;
 }
 
-interface User {
-    id: string;
-    name?: string;
-}
+// ============================================================================
+// UTILITIES
+// ============================================================================
 
-//SERVER WS MESSAGES
-interface GameMessage {
-    type: "game_start",
-    owner: string,
-    guest: string,
-}
-
-//Utility
 const decodeJwt = (token: string): JwtPayloadCustom => {
-    let decoded = jwt.verify(token, SECRET) as JwtPayloadCustom;
-    return decoded;
+    return jwt.verify(token, SECRET) as JwtPayloadCustom;
 }
 
-//Instances
-export const roomManager = new RoomManager();
-export let gameManager = new GameManager();
+// ============================================================================
+// INSTANCES
+// ============================================================================
 
-wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
+export const roomManager = new RoomManager();
+export const gameManager = new GameManager();
+
+// ============================================================================
+// WEBSOCKET CONNECTION HANDLER
+// ============================================================================
+
+const handleWebSocketConnection = (ws: AuthenticatedWebSocket, req: http.IncomingMessage) => {
     console.log("Client connected");
 
     const cookies = parseCookies(req.headers.cookie);
-    const token = cookies.userToken; // This is the JWT token
+    const token = cookies.userToken;
     const ipAddress = req.socket.remoteAddress;
 
     if (!token) {
@@ -70,21 +67,16 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
     }
 
     try {
-        // Decode the JWT to get the actual userId
         const decoded = decodeJwt(token);
         const userId = decoded.userId;
         const userName = decoded.name;
 
-        // Log connection attempt
         logger.logConnectionAttempt(userId, userName, ipAddress);
-
         console.log(`User ${userId} (${userName}) connected via WebSocket`);
 
-        // Store the connection with the actual userId
         ws.userId = userId;
         WebSocketManager.addClient(userId, ws);
 
-        // Log successful connection
         logger.logConnectionSuccess({
             userId,
             userName,
@@ -93,12 +85,8 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
         });
 
         ws.on('message', (rawMessage) => {
-            console.log(rawMessage);
             try {
-                console.log("message: " + rawMessage);
-                // Convert to string depending on type
                 const msg = parseMessage(rawMessage);
-                // Parse JSON safely
                 console.log('Received typed message:', msg);
                 WSMessageHandler.handle(ws, msg);
             } catch (err) {
@@ -110,8 +98,6 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
         ws.on('close', () => {
             if (ws.userId) {
                 WebSocketManager.removeClient(ws.userId);
-                // DON'T remove rooms here - let them persist
-                // Rooms will be cleaned up by the periodic cleanup interval
                 console.log(`[WS] User ${ws.userId} disconnected, but room persists`);
                 logger.logDisconnection(ws.userId, userName);
             }
@@ -127,9 +113,10 @@ wss.on('connection', (ws: AuthenticatedWebSocket, req) => {
         });
         logger.logError('JWT_VERIFICATION', 'JWT verification failed', error);
         ws.close(1008, 'Invalid token');
-        return;
     }
-});
+};
+
+wss.on('connection', handleWebSocketConnection);
 
 // ============================================================================
 // MIDDLEWARE
@@ -157,181 +144,120 @@ app.use(userMiddleware);
 
 app.post('/create-room', (req, res) => {
     const userId = req.userId;
+    const userName = req.name;
 
     if (!userId) {
         logger.logError('ROOM_CREATION', 'Unauthorized room creation attempt');
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
-    const roomId = roomManager.createRoom(userId);
+    const owner: User = {
+        id: userId,
+        name: userName || 'Unknown'
+    };
 
-    // Log room creation
-    logger.logRoomCreation(roomId, userId, req.name);
+    const roomId = roomManager.createRoom(owner);
+    logger.logRoomCreation(roomId, userId, userName);
 
     res.json({ roomId, message: "Successfully created room" });
 });
+
+// Helper function to start game
+// Helper function to start game
+const startGame = (room: Room) => {
+    const gameState = gameManager.createGame(room);
+
+    logger.logGameStart({
+        roomId: room.id,
+        ownerId: room.owner.id,
+        guestId: room.guest!.id
+    });
+
+    const message_owner = {
+        type: "game_state",
+        gameState: gameState,
+        yourUserId: room.owner.id
+    };
+
+    const message_guest = {
+        type: "game_state",
+        gameState: gameState,
+        yourUserId: room.guest!.id
+    };
+
+    // Add delay to ensure WebSocket is connected
+    setTimeout(() => {
+        const ownerSent = WebSocketManager.sendToUser(room.owner.id, message_owner);
+        const guestSent = WebSocketManager.sendToUser(room.guest!.id, message_guest);
+        console.log(`[GAME] Game state sent - Owner: ${ownerSent}, Guest: ${guestSent}`);
+    }, 100);
+};
 
 app.get('/friend-room', (req, res) => {
     const { roomId } = req.query;
     const userId = req.userId;
     const userName = req.name;
 
+    // Validation
     if (!roomId || typeof roomId !== 'string') {
-        console.log("Missing or invalid roomId");
         return res.status(400).json({ error: "Missing or invalid roomId" });
     }
 
     if (!userId) {
-        console.log("UnAuthorized, no userId");
         return res.status(401).json({ error: 'Unauthorized' });
     }
 
     const room = roomManager.getRoom(roomId);
 
     if (!room) {
-        console.log("Room does not exist");
-        logger.logRoomJoinFailure({
-            userId,
-            userName,
-            roomId,
-            role: 'guest',
-            success: false,
-            reason: 'Room does not exist'
-        });
         return res.status(404).json({ error: 'Room does not exist' });
     }
 
-    // Owner checking their own room
-    if (userId === room.ownerId) {
-        logger.logRoomJoinAttempt({
-            userId,
-            userName,
-            roomId,
-            role: 'owner'
-        });
-        return res.json({
-            role: 'owner',
-            state: room.state,
-            message: room.state === 'waiting' ? 'Waiting for guest' : 'Room is active'
-        });
+    const responseData = {
+        state: room.state,
+        message: room.state === 'waiting' ? 'Waiting for guest' : 'Room is active',
+        owner: room.owner,
+        guest: room.guest || null // guest may not have joined yet
+    };
+
+    // Role info
+    if (userId === room.owner.id) {
+        return res.json({ role: 'owner', ...responseData });
     }
 
-    // Guest attempting to join
-    if (room.state === 'active' && room.guestId !== userId) {
-        console.log(req.name);
-        console.log("[FULL ROOM] :" + req.name);
-        console.log("[FULL ROOM] userID received:" + req.userId);
-        console.log("[FULL ROOM] userID in Room:" + room.guestId);
-        console.log("Full room.");
+    if (room.guest?.id === userId) {
+        return res.json({ role: 'guest', ...responseData });
+    }
 
-        logger.logRoomJoinFailure({
-            userId,
-            userName,
-            roomId,
-            role: 'guest',
-            success: false,
-            reason: 'Room is already full'
-        });
-
+    if (room.state === 'active') {
         return res.status(409).json({ error: 'Room is already full' });
     }
 
-    if (room.guestId == userId) {
-        console.log("Same user trying to REjoin");
-        logger.logRoomJoinSuccess({
-            userId,
-            userName,
-            roomId,
-            role: 'guest',
-            success: true,
-            reason: 'Rejoining existing room'
-        });
-        res.json({
-            role: 'guest',
-            state: 'active',
-            message: 'Successfully rejoined room'
-        });
-        return;
-    }
-
-    // Log join attempt
-    logger.logRoomJoinAttempt({
-        userId,
-        userName,
-        roomId,
-        role: 'guest'
-    });
-
-    const joined = roomManager.joinRoom(roomId, userId);
+    // Guest joining for the first time
+    const guest: User = { id: userId, name: userName || 'Unknown' };
+    const joined = roomManager.joinRoom(roomId, guest);
 
     if (!joined) {
-        console.log("joinRoom() failed");
-        logger.logRoomJoinFailure({
-            userId,
-            userName,
-            roomId,
-            role: 'guest',
-            success: false,
-            reason: 'joinRoom() method failed'
-        });
         return res.status(400).json({ error: 'Could not join room' });
     }
 
-    // Log successful join
-    logger.logRoomJoinSuccess({
-        userId,
-        userName,
-        roomId,
-        role: 'guest',
-        success: true
-    });
-
-    // Notify owner that guest has joined
-    WebSocketManager.sendToUser(room.ownerId, {
+    // Notify owner
+    WebSocketManager.sendToUser(room.owner.id, {
         type: 'guest_joined',
-        guestId: userId
+        guestId: userId,
+        guestName: userName
     });
 
-    res.json({
-        role: 'guest',
-        state: 'active',
-        message: 'Successfully joined room'
-    });
+    // Start the game
+    startGame(room);
 
-    //Create the game.
-    let newGameState = gameManager.createGame(room);
-    let ownerState = newGameState.players[room.ownerId];
-    let guestState = newGameState.players[room.guestId as string];
-
-    // Log game start
-    logger.logGameStart({
-        roomId,
-        ownerId: room.ownerId,
-        guestId: room.guestId as string
-    });
-
-    let message_owner = {
-        type: "game_start",
-        playerState: ownerState
-    }
-
-    let message_guest = {
-        type: "game_start",
-        playerState: guestState
-    }
-
-    // Add delay to ensure WebSocket is connected
-    setTimeout(() => {
-        const ownerSent = WebSocketManager.sendToUser(room.ownerId, message_owner);
-        const guestSent = WebSocketManager.sendToUser(room.guestId as string, message_guest);
-        console.log(`[GAME] Messages sent - Owner: ${ownerSent}, Guest: ${guestSent}`);
-    }, 100); // 100ms delay
+    return res.json({ role: 'guest', ...responseData, guest });
 });
 
-// ============================================================================
-// WEBSOCKET SERVER
-// ============================================================================
+app.get("/user", (req, res) => {
+    res.json({ id: req.userId, name: req.name });
 
+})
 // ============================================================================
 // CLEANUP & STARTUP
 // ============================================================================

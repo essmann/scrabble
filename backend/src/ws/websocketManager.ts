@@ -48,7 +48,7 @@ export class WebSocketManager {
         const room = roomManager.getRoom(roomId);
         if (!room) return;
 
-        const userIds = [room.ownerId, room.guestId].filter(id => id && id !== excludeUserId);
+        const userIds = [room.owner.id, room.guest?.id].filter(id => id && id !== excludeUserId);
 
         for (const userId of userIds) {
             this.sendToUser(userId as string, message);

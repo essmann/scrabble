@@ -50,16 +50,17 @@ export class GameManager {
         let _letters = this.shuffleArray(this.letters);
 
         let owner: PlayerState = {
-            userId: room.ownerId,
-            name: "owner_name_test",
+            userId: room.owner.id,
+            name: room.owner.name,
             hand: [],
             score: 0,
         };
 
         this.addLettersToHand(owner, _letters); //Removes letters from the pouch
+
         let guest: PlayerState = {
-            userId: room.guestId as string,
-            name: "guest_name_test",
+            userId: room.guest!.id,
+            name: room.guest!.name,
             hand: [],
             score: 0,
         }
@@ -67,14 +68,11 @@ export class GameManager {
 
         let turn = Math.random() < 0.5 ? owner.userId : guest.userId;
 
-
-
         let newGameState: GameState = {
             room: room,
             players: {
-                [room.ownerId]: owner,
-                [room.guestId as string]: guest
-
+                [room.owner.id]: owner,
+                [room.guest!.id]: guest
             },
             letters: _letters,
             turn: turn,
@@ -114,10 +112,6 @@ export class GameManager {
         player.hand = newHand;
         return letters;
 
-
-
-
-
     }
 
     shuffleArray(array: Letter[]): Letter[] {
@@ -131,10 +125,8 @@ export class GameManager {
         return arr;
     }
 
-
-
-
 }
+
 let scrabbleLetters = {
     'E': { number: 12, value: 1 },
     'A': { number: 9, value: 1 },

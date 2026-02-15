@@ -1,42 +1,20 @@
 import { useEffect, useRef, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiManager } from '../api/apiManager';
-import { wsManager } from '../api/WebSocketManager';
 import { useWebSocket } from '../hooks/useWebSocket';
 import { Board } from '../components/Game/Board';
-import { RightPanel } from '../components/Game/RightPanel';
-import { InputPanel } from '../components/Game/InputPanel';
+import { Game } from '../components/Game/Game';
+import { useAuth } from '../context/authContext';
 
 interface RoomData {
-    role: 'owner' | 'guest';
+    owner: { id: string; name: string };
+    guest?: { id: string; name: string }; // optional at first
     state: 'waiting' | 'active';
     message: string;
 }
 
-interface WebsocketMessage {
 
-}
-interface GameState {
-    hand: string[],
-    score: number,
-}
 
-// interface ChatMessage {
-//     id: string;
-//     sender: 'owner' | 'guest';
-//     text: string;
-//     timestamp: number;
-// }
-
-//MessageTypes
-interface GetGameUpdate {
-    type: "request_game_update";
-    roomId?: string;
-}
-
-interface GetGameUpdateResponse {
-    type: "request_game_update";
-}
 
 export function FriendRoom() {
     const [searchParams] = useSearchParams();
@@ -44,16 +22,20 @@ export function FriendRoom() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [roomData, setRoomData] = useState<RoomData | null>(null);
-    const [waitingForOpponent, setWaitingForOpponent] = useState(true);
     // const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-    const [messageInput, setMessageInput] = useState('');
-    const hasJoined = useRef<boolean>(false);
-
+    let auth = useAuth();
+    console.log("PIOASDFUHGASDPIOUHGAWPERIHUGAIPWOUEHRGÅPIOUHAERGAERG");
+    console.log(auth);
     const joinedRooms = new Set<string>();
     const roomId = searchParams.get('roomId');
-
     const [wsMessage, gameState] = useWebSocket(roomId as string); //Subscribes to websocket messages and refreshes automatically.
+
+    // const [board, setBoard] = useState();
     useEffect(() => {
+        console.log("auth.user");
+        console.log(auth.user);
+
+
         if (!roomId) {
             navigate('/');
             return;
@@ -65,6 +47,7 @@ export function FriendRoom() {
 
         const joinRoom = async () => {
             try {
+                console.log("JOIN ROOM CALLED");
                 setLoading(true);
                 setError(null);
 
@@ -84,7 +67,7 @@ export function FriendRoom() {
 
     useEffect(() => {
         switch (wsMessage.type) {
-            case "game_start":
+            case "game_state":
                 setRoomData((prev) => {
                     return prev ? { ...prev, state: "active" } : prev;
                 })
@@ -105,6 +88,7 @@ export function FriendRoom() {
     if (error) {
         return (
             <div className='bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-screen flex justify-center items-center'>
+                <h1 className='text-white text-2xl'>{ }</h1>
                 <div className='flex flex-col gap-4 items-center'>
                     <div className='text-red-400 text-xl'>❌ Error</div>
                     <div className='text-white/70'>{error}</div>
@@ -122,11 +106,9 @@ export function FriendRoom() {
     return (
         <div className='bg-[#16161E] flex flex-col  p-1 justify-center h-screen w-screen  items-center' id='game-wrapper'>
             {roomData?.state == "active" ? <div className='flex flex-col-reverse lg:flex-row  gap-4 w-full max-w-full justify-center  items-center bg-pink  lg:flex-row'>
-                <div className='max-w-full max-h-full'>
-                    <Board className="bg-amber-50 flex   aspect-square max-w-3xl w-full  " />
-                    <InputPanel />
-                </div>
-                <RightPanel className="bg-[#22222B]  lg:max-w-md lg:w-[50%] w-full lg:max-h-3xl max-w-3xl lg:self-stretch" />
+                {gameState && auth.user && (
+                    <Game gameState={gameState} user={auth.user} />
+                )}
             </div> :
 
                 <div className='flex  max-h-full w-full justify-center '>

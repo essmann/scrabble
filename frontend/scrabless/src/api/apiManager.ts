@@ -1,5 +1,9 @@
 import type { RoomType } from "../types/roomTypes";
 
+interface User {
+    name: string;
+    id: string;
+}
 export class apiManager {
     public static expressUrl = import.meta.env.VITE_EXPRESS_URL || "http://localhost:3000";
     public static wsUrl = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
@@ -38,14 +42,16 @@ export class apiManager {
         }
     }
 
-    static async getUserId(): Promise<string> {
+    static async getUser(): Promise<User> {
         let response = await fetch(this.expressUrl + "/user", this.getOptions);
         if (!response.ok) {
             throw new Error('Failed to fetch /user info');
         }
+
         const data = await response.json();
         console.log(data);
-        return data.userId;
+
+        return data;
     }
 
     static async connectToRoom(type: RoomType, roomId: string) {

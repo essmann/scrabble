@@ -4,44 +4,60 @@ import type { SocketMessage } from "../types/SocketMessage.js";
 import type { AuthenticatedWebSocket } from "./websocketManager.js";
 
 export class WSMessageHandler {
-
     static async handle(ws: AuthenticatedWebSocket, msg: SocketMessage) {
-
         switch (msg.type) {
-            case "request_game_update":
-                this.handleGameUpdate(ws, msg);
+            case "request_game_state":
+                this.sendGameState(ws, msg);
                 break;
-            case "send_message":
-                break;
+
             default:
                 console.warn('Unknown message type', msg.type);
                 break;
         }
     }
 
-    private static handleSendMessage(ws: AuthenticatedWebSocket, msg: any) {
 
-    }
-    private static handleGameUpdate(ws: AuthenticatedWebSocket, msg: any) {
-        let room: Room | undefined = roomManager.getRoom(msg.roomId as string);
+
+    private static sendGameState(ws: AuthenticatedWebSocket, msg: any) {
+        const roomId = msg.roomId as string;
+
+        if (!roomId) {
+            console.log("[WS] Room ID doesn't exist");
+            return;
+        }
+
+        const room: Room | undefined = roomManager.getRoom(roomId);
+
         if (!room) {
             console.log("[WS] Room doesn't exist");
-
-        }
-        if (msg.roomId && room?.state === 'active' && room?.ownerId == ws.userId || room?.guestId == ws.userId) {
-            let gameState = gameManager.getGame(msg.roomId as string);
-            if (!gameState) return;
-            // let playerState = { ...gameState?.players[ws.userId as string, game: ...[gameState, ...rest]] };
-
-            const { [ws.userId as string]: removedPlayer, ...filteredPlayers } = gameState?.players;
-            const filteredGameState = { ...gameState, players: filteredPlayers };
-            if (gameState) {
-                ws.send(JSON.stringify({ type: 'game_update', filteredGameState }));
-            }
-        }
-        else if (!msg.roomId) {
-            console.log("[WS] Room ID doesn't exist");
+            return;
         }
 
+        // Check if room is active and user is a participant
+        const isOwner = room.owner.id === ws.userId;
+        const isGuest = room.guest?.id === ws.userId;
+
+        if (room.state !== 'active') {
+            console.log("[WS] Room is not active");
+            return;
+        }
+
+        if (!isOwner && !isGuest) {
+            console.log("[WS] User is not a participant in this room");
+            return;
+        }
+
+        const gameState = gameManager.getGame(roomId);
+
+        if (!gameState) {
+            console.log("[WS] Game state doesn't exist");
+            return;
+        }
+
+        // Send the entire game state
+        ws.send(JSON.stringify({
+            type: 'game_state',
+            gameState: gameState
+        }));
     }
 }
