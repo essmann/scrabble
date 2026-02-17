@@ -4,7 +4,7 @@ import { Board } from "./Board";
 import { InputPanel } from "./InputPanel";
 import { RightPanel } from "./RightPanel";
 import type { User } from "../../hooks/useUser";
-interface StagedTile {
+export interface StagedTile {
     letter: Letter;
     row: number;
     col: number;
@@ -69,7 +69,7 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
                     stagedTiles={stagedTiles}
                     setStagedTiles={setStagedTiles}
                     className="bg-amber-50 flex aspect-square max-w-3xl w-full" />
-                <InputPanel onReturnToHand={setStagedTiles} />
+                <InputPanel onReturnToHand={removeStagedTile} />
             </div>
             <RightPanel
                 user={user}

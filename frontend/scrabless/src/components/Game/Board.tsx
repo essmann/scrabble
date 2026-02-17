@@ -27,38 +27,38 @@ export function Board({ className, stagedTiles, setStagedTiles }: BoardProps) {
         sourceTile?: TilePosition
     ): boolean => {
 
-        console.log("---- onTilePlace called ----");
-        console.log("Tile to place:", tileToPlace);
-        console.log("Source tile:", sourceTile);
+        console.log("[MOVE] ---- onTilePlace called ----");
+        console.log("[MOVE] Tile to place:", tileToPlace);
+        console.log("[MOVE] Source tile:", sourceTile);
 
         // 🟢 REPOSITION LOGIC
         if (sourceTile) {
 
             // Check if destination is empty
             if (!isEmptyTile(tileToPlace.row, tileToPlace.col)) {
-                console.log("Destination not empty. Reposition failed.");
+                console.log("[MOVE] Destination not empty. Reposition failed.");
                 return false;
             }
 
             setStagedTiles((prev) => {
-                console.log("Previous staged tiles:", prev);
+                console.log("[MOVE] Previous staged tiles:", prev);
 
                 // Remove the source tile (exact match only)
                 const stagedMinusSource = prev.filter(
                     (p) => !(p.row === sourceTile.row && p.col === sourceTile.col)
                 );
 
-                console.log("After removing source:", stagedMinusSource);
-                console.log("Adding destination tile:", tileToPlace);
+                console.log("[MOVE] After removing source:", stagedMinusSource);
+                console.log("[MOVE] Adding destination tile:", tileToPlace);
 
                 const updated = [...stagedMinusSource, tileToPlace];
 
-                console.log("Updated staged tiles:", updated);
+                console.log("[MOVE] Updated staged tiles:", updated);
 
                 return updated;
             });
 
-            console.log("Reposition successful.");
+            console.log("[MOVE] Reposition successful.");
             return true;
         }
 
@@ -66,20 +66,20 @@ export function Board({ className, stagedTiles, setStagedTiles }: BoardProps) {
         if (isEmptyTile(tileToPlace.row, tileToPlace.col)) {
 
             setStagedTiles((prev) => {
-                console.log("Staging new tile. Previous:", prev);
+                console.log("[MOVE] Staging new tile. Previous:", prev);
 
                 const updated = [...prev, tileToPlace];
 
-                console.log("Updated staged tiles:", updated);
+                console.log("[MOVE] Updated staged tiles:", updated);
 
                 return updated;
             });
 
-            console.log("New tile staged successfully.");
+            console.log("[MOVE] New tile staged successfully.");
             return true;
         }
 
-        console.log("Tile placement failed — destination occupied.");
+        console.log("[MOVE] Tile placement failed — destination occupied.");
         return false;
     };
 
@@ -140,7 +140,7 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
     //Called when a draggable element is dropped onto the board.
     const onDrop = (e: React.DragEvent) => {
         e.preventDefault();
-        console.log("drop called");
+        console.log("[MOVE] drop called");
 
 
         //Moving already existing piece from the board to another position:
@@ -149,7 +149,7 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
 
         if (repositionData) {
             const sourceTile = JSON.parse(repositionData);
-            console.log(sourceTile, { letter: letter, row: row, col: col });
+            console.log("[MOVE]", sourceTile, { letter: letter, row: row, col: col });
 
             let success = onTilePlace(
                 { letter: sourceTile.letter, row, col },  // new position
@@ -157,27 +157,27 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
             );
 
             if (success) {
-                console.log("Repositioned letter successfully");
+                console.log("[MOVE] Repositioned letter successfully");
             }
             else {
-                console.log("Couldn't reposition staged letter");
+                console.log("[MOVE] Couldn't reposition staged letter");
             }
         }
         const data = e.dataTransfer.getData("hand_to_board");
         if (!data) return;
 
         if (!isValidLetter(data)) {
-            console.log("Invalid letter:", data);
+            console.log("[MOVE] Invalid letter:", data);
             return;
         }
 
         let stagedLetter = { letter: data, row, col }; // TypeScript now knows data is Letter
         let success = onTilePlace(stagedLetter);
         if (success) {
-            console.log("Successfully staged letter");
+            console.log("[MOVE] Successfully staged letter");
         }
         else {
-            console.log("Couldn't stage letter.");
+            console.log("[MOVE] Couldn't stage letter.");
         }
     }
 
@@ -205,8 +205,8 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
     const onDragStart = (event: React.DragEvent) => {
         if (!letter || !staged) return;
         event.dataTransfer.setData("reposition", JSON.stringify({ letter, row, col }));
-        console.log("Dragging a staged tile");
-        console.log(JSON.stringify({ letter, row, col }));
+        console.log("[MOVE] Dragging a staged tile");
+        console.log("[MOVE]", JSON.stringify({ letter, row, col }));
 
     }
     const onDrag = (event: React.DragEvent) => { }
