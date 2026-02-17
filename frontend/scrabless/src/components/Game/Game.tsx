@@ -13,6 +13,7 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
     const [opponent, setOpponent] = useState<User>({ id: "waiting", name: "Waiting..." });
     const [myTurn, setMyTurn] = useState(user.id == gameState.turn);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
+    const [hand, setHand] = useState([]);
     useEffect(() => {
         console.log("===== Game useEffect Triggered =====");
         console.log("User:", user);

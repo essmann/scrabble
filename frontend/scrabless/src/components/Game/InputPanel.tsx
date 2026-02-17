@@ -24,6 +24,7 @@ export function InputPanel({ hand, onReturnToHand }: Props) {
             }
         }
         console.log(newArr);
+        console.log(`[HAND] ${newArr}`)
         setHand(newArr as Letter[]);
 
     }
