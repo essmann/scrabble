@@ -1,13 +1,10 @@
 import { generateTiles } from "../../test/testTiles"
 import { useEffect, useRef, useState } from "react";
 import type { Letter } from "../../types/game";
+import { DRAG_TYPE, type StagedTile } from "./Game";
 
 
-interface StagedTile {
-    letter: Letter;
-    row: number;
-    col: number;
-}
+
 interface TilePosition {
     row: number;
     col: number;
@@ -148,7 +145,7 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
 
         //Moving already existing piece from the board to another position:
 
-        const repositionData = e.dataTransfer.getData("reposition");
+        const repositionData = e.dataTransfer.getData(DRAG_TYPE.FROM_BOARD);
 
         if (repositionData) {
             const sourceTile = JSON.parse(repositionData);
@@ -166,7 +163,7 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
                 console.log("[MOVE] Couldn't reposition staged letter");
             }
         }
-        const data = e.dataTransfer.getData("hand_to_board");
+        const data = e.dataTransfer.getData(DRAG_TYPE.FROM_HAND);
         if (!data) return;
 
         if (!isValidLetter(data)) {
@@ -207,7 +204,7 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
 
     const onDragStart = (event: React.DragEvent) => {
         if (!letter || !staged) return;
-        event.dataTransfer.setData("reposition", JSON.stringify({ letter, row, col }));
+        event.dataTransfer.setData(DRAG_TYPE.FROM_BOARD, JSON.stringify({ letter, row, col }));
         console.log("[MOVE] Dragging a staged tile");
         console.log("[MOVE]", JSON.stringify({ letter, row, col }));
 
