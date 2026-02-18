@@ -112,6 +112,7 @@ export function Board({ className, stagedTiles, setStagedTiles }: BoardProps) {
                                     row={rowIndex}
                                     col={colIndex}
                                     staged={staged ? true : false}
+                                    score={0}
                                     onTilePlace={onTilePlace} />
                             </div>
                         })
@@ -123,12 +124,13 @@ export function Board({ className, stagedTiles, setStagedTiles }: BoardProps) {
     )
 }
 
-function Tile({ letter, type, row, col, staged, onTilePlace }: {
+function Tile({ letter, type, row, col, staged, onTilePlace, score }: {
     letter: string | null,
     type: string | null,
     row: number,
     col: number,
     staged: boolean,
+    score: number,
     onTilePlace: (tileToPlace: StagedTile, sourceTile?: TilePosition) => boolean
 }) {
     let styling = "";
@@ -217,8 +219,14 @@ function Tile({ letter, type, row, col, staged, onTilePlace }: {
             onDrop={onDrop}
             onDragStart={onDragStart}
             draggable={staged}
-            className={`${styling} letter select-none hover:cursor-pointer hover:bg-gray-400 aspect-square min-w-full min-h-full flex justify-center items-center text-white border-black border rounded-sm `}>
-            {letter || (type && type !== 'STAR' ? type : '')}
+            className={`${styling} relative letter select-none hover:cursor-pointer  aspect-square min-w-full min-h-full flex justify-center items-center  border-black border rounded-sm  ${staged ? "bg-yellow-200 text-black font-bold hover:bg-yellow-100" : "text-white"}`}>
+            <div>
+                {letter || (type && type !== 'STAR' ? type : '')}
+            </div>
+            <div className="absolute left-[15%] bottom-[7%] text-[75%]">
+                {letter !== null && score}
+
+            </div>
         </div>
     );
 }
