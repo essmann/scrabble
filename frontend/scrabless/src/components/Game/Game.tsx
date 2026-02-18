@@ -4,56 +4,19 @@ import { Board } from "./Board";
 import { InputPanel } from "./InputPanel";
 import { RightPanel } from "./RightPanel";
 import type { User } from "../../hooks/useUser";
+import { useOpponent } from "./getOpponent";
 export interface StagedTile {
     letter: Letter;
     row: number;
     col: number;
 }
 export function Game({ gameState, user }: { gameState: GameState; user: User }) {
-    const [opponent, setOpponent] = useState<User>({ id: "waiting", name: "Waiting..." });
     const [myTurn, setMyTurn] = useState(user.id == gameState.turn);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
 
     const [hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
-    useEffect(() => {
-        console.log("===== Game useEffect Triggered =====");
-        console.log("User:", user);
-        console.log("GameState:", gameState);
 
-        if (!gameState.room) {
-            console.log("No gameState.room yet. Exiting effect.");
-            return;
-        }
-
-        const { owner, guest } = gameState.room;
-        console.log("Owner:", owner);
-        console.log("Guest:", guest);
-
-        // If current user is owner
-        if (user.id === owner.id) {
-            console.log("Current user is OWNER");
-            if (guest) {
-                console.log("Guest exists. Setting opponent to guest:", guest);
-                setOpponent(guest);
-            } else {
-                console.log("No guest yet. Waiting for guest...");
-                setOpponent({ id: "waiting", name: "Waiting for guest..." });
-            }
-            return;
-        }
-
-        // If current user is guest
-        if (guest && user.id === guest.id) {
-            console.log("Current user is GUEST. Setting opponent to owner:", owner);
-            setOpponent(owner);
-            return;
-        }
-
-        // Fallback (should not happen)
-        console.warn("Fallback triggered: user is neither owner nor guest");
-        setOpponent({ id: "unknown", name: "Unknown opponent" });
-    }, [gameState, user]);
-
+    let opponent = useOpponent(gameState, user);
 
     //Staged tiles are the temporary tiles placed on the board by the client.
     const removeStagedTile = (row: number, col: number) => {
@@ -71,7 +34,7 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
                     stagedTiles={stagedTiles}
                     setStagedTiles={setStagedTiles}
                     className="bg-amber-50 flex aspect-square max-w-3xl w-full" />
-                {/* <InputPanel onReturnToHand={removeStagedTile} hand={hand} setHand={setHand} /> */}
+                <InputPanel onReturnToHand={removeStagedTile} hand={hand} setHand={setHand} />
             </div>
             <RightPanel
                 user={user}

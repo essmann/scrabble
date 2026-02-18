@@ -1633,3 +1633,342 @@
 [2026-02-18T12:43:12.161Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
 [2026-02-18T12:43:14.563Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
 [2026-02-18T12:43:14.563Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:53:53.527Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T12:53:56.007Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:53:56.008Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:54:12.365Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T12:54:14.972Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:54:14.972Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:03.352Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:03.353Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:05.239Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:05.239Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:09.578Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:09.579Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:09.579Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:12.595Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:12.596Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:12.596Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:15.925Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:15.925Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:15.926Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:18.944Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:18.945Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:18.945Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:21.972Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:21.974Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:21.975Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:25.042Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:25.043Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:25.043Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:28.056Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:28.056Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:28.057Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:31.279Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:31.280Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:31.280Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:34.289Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:34.290Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:34.290Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:37.308Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:37.309Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:37.309Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:40.317Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:40.318Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:40.318Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:43.328Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:43.328Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:43.329Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:45.339Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:45.340Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:45.340Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:48.359Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:48.360Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:48.360Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:51.378Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:51.379Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:51.379Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:54.407Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:54.408Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:54.408Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:57.423Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:56:57.424Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:56:57.424Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:00.580Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:00.581Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:57:00.581Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:03.604Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:03.607Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:57:03.608Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:06.631Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:06.631Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:57:06.632Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:09.650Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:09.651Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T12:57:09.651Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T12:57:12.453Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"74e10f4b-8007-42b6-b920-ca2303a25887","userName":"eager-violet"}
+[2026-02-18T13:04:30.814Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:04:30.814Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:04:32.966Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T13:04:37.350Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:04:37.350Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:04:41.725Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:04:41.726Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:04:53.508Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:04:55.642Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:04:55.642Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:06:09.118Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:06:09.251Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:06:09.252Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:18:56.239Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:18:56.240Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:16.066Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:16.066Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:16.136Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T13:19:26.865Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:26.865Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:49.271Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:49.271Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:53.992Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:53.993Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:19:53.994Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:57.002Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:19:57.002Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:19:57.003Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:00.016Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:00.016Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:00.017Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:01.882Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T13:20:03.023Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:03.024Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:03.024Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:04.202Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:04.203Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:06.254Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:06.254Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:06.255Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:09.263Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:09.263Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:09.264Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:12.830Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:12.830Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:12.831Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:15.857Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:15.859Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:15.861Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:19.192Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:19.193Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:19.194Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:22.203Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:22.203Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:22.204Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:25.226Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:25.229Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:25.230Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:28.250Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:28.253Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:28.255Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:31.275Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:31.278Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:31.278Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:34.291Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:34.292Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:34.292Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:37.301Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:37.302Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:37.303Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:40.316Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:40.317Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:40.317Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:43.328Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:43.329Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:43.329Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:46.333Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:46.333Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:46.334Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:49.346Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:49.346Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:49.347Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:52.360Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:52.361Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:52.361Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:55.390Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:55.391Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:55.392Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:58.416Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:20:58.419Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:20:58.420Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:01.446Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:01.448Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:01.450Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:04.458Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:04.459Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:04.460Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:07.479Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:07.481Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:07.483Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:10.494Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:10.495Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:10.495Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:13.501Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:13.501Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:13.502Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:16.512Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:16.513Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:16.513Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:19.523Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:19.523Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:19.524Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:22.530Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:22.530Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:22.531Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:25.540Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:25.542Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:25.542Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:28.559Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:28.560Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:28.560Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:31.567Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:31.568Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:31.568Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:34.587Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:34.588Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:34.588Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:37.606Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:37.606Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:37.607Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:40.622Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:40.623Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:40.623Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:43.639Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:43.640Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:43.640Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:46.645Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:46.646Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:46.646Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:49.655Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:49.656Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:49.656Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:52.662Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:52.663Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:52.663Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:55.671Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:55.672Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:55.672Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:58.697Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:21:58.701Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:21:58.703Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:01.710Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:01.710Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:01.711Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:04.731Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:04.734Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:04.736Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:07.740Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:07.741Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:07.741Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:10.766Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:10.768Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:10.768Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:13.780Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:13.781Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:13.781Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:16.790Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:16.790Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:16.791Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:19.809Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:19.810Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:19.810Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:22.839Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:22.842Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:22.844Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:25.938Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:25.939Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:25.939Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:28.965Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:28.966Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:28.966Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:31.971Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:31.972Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:31.972Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:34.989Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:34.990Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:34.990Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:37.997Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:37.998Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:37.998Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:41.009Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:41.009Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:41.010Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:44.040Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:44.041Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:44.042Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:47.079Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:47.081Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:47.082Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:50.090Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:50.091Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:50.091Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:53.110Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:53.111Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:53.111Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:56.131Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:56.131Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:56.131Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:59.153Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:22:59.153Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:22:59.153Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:02.169Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:02.170Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:02.170Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:05.202Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:05.203Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:05.203Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:08.228Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:08.231Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:08.232Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:11.252Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:11.253Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:11.253Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:14.261Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:14.262Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:14.262Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:17.285Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:17.286Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:17.286Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:20.299Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:20.300Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:20.300Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:23.321Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:23.321Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:23.322Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:26.346Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:26.349Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:26.350Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:29.376Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:29.376Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:29.376Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:33.194Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T13:23:33.361Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:33.361Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:33.884Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:33.884Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:33.885Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:34.814Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T13:23:34.974Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:34.975Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:35.237Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue"}
+[2026-02-18T13:23:35.403Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:35.404Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"347f5e93-0daa-40a7-96d5-53b9b6cd10dc","userName":"gentle-blue","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:36.896Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:36.896Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:36.896Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:40.007Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:40.008Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:40.008Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:43.309Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:43.310Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:43.310Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:46.317Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","ipAddress":"::ffff:127.0.0.1"}
+[2026-02-18T13:23:46.317Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red"}
+[2026-02-18T13:23:46.318Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"b4fd3077-8473-49f1-b92c-f77bca21ecb4","userName":"calm-red","success":true,"ipAddress":"::ffff:127.0.0.1"}
