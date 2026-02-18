@@ -19,6 +19,9 @@ interface BoardProps {
 }
 export function Board({ className, stagedTiles, setStagedTiles }: BoardProps) {
     const [tiles, setTiles] = useState(generateTiles());
+    console.log("stagedtiles");
+    console.log(stagedTiles);
+
     const tilesCopy = tiles;
 
 

@@ -3,19 +3,20 @@ import type { Letter } from "../../types/game";
 import type { StagedTile } from "./Game";
 
 interface Props {
-    hand?: Letter[]
+    hand: Letter[]
     onReturnToHand: (row: number, col: number) => void;
+    setHand: (value: React.SetStateAction<Letter[]>) => void;
 }
-export function InputPanel({ hand, onReturnToHand }: Props) {
+export function InputPanel({ hand, onReturnToHand, setHand }: Props) {
 
 
-    let [_hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
+    // let [_hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
 
     const removeLetterFromHand = (letter: Letter) => {
         let newArr = [];
         let found = false;
-        for (let i = 0; i < _hand.length; i++) {
-            let el = _hand[i];
+        for (let i = 0; i < hand.length; i++) {
+            let el = hand[i];
             if (el !== letter || found) {
                 newArr.push(el);
             }
@@ -39,7 +40,8 @@ export function InputPanel({ hand, onReturnToHand }: Props) {
 
         if (data) {
             event.dataTransfer.dropEffect = "move";
-
+            const parsed = JSON.parse(data);
+            console.log(parsed);
         }
 
 
@@ -55,6 +57,7 @@ export function InputPanel({ hand, onReturnToHand }: Props) {
         if (repositionData) {
             const sourceTile = JSON.parse(repositionData);
             onReturnToHand(sourceTile.row, sourceTile.col);
+            setHand((prev) => [...prev, sourceTile.letter]);
         }
     }
     return (<div className="w-3xl bg-[#2C2C38] mt-2 rounded-sm p-2"
@@ -66,8 +69,9 @@ export function InputPanel({ hand, onReturnToHand }: Props) {
         <div className="bg-[#2C2C38]">
 
             <div className="flex   p-2 w-full justify-center bg-[#333333] " id="inputBtns">
-                {_hand.map((letter) =>
+                {hand.map((letter, i) =>
                     <Tile
+                        key={i}
                         letter={letter}
                         removeFromHand={removeLetterFromHand}
                     />)}
@@ -86,39 +90,34 @@ interface TileProps {
 function Tile({ letter, removeFromHand }: TileProps) {
     const [isDragged, setIsDragged] = useState(false);
     const tileRef = useRef<HTMLDivElement>(null);
+
     const onDragStart = (event: React.DragEvent) => {
         event.dataTransfer.setData("hand_to_board", letter);
         setIsDragged(true);
     }
 
-
     const onDragEnd = (event: React.DragEvent) => {
-        var tile = tileRef.current;
-        if (!tile) return;
-        if (event.dataTransfer.dropEffect == "none") {
+        if (event.dataTransfer.dropEffect === "none") {
             console.log("drop failed");
-            tile.style.visibility = "visible";
-        }
-        else {
+        } else {
             console.log("drop succeeded, effect: ", event.dataTransfer.dropEffect);
             removeFromHand(letter);
         }
         setIsDragged(false);
-
     }
-    const onDrag = (event: React.DragEvent) => {
 
-        var tile = tileRef.current;
-        if (!tile) return;
-        tile.style.visibility = "hidden";
-
-    }
-    return <div draggable={true}
-        onDragStart={onDragStart}
-        onDrag={onDrag}
-        onDragEnd={onDragEnd}
-        ref={tileRef}
-        className={`   select-none p-3 ml-6 mr-6 ${isDragged ? "bg-red-500" : "bg-yellow-200"} aspect-square w-18 flex-shrink-0 flex-grow-0 rounded-md border-black border-1 hover:cursor-grab`}>{letter}</div>;
+    return (
+        <div
+            draggable={true}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            ref={tileRef}
+            className={`select-none p-3 ml-6 mr-6 aspect-square w-16 flex-shrink-0 flex-grow-0 rounded-md border-black border-1 hover:cursor-grab transition-all
+                ${isDragged ? " invisible opacity-40 bg-green-400" : "bg-yellow-200"}`}
+        >
+            {letter}
+        </div>
+    );
 }
 
 

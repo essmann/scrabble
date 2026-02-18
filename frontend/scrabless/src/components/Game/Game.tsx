@@ -13,7 +13,8 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
     const [opponent, setOpponent] = useState<User>({ id: "waiting", name: "Waiting..." });
     const [myTurn, setMyTurn] = useState(user.id == gameState.turn);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
-    const [hand, setHand] = useState([]);
+
+    const [hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
     useEffect(() => {
         console.log("===== Game useEffect Triggered =====");
         console.log("User:", user);
@@ -70,7 +71,7 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
                     stagedTiles={stagedTiles}
                     setStagedTiles={setStagedTiles}
                     className="bg-amber-50 flex aspect-square max-w-3xl w-full" />
-                <InputPanel onReturnToHand={removeStagedTile} />
+                {/* <InputPanel onReturnToHand={removeStagedTile} hand={hand} setHand={setHand} /> */}
             </div>
             <RightPanel
                 user={user}

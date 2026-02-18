@@ -113,7 +113,6 @@ export function FriendRoom() {
 
                 <div className='flex  max-h-full w-full justify-center '>
                     <WaitingPanel />
-                    <Board className="bg-amber-50 flex   aspect-square max-w-3xl w-full  " />
                 </div>
             }
 
