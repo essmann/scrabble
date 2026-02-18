@@ -48,7 +48,6 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
     return (
         <>
             <div className="max-w-full max-h-full">
-                <h1>{user.name}</h1>
                 <Board
                     stagedTiles={stagedTiles}
                     setStagedTiles={setStagedTiles}
@@ -59,7 +58,7 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
                 user={user}
                 opponent={opponent}
                 myTurn={myTurn}
-                className="bg-[#22222B] lg:max-w-md lg:w-[50%] w-full lg:max-h-3xl max-w-3xl lg:self-stretch"
+                className="bg-[#22222B] lg:max-w-md lg:w-[50%] w-full lg:max-3xl max-w-3xl lg:self-stretch max-h-full"
             />
         </>
     );

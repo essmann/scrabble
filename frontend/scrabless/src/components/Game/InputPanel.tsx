@@ -42,16 +42,19 @@ export function InputPanel({ hand, removeStagedTile, setHand }: Props) {
     };
 
     return (
-        <div
-            className="w-3xl bg-[#2C2C38] mt-2 rounded-sm p-2"
-            onDragOver={onDragOver}
-            onDrop={onDrop}
-        >
-            <div className="flex p-2 w-full justify-center bg-[#333333]">
-                {hand.map((letter, i) => (
-                    <Tile key={i} letter={letter} removeFromHand={removeLetterFromHand} />
-                ))}
+        <div>
+            <div
+                className="max-w-3xl w-full bg-[#2C2C38] mt-2 rounded-sm p-2"
+                onDragOver={onDragOver}
+                onDrop={onDrop}
+            >
+                <div className="flex p-2 justify-center bg-[#333333]">
+                    {hand.map((letter, i) => (
+                        <Tile key={i} letter={letter} removeFromHand={removeLetterFromHand} />
+                    ))}
+                </div>
             </div>
+            <Buttons myTurn={false} />
         </div>
     );
 }
@@ -77,7 +80,8 @@ function Tile({ letter, removeFromHand }: TileProps) {
             }}
             className={`
                 select-none p-3 mx-6 w-16 aspect-square
-                flex-shrink-0 rounded-md border border-black
+                rounded-md border border-black
+                shrink-0
                 hover:cursor-grab transition-all
                 ${isDragged ? "invisible opacity-40 bg-green-400" : "bg-yellow-200"}
             `}
@@ -85,4 +89,20 @@ function Tile({ letter, removeFromHand }: TileProps) {
             {letter}
         </div>
     );
+}
+
+
+function Buttons({ myTurn }: { myTurn: boolean }) {
+
+    return (
+        <div className="flex justify-between *:p-5  *:rounded-sm  *:flex-1 gap-10 *:bg-[#5A5A70] *:mt-5 *:text-white *:font-bold">
+            <button>Resign</button>
+            <button>Skip</button>
+            <button>Submit</button>
+            <button>Swap</button>
+
+
+        </div>
+
+    )
 }
