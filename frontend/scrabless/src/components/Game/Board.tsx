@@ -144,44 +144,49 @@ function Tile({ letter, type, row, col, staged, onTilePlace, score }: {
         e.preventDefault();
         console.log("[MOVE] drop called");
 
+        // Get dragged data from either hand or board
+        const fromBoard = e.dataTransfer.getData(DRAG_TYPE.FROM_BOARD);
+        const fromHand = e.dataTransfer.getData(DRAG_TYPE.FROM_HAND);
 
-        //Moving already existing piece from the board to another position:
+        // Determine which tile is being dropped
+        const tileData = fromHand || fromBoard;
+        if (!tileData) return;
 
-        const repositionData = e.dataTransfer.getData(DRAG_TYPE.FROM_BOARD);
+        // If the tile is from the board, attempt to reposition it
+        if (fromBoard) {
+            const sourceTile = JSON.parse(fromBoard);
+            console.log("[MOVE] Repositioning tile:", sourceTile, { row, col });
 
-        if (repositionData) {
-            const sourceTile = JSON.parse(repositionData);
-            console.log("[MOVE]", sourceTile, { letter: letter, row: row, col: col });
-
-            let success = onTilePlace(
-                { letter: sourceTile.letter, row, col },  // new position
+            const success = onTilePlace(
+                { letter: sourceTile.letter, row, col },      // new position
                 { row: sourceTile.row, col: sourceTile.col } // original position
             );
 
-            if (success) {
-                console.log("[MOVE] Repositioned letter successfully");
-            }
-            else {
-                console.log("[MOVE] Couldn't reposition staged letter");
-            }
-        }
-        const data = e.dataTransfer.getData(DRAG_TYPE.FROM_HAND);
-        if (!data) return;
+            console.log(
+                success
+                    ? "[MOVE] Repositioned letter successfully"
+                    : "[MOVE] Couldn't reposition staged letter"
+            );
 
-        if (!isValidLetter(data)) {
-            console.log("[MOVE] Invalid letter:", data);
+            return; // board tile handled, exit early
+        }
+
+        // Validate letter from hand before staging
+        if (!isValidLetter(fromHand)) {
+            console.log("[MOVE] Invalid letter:", fromHand);
             return;
         }
 
-        let stagedLetter = { letter: data, row, col }; // TypeScript now knows data is Letter
-        let success = onTilePlace(stagedLetter);
-        if (success) {
-            console.log("[MOVE] Successfully staged letter");
-        }
-        else {
-            console.log("[MOVE] Couldn't stage letter.");
-        }
-    }
+        // Stage the new letter onto the board
+        const stagedLetter = { letter: fromHand, row, col };
+        const success = onTilePlace(stagedLetter);
+
+        console.log(
+            success
+                ? "[MOVE] Successfully staged letter"
+                : "[MOVE] Couldn't stage letter."
+        );
+    };
 
 
     switch (type) {
