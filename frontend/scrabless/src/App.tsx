@@ -40,15 +40,12 @@ function App() {
   }
 
   return (
-    <div className='h-full w-full flex'>
-      <Sidebar />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/friend-room" element={<FriendRoom />} />
-        </Routes>
-      </BrowserRouter>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/friend-room" element={<FriendRoom />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

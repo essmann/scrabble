@@ -104,7 +104,7 @@ export function FriendRoom() {
     }
 
     return (
-        <div className='bg-[#16161E] flex flex-col  p-1 justify-center h-screen w-screen  items-center' id='game-wrapper'>
+        <div className='' id='game-wrapper'>
             {roomData?.state == "active" ? <div className='flex flex-col-reverse lg:flex-row  gap-4 w-full max-w-full justify-center  items-center bg-pink  lg:flex-row'>
                 {gameState && auth.user && (
                     <Game gameState={gameState} user={auth.user} />
