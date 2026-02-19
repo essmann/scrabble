@@ -1,52 +1,65 @@
+import { useState, type SetStateAction } from 'react';
 import './App.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Home from './pages/Home';
-import FriendRoom from './pages/FriendRoom'
-import { Sidebar } from './components/Sidebar';
-import { AuthProvider, useAuth } from './context/authContext';
-import { useEffect, useRef, useState } from 'react';
-import { apiManager } from './api/apiManager';
 
-async function authenticate() {
-  const user = await apiManager.getUser();
-  console.log(user);
-  return user;
-}
+import { Board } from './components/Game/Board';
+import type { StagedTile } from './components/Game/Game';
+import { InputPanel } from './components/Game/InputPanel';
+import type { Letter } from './types/game';
+import { RightPanel } from './components/Game/RightPanel';
+import type { User } from './types/room';
 
-function App() {
-  const [authDone, setAuthDone] = useState(false);
-  const auth = useAuth();
-  const hasAuthenticated = useRef(false);
+const App = () => {
+  const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
+  const [hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
+  const [selectedLetter, setSelectedLetter] = useState<Letter | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      if (hasAuthenticated.current) return;
-      hasAuthenticated.current = true;
+  const removeStagedTile = (row: number, col: number) => {
+    setStagedTiles(prev => prev.filter(t => !(t.row === row && t.col === col)));
+  };
 
-      try {
-        const user = await authenticate();
-        auth.login(user);
-      } catch (err) {
-        console.error("Authentication failed", err);
-      } finally {
-        setAuthDone(true); // mark authentication as complete
-      }
-    })();
-  }, []);
-
-  // Show a loading screen until authentication is done
-  if (!authDone) {
-    return <div className="h-full w-full flex items-center justify-center">Loading...</div>;
-  }
+  const addStagedTile = (row: number, col: number) => {
+    if (!selectedLetter) return;
+    setStagedTiles(prev => [...prev, { row, col, letter: selectedLetter }]);
+    setHand(prev => {
+      const idx = prev.indexOf(selectedLetter);
+      if (idx === -1) return prev;
+      return [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+    });
+    setSelectedLetter(null);
+  };
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/friend-room" element={<FriendRoom />} />
-      </Routes>
-    </BrowserRouter>
-  )
-}
+    <div className="main h-dvh w-dvw flex justify-center bg-pink-500 overflow-y-scroll">
+      <div className="flex items-center justify-center lg:justify-normal lg:mt-3 border-box flex-col min-w-full min-h-full">
+        <div className="flex lg:flex-row flex-col w-full md:max-w-3xl lg:max-w-4xl md:self-center lg:self-center self-end lg:h-auto h-full">
+          <div className="bg-purple-500 w-full p-3 lg:flex-1 flex gap-4 justify-center items-center lg:items-start">
+            <RightPanel
+              className={''}
+              user={{ id: "asdfga", name: "test" } as User}
+              opponent={{ id: "asdfga", name: "test" } as User}
+              myTurn={false}
+            />
+          </div>
+          <div id="board" className="w-full lg:h-full lg:mt-0 md:mt-0">
+            <Board
+              className={''}
+              stagedTiles={stagedTiles}
+              setStagedTiles={setStagedTiles}
+            />
+            <div id="input" className="bg-red-500 w-full p-2 lg:flex-6 lg:mt-0 mt-auto border-box">
+              <div className="bg-red-500 lg:p-3 flex gap-3 border-box *:bg-yellow-500 justify-between items-center text-center">
+                <InputPanel
+                  hand={hand}
+                  removeStagedTile={removeStagedTile}
+                  setHand={setHand}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default App;

@@ -47,11 +47,11 @@ export function Game({ gameState, user }: { gameState: GameState; user: User }) 
 
     return (
         <>
-            <div className="max-w-full max-h-full">
+            <div className="max-w-full max-h-full ">
                 <Board
                     stagedTiles={stagedTiles}
                     setStagedTiles={setStagedTiles}
-                    className="bg-amber-50 flex aspect-square max-w-3xl w-full" />
+                    className="bg-amber-50 flex w-full h-full   " />
                 <InputPanel removeStagedTile={removeStagedTile} hand={hand} setHand={setHand} />
             </div>
             <RightPanel
