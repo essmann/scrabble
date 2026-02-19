@@ -42,13 +42,13 @@ export function InputPanel({ hand, removeStagedTile, setHand }: Props) {
     };
 
     return (
-        <div>
+        <div className="w-full">
             <div
-                className="max-w-3xl w-full bg-[#2C2C38] mt-2 rounded-sm p-2"
+                className="flex  w-full bg-[#2C2C38]  rounded-sm "
                 onDragOver={onDragOver}
                 onDrop={onDrop}
             >
-                <div className="flex justify-center bg-[#333333]">
+                <div className="flex  bg-[#333333] w-full justify-around">
                     {hand.map((letter, i) => (
                         <Tile key={i} letter={letter} removeFromHand={removeLetterFromHand} />
                     ))}
@@ -78,8 +78,12 @@ function Tile({ letter, removeFromHand }: TileProps) {
                 setIsDragged(false);
             }}
             className={`
-               
-                rounded-md border border-black
+               aspect-square lg:w-12 sm:w-10 w-[10%]
+                rounded-md border border-[#F1C554]
+                border-1
+                lg:text-2xl
+                text-[#22222B]
+                font-black
                 hover:cursor-grab transition-all
                 ${isDragged ? "invisible opacity-40 bg-green-400" : "bg-yellow-200"}
             `}

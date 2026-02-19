@@ -133,17 +133,19 @@ function Tile({
     } else {
         switch (type) {
             case "DW":
-                bg = "bg-pink-300";
+                bg = "bg-[#e4a2a3]";
                 break;
             case "TW":
-                bg = "bg-red-600";
+                bg = "bg-[#bf4e4e]";
                 break;
             case "TL":
-                bg = "bg-blue-700";
+                bg = "bg-[#0c679c]";
                 break;
             case "DL":
-                bg = "bg-blue-300";
+                bg = "bg-[#68a2c3]";
                 break;
+            default:
+                bg = "bg-[#c4c4d1] border rounded-sm";
         }
     }
 
