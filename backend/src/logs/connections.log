@@ -1,3 +1,0 @@
-[2026-02-19T09:29:33.803Z] [INFO] [CONNECTION_ATTEMPT] User attempting to connect | {"userId":"4467ab57-25a1-4bea-af2f-57226c3edc0b","userName":"nice-gold","ipAddress":"::ffff:127.0.0.1"}
-[2026-02-19T09:29:33.804Z] [INFO] [DISCONNECTION] User disconnected | {"userId":"4467ab57-25a1-4bea-af2f-57226c3edc0b","userName":"nice-gold"}
-[2026-02-19T09:29:33.804Z] [INFO] [CONNECTION_SUCCESS] User connected successfully | {"userId":"4467ab57-25a1-4bea-af2f-57226c3edc0b","userName":"nice-gold","success":true,"ipAddress":"::ffff:127.0.0.1"}
