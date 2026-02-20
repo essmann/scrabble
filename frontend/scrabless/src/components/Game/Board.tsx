@@ -129,7 +129,7 @@ function Tile({
     let bg = "bg-gray-300";
 
     if (staged) {
-        bg = "bg-yellow-500";
+        bg = "bg-yellow-[#f0b860]";
     } else {
         switch (type) {
             case "DW":
@@ -195,9 +195,14 @@ function Tile({
             className={`
                 ${bg}
                 aspect-square flex items-center justify-center
-                border border-black w-full h-full box-border
+                border  w-full h-full box-border
                 text-[70%] select-none relative
-                ${staged ? "font-bold hover:bg-yellow-400" : ""}
+                font-extrabold
+                text-white
+                lg:rounded-[0.6rem]
+                ${staged ? "font-bold hover:bg-yellow-400 border-[#c89e33] lg:border-2 " : "border-black"}
+                ${staged && " lrounded-md border  lg:rounded-md bg-[#edc27d]  lg:-border-2 lg:rounded-[0.4rem] lg:text-2xl lg:text-black text-black  "}
+
             `}
         >
             <div>

@@ -1,14 +1,15 @@
 import { useState } from "react";
 import type { Letter } from "../../types/game";
-import { DRAG_TYPE } from "./Game";
+import { DRAG_TYPE, type StagedTile } from "./Game";
 
 interface Props {
     hand: Letter[];
     removeStagedTile: (row: number, col: number) => void;
     setHand: (value: React.SetStateAction<Letter[]>) => void;
+    onSubmit: () => void;
 }
 
-export function InputPanel({ hand, removeStagedTile, setHand }: Props) {
+export function InputPanel({ hand, removeStagedTile, setHand, onSubmit }: Props) {
     const removeLetterFromHand = (letter: Letter) => {
         setHand(prev => {
             let found = false;
@@ -42,7 +43,7 @@ export function InputPanel({ hand, removeStagedTile, setHand }: Props) {
     };
 
     return (
-        <div className="w-full">
+        <div className="w-full flex flex-col lg:gap-1 ">
             <div
                 className="flex  w-full bg-[#2C2C38]  rounded-sm "
                 onDragOver={onDragOver}
@@ -54,6 +55,7 @@ export function InputPanel({ hand, removeStagedTile, setHand }: Props) {
                     ))}
                 </div>
             </div>
+            <Buttons onSubmit={onSubmit} />
         </div>
     );
 }
@@ -79,13 +81,15 @@ function Tile({ letter, removeFromHand }: TileProps) {
             }}
             className={`
                aspect-square lg:w-12 sm:w-10 w-[10%]
-                rounded-md border border-[#F1C554]
+                rounded-md border border-[#c89e33]
                 border-1
+                lg:border-2
+                lg:rounded-[0.4rem]
                 lg:text-2xl
                 text-[#22222B]
                 font-black
                 hover:cursor-grab transition-all
-                ${isDragged ? "invisible opacity-40 bg-green-400" : "bg-yellow-200"}
+                ${isDragged ? "invisible opacity-40 bg-green-400" : "bg-[#edc27d]"}
             `}
         >
             {letter}
@@ -93,4 +97,16 @@ function Tile({ letter, removeFromHand }: TileProps) {
     );
 }
 
+function Buttons({ onSubmit }: { onSubmit: () => void }) {
+
+    return (
+        <div id="btns" className="lg:*:p-3 flex justify-center lg:gap-5  gap-2 mt-2 lg:mt-2 bg-[#2C2C38]  ">
+            <button className="bg-[#333333] rounded-md text-white font-bold border-black border-1 flex-1  ">Resign</button>
+            <button className="bg-[#333333] rounded-md text-white font-bold border-black border-1  flex-1">Skip</button>
+            <button className=" bg-[#333333] rounded-md  text-white font-bold border-black border-1 flex-1"> Swap</button>
+            <button className=" bg-[#4DD9E8] rounded-md text-white font-bold border-black border-1 flex-1 " onClick={onSubmit}>Submit</button>
+
+        </div>
+    )
+}
 
