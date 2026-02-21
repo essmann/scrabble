@@ -7,7 +7,7 @@ import { AuthProvider, useAuth } from './context/authContext';
 import { useEffect, useRef, useState } from 'react';
 import { apiManager } from './api/apiManager';
 import { TestGame } from './components/TestGame';
-
+import { GameProvider } from './context/GameContext';
 async function authenticate() {
   const user = await apiManager.getUser();
   console.log(user);
@@ -41,14 +41,16 @@ function App() {
   }
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/friend-room" element={<FriendRoom />} />
-        <Route path="/test" element={<TestGame />} />
+    <GameProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/friend-room" element={<FriendRoom />} />
+          <Route path="/test" element={<TestGame />} />
 
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </GameProvider >
   )
 }
 

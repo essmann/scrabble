@@ -1,16 +1,17 @@
 import { useState } from "react";
 import type { User } from "../types/room";
 import { Board } from "./Game/Board";
-import { Game, type StagedTile } from "./Game/Game";
 import { InputPanel } from "./Game/InputPanel";
 import { RightPanel } from "./Game/RightPanel";
 import type { Letter } from "../types/game";
+import { useGame } from "../context/GameContext";
 
 export function TestGame() {
     const [hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
-    const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
 
     const [myTurn] = useState(true);
+
+    const { stagedTiles, setStagedTiles } = useGame();
     //Staged tiles are the temporary tiles placed on the board by the client.
     const removeStagedTile = (row: number, col: number) => {
         setStagedTiles(prev =>
@@ -29,7 +30,6 @@ export function TestGame() {
         //Client-side validation
         //1) Is it adjacent to another word, or is it adjacent to the star (first word)
         //2) Is it a valid word (use a trie)
-
         //Left -> Right
         //Up -> Down
     }
@@ -50,15 +50,12 @@ export function TestGame() {
                     <div id="board" className="w-full lg:h-full lg:mt-0 md:mt-0 lg:flex-3 aspect-square">
                         <Board
                             className={''}
-                            stagedTiles={stagedTiles}
-                            setStagedTiles={setStagedTiles}
+
                         />
-                        <div id="input" className="bg-[#2C2C38] w-full p-1 lg:flex-6 lg:mt-0 mt-auto border-box ">
+                        <div id="input" className="bg-[#2C2C38] w-full p-1 rounded-md lg:flex-6 lg:mt-0 mt-auto border-box ">
                             <div className=" flex border-box justify-between items-center text-center  ">
                                 <InputPanel
-                                    hand={hand}
                                     removeStagedTile={removeStagedTile}
-                                    setHand={setHand}
                                     onSubmit={makeMove}
                                 />
                             </div>

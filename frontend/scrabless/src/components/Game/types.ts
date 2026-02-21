@@ -23,7 +23,12 @@ interface TileToReposition {
     destinationTile: TilePosition;
 }
 
-interface TilePosition {
+export interface TilePosition {
     row: number;
     col: number;
 }
+
+//
+
+export type ClickedTileDirection = "DOWN" | "RIGHT";
+

@@ -2,6 +2,8 @@ import { generateTiles } from "../../test/testTiles";
 import { useState } from "react";
 import type { Letter } from "../../types/game";
 import { DRAG_TYPE, type StagedTile } from "./Game";
+import { useGame } from "../../context/GameContext";
+import type { ClickedTileDirection } from "./types";
 
 interface TilePosition {
     row: number;
@@ -10,12 +12,11 @@ interface TilePosition {
 
 interface BoardProps {
     className: string;
-    stagedTiles: StagedTile[];
-    setStagedTiles: React.Dispatch<React.SetStateAction<StagedTile[]>>;
 }
 
-export function Board({ className, stagedTiles, setStagedTiles }: BoardProps) {
+export function Board({ className }: BoardProps) {
     const [tiles] = useState(generateTiles());
+    const { stagedTiles, setStagedTiles, clickedTile, setClickedTile, setClickedTileDirection } = useGame();
 
     const isEmptyTile = (row: number, col: number) => {
         const tile = tiles[row][col];
@@ -29,6 +30,21 @@ export function Board({ className, stagedTiles, setStagedTiles }: BoardProps) {
         return true;
     };
 
+    const handleTileClick = (currentClickDirection: ClickedTileDirection) => {
+        console.log(`Tile clicked. Turrent click direction: ${currentClickDirection}`);
+        // switch (currentClickDirection) {
+
+        //     case "RIGHT":
+        //         setClickedTileDirection("DOWN");
+        //         break;
+        //     case "DOWN":
+        //         setClickedTileDirection(null);
+        //         break;
+        //     default:
+        //         setClickedTileDirection("RIGHT");
+        // }
+
+    }
     const onTilePlace = (
         tileToPlace: StagedTile,
         sourceTile?: TilePosition
@@ -125,7 +141,7 @@ function Tile({
         sourceTile?: { row: number; col: number }
     ) => boolean;
 }) {
-
+    const { clickedTile, setClickedTile, clickedTileDirection } = useGame();
     let bg = "bg-gray-300";
 
     if (staged) {
@@ -192,6 +208,13 @@ function Tile({
             onDrop={onDrop}
             onDragStart={onDragStart}
             draggable={staged}
+            onClick={() => {
+                let _clickedTile = { row: row, col: col } as TilePosition;
+
+                setClickedTile(_clickedTile);
+
+
+            }}
             className={`
                 ${bg}
                 aspect-square flex items-center justify-center
@@ -212,10 +235,31 @@ function Tile({
             <div className="absolute left-[15%] bottom-[7%] text-[70%]">
                 {letter !== null && score}
             </div>
+            {clickedTile?.row == row && clickedTile?.col == col && <ArrowOverlay clickDirection={clickedTileDirection} />}
+
         </div>
     );
 }
 
 function isValidLetter(value: string): value is Letter {
     return /^[A-Z_]$/.test(value);
+}
+
+function ArrowOverlay({ clickDirection }: { clickDirection: ClickedTileDirection | null }) {
+    if (clickDirection == null) return;
+    return (
+
+        <div id="arrow_overlay" className="absolute  h-full w-full flex items-center justify-center  bg-[#333333] rounded-md opacity-90">
+
+            {/* Arrow Down */}
+            {clickDirection == "DOWN" ? (<svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19V5m0 14-4-4m4 4 4-4" />
+            </svg>) :
+                <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
+                </svg>}
+
+
+        </div>
+    )
 }
