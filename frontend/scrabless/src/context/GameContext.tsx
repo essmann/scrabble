@@ -1,40 +1,33 @@
-// GameContext.tsx
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useRef, useState, type ReactNode } from "react";
 import type { Letter } from "../types/game";
 import type { StagedTile } from "../components/Game/Game";
 import type { ClickedTileDirection, TilePosition } from "../components/Game/types";
 
-// Define context type
+export type ClickedTileState = {
+    row: number;
+    col: number;
+    direction: ClickedTileDirection | null;
+} | null;
+
 type GameContextType = {
     hand: Letter[];
     setHand: React.Dispatch<React.SetStateAction<Letter[]>>;
     stagedTiles: StagedTile[];
     setStagedTiles: React.Dispatch<React.SetStateAction<StagedTile[]>>;
     myTurn: boolean;
-    clickedTile: TilePosition | null;
-    setClickedTile: React.Dispatch<React.SetStateAction<TilePosition | null>>;
-    clickedTileDirection: ClickedTileDirection | null;
-    setClickedTileDirection: React.Dispatch<React.SetStateAction<ClickedTileDirection | null>>;
+    clickedTile: ClickedTileState;
+    setClickedTile: (pos: TilePosition | null, skipDirectionUpdate?: boolean) => void;
     removeFromHand: (letter: Letter) => void;
+    addToHand: (letter: Letter) => void;
 };
 
-// Keyboard tile interface
-interface TilePositionAndKeyboardFlag extends TilePosition {
-    updateTileDirection: boolean;
-}
-
-// Create context
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
-// Provider
 export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
     const [myTurn] = useState(true);
-    const [clickedTile, setClickedTile] = useState<TilePosition | TilePositionAndKeyboardFlag | null>(null);
-    const [clickedTileDirection, setClickedTileDirection] = useState<ClickedTileDirection | null>(null);
-
-    const tileRef = useRef<TilePosition | TilePositionAndKeyboardFlag | null>(null);
+    const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
 
     const removeFromHand = (letter: Letter) => {
         setHand(prev => {
@@ -48,43 +41,44 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
             });
         });
     };
-    useEffect(() => {
-        console.log("CLICKED TILE!");
-        console.log(clickedTile);
 
+    const addToHand = (letter: Letter) => {
+        setHand(prev => [...prev, letter]);
+    };
 
-        const prevTile = tileRef.current;
-
-        tileRef.current = clickedTile;
-
-        if (!prevTile) return;
-
-        const sameTile =
-            prevTile.row === clickedTile?.row &&
-            prevTile.col === clickedTile?.col;
-
-
-        if (clickedTile && "updateTileDirection" in clickedTile) {
+    const setClickedTile = (pos: TilePosition | null, skipDirectionUpdate = false) => {
+        if (pos === null) {
+            setClickedTileState(null);
             return;
         }
-        if (!sameTile) {
-            setClickedTileDirection("RIGHT");
+
+        if (skipDirectionUpdate) {
+            // Arrow key navigation — keep existing direction
+            setClickedTileState(prev => ({
+                row: pos.row,
+                col: pos.col,
+                direction: prev?.direction ?? null,
+            }));
             return;
         }
-        if (clickedTile)
-            switch (clickedTileDirection) {
-                case "RIGHT":
-                    setClickedTileDirection("DOWN");
-                    break;
-                case "DOWN":
-                    setClickedTileDirection(null);
-                    break;
-                default:
-                    setClickedTileDirection("RIGHT");
+
+        // Click — update direction based on previous state
+        setClickedTileState(prev => {
+            const sameTile = prev?.row === pos.row && prev?.col === pos.col;
+
+            if (!sameTile) {
+                return { row: pos.row, col: pos.col, direction: "RIGHT" };
             }
-        console.log(`New Clicked Tile Direction: ${clickedTileDirection}`);
 
-    }, [clickedTile]);
+            // Toggle direction on same tile
+            const nextDirection: ClickedTileDirection | null =
+                prev?.direction === "RIGHT" ? "DOWN"
+                    : prev?.direction === "DOWN" ? null
+                        : "RIGHT";
+
+            return { row: pos.row, col: pos.col, direction: nextDirection };
+        });
+    };
 
     return (
         <GameContext.Provider
@@ -96,9 +90,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
                 myTurn,
                 clickedTile,
                 setClickedTile,
-                clickedTileDirection,
-                setClickedTileDirection,
-                removeFromHand
+                removeFromHand,
+                addToHand,
             }}
         >
             {children}
