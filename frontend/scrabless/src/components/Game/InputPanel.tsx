@@ -9,7 +9,7 @@ interface Props {
     onSubmit: () => void;
 }
 
-export function InputPanel({ removeStagedTile, onSubmit }: Props) {
+export function InputPanel({ removeStagedTile }: Props) {
     const { hand, setHand } = useGame();
     const removeLetterFromHand = (letter: Letter) => {
         setHand(prev => {
@@ -63,7 +63,7 @@ export function InputPanel({ removeStagedTile, onSubmit }: Props) {
                 </button>
 
             </div>
-            <Buttons onSubmit={onSubmit} />
+            <Buttons onSubmit={() => ""} />
         </div>
     );
 }

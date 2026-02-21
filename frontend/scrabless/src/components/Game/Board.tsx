@@ -1,5 +1,5 @@
 import { generateTiles } from "../../test/testTiles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Letter } from "../../types/game";
 import { DRAG_TYPE, type StagedTile } from "./Game";
 import { useGame } from "../../context/GameContext";
@@ -16,7 +16,7 @@ interface BoardProps {
 
 export function Board({ className }: BoardProps) {
     const [tiles] = useState(generateTiles());
-    const { stagedTiles, setStagedTiles, clickedTile, setClickedTile, setClickedTileDirection } = useGame();
+    const { stagedTiles, setStagedTiles, clickedTile, setClickedTile, clickedTileDirection, hand, removeFromHand } = useGame();
 
     const isEmptyTile = (row: number, col: number) => {
         const tile = tiles[row][col];
@@ -30,21 +30,41 @@ export function Board({ className }: BoardProps) {
         return true;
     };
 
-    const handleTileClick = (currentClickDirection: ClickedTileDirection) => {
-        console.log(`Tile clicked. Turrent click direction: ${currentClickDirection}`);
-        // switch (currentClickDirection) {
+    useEffect(() => {
+        if (clickedTile == null) return;
+        const handleKeyDown = (ev: KeyboardEvent) => {
+            console.log(ev.key);
+            if (ev.key == 'Backspace') {
 
-        //     case "RIGHT":
-        //         setClickedTileDirection("DOWN");
-        //         break;
-        //     case "DOWN":
-        //         setClickedTileDirection(null);
-        //         break;
-        //     default:
-        //         setClickedTileDirection("RIGHT");
-        // }
+            }
+            const letter = ev.key.toUpperCase() as Letter;
+            if (!hand.includes(letter)) return;
 
-    }
+            const newTile = { letter: letter, row: clickedTile.row, col: clickedTile.col };
+
+            console.log(newTile);
+            let updatedClickedTilePosition =
+                clickedTileDirection == "RIGHT" || clickedTileDirection == null ?
+                    { row: clickedTile.row, col: clickedTile.col + 1, updateTileDirection: false }
+                    :
+                    { row: clickedTile.row + 1, col: clickedTile.col, updateTileDirection: false }
+            console.log(`[KEYBOARD] current tile direction: ${clickedTileDirection}`);
+            console.log(`[KEYBOARD] ${JSON.stringify(updatedClickedTilePosition)} `)
+            //Place a tile at the position of the selectedTile.
+            setStagedTiles((prev) => [...prev, newTile])
+            removeFromHand(letter);
+
+            setClickedTile(updatedClickedTilePosition);
+
+        };
+
+        document.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [clickedTile, clickedTileDirection]);
+
     const onTilePlace = (
         tileToPlace: StagedTile,
         sourceTile?: TilePosition
@@ -141,7 +161,8 @@ function Tile({
         sourceTile?: { row: number; col: number }
     ) => boolean;
 }) {
-    const { clickedTile, setClickedTile, clickedTileDirection } = useGame();
+    const { clickedTile, setClickedTile, clickedTileDirection, setClickedTileDirection } = useGame();
+    const [clicked, setClicked] = useState(false);
     let bg = "bg-gray-300";
 
     if (staged) {
@@ -212,7 +233,6 @@ function Tile({
                 let _clickedTile = { row: row, col: col } as TilePosition;
 
                 setClickedTile(_clickedTile);
-
 
             }}
             className={`
