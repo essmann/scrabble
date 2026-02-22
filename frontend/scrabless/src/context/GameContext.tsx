@@ -1,4 +1,4 @@
-import { createContext, useContext, useRef, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Letter } from "../types/game";
 import type { StagedTile } from "../components/Game/Game";
 import type { ClickedTileDirection, TilePosition } from "../components/Game/types";
@@ -24,6 +24,7 @@ type GameContextType = {
     setClickedTile: (pos: TilePosition | null, skipDirectionUpdate?: boolean) => void;
     removeFromHand: (letter: Letter) => void;
     addToHand: (letterWithScore: LetterWithScore) => void;
+    stagedIsValidWord: boolean;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -41,6 +42,29 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
     const [myTurn] = useState(true);
     const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
+
+    const [stagedIsValidWord, setStagedIsValidWord] = useState(false);
+
+    const words = ["AB", "DEZ", "QA"];
+    //Word validation
+    useEffect(() => {
+        if (stagedTiles.length === 0) {
+            setStagedIsValidWord(false);
+            return;
+        }
+
+        // Determine direction by checking if rows differ
+        const isVertical = stagedTiles.some(t => t.row !== stagedTiles[0].row);
+
+        const sorted = [...stagedTiles].sort((a, b) =>
+            isVertical ? a.row - b.row : a.col - b.col
+        );
+
+        const word = sorted.map(t => t.letter.letter).join("");
+
+        setStagedIsValidWord(words.includes(word));
+    }, [stagedTiles]);
+
 
     const removeFromHand = (letter: Letter) => {
         setHand(prev => {
@@ -90,7 +114,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <GameContext.Provider value={{ hand, setHand, stagedTiles, setStagedTiles, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
+        <GameContext.Provider value={{ hand, setHand, stagedTiles, setStagedTiles, stagedIsValidWord, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
             {children}
         </GameContext.Provider>
     );

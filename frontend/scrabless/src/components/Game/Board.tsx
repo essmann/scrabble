@@ -16,7 +16,7 @@ interface BoardProps {
 
 export function Board({ className }: BoardProps) {
     const [tiles] = useState(generateTiles());
-    const { stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand } = useGame();
+    const { stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
 
     const isEmptyTile = (row: number, col: number) => {
         const tile = tiles[row][col];
@@ -153,7 +153,7 @@ function Tile({
     score: number;
     onTilePlace: (tileToPlace: StagedTile, sourceTile?: { row: number; col: number }) => boolean;
 }) {
-    const { clickedTile, setClickedTile } = useGame();
+    const { clickedTile, setClickedTile, stagedIsValidWord } = useGame();
 
     const isClicked = clickedTile?.row === row && clickedTile?.col === col;
 
@@ -219,6 +219,8 @@ function Tile({
                 lg:rounded-[0.6rem]
                 ${staged ? "font-bold hover:bg-yellow-400 border-[#c89e33] lg:border-2" : "border-black"}
                 ${staged && "lrounded-md border lg:rounded-md bg-[#edc27d] lg:-border-2 lg:rounded-[0.4rem] lg:text-2xl lg:text-black text-black"}
+                ${staged && stagedIsValidWord && "border-green-300"}
+                ${staged && !stagedIsValidWord && "border-red-500 "}
             `}
         >
             <div>
