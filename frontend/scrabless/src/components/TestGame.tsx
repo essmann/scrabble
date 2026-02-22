@@ -6,8 +6,9 @@ import { RightPanel } from "./Game/RightPanel";
 import type { Letter } from "../types/game";
 import { useGame } from "../context/GameContext";
 
+
+
 export function TestGame() {
-    const [hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
 
     const [myTurn] = useState(true);
 

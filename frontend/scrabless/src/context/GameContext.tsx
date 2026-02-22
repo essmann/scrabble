@@ -9,22 +9,35 @@ export type ClickedTileState = {
     direction: ClickedTileDirection | null;
 } | null;
 
+export interface LetterWithScore {
+    letter: Letter;
+    score: number;
+}
+
 type GameContextType = {
-    hand: Letter[];
-    setHand: React.Dispatch<React.SetStateAction<Letter[]>>;
+    hand: LetterWithScore[];
+    setHand: React.Dispatch<React.SetStateAction<LetterWithScore[]>>;
     stagedTiles: StagedTile[];
     setStagedTiles: React.Dispatch<React.SetStateAction<StagedTile[]>>;
     myTurn: boolean;
     clickedTile: ClickedTileState;
     setClickedTile: (pos: TilePosition | null, skipDirectionUpdate?: boolean) => void;
     removeFromHand: (letter: Letter) => void;
-    addToHand: (letter: Letter) => void;
+    addToHand: (letterWithScore: LetterWithScore) => void;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
-    const [hand, setHand] = useState<Letter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
+    const [hand, setHand] = useState<LetterWithScore[]>([
+        { letter: 'A', score: 1 },
+        { letter: 'B', score: 3 },
+        { letter: 'C', score: 3 },
+        { letter: 'Q', score: 10 },
+        { letter: 'D', score: 2 },
+        { letter: 'E', score: 1 },
+        { letter: 'Z', score: 10 },
+    ]);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
     const [myTurn] = useState(true);
     const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
@@ -33,7 +46,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setHand(prev => {
             let found = false;
             return prev.filter(l => {
-                if (!found && l === letter) {
+                if (!found && l.letter === letter) {
                     found = true;
                     return false;
                 }
@@ -42,8 +55,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    const addToHand = (letter: Letter) => {
-        setHand(prev => [...prev, letter]);
+    const addToHand = (letterWithScore: LetterWithScore) => {
+        setHand(prev => [...prev, letterWithScore]);
     };
 
     const setClickedTile = (pos: TilePosition | null, skipDirectionUpdate = false) => {
@@ -53,7 +66,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         }
 
         if (skipDirectionUpdate) {
-            // Arrow key navigation — keep existing direction
             setClickedTileState(prev => ({
                 row: pos.row,
                 col: pos.col,
@@ -62,38 +74,23 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
 
-        // Click — update direction based on previous state
         setClickedTileState(prev => {
             const sameTile = prev?.row === pos.row && prev?.col === pos.col;
-
             if (!sameTile) {
                 return { row: pos.row, col: pos.col, direction: "RIGHT" };
             }
 
-            // Toggle direction on same tile
             const nextDirection: ClickedTileDirection | null =
-                prev?.direction === "RIGHT" ? "DOWN"
-                    : prev?.direction === "DOWN" ? null
-                        : "RIGHT";
+                prev?.direction === "RIGHT" ? "DOWN" :
+                    prev?.direction === "DOWN" ? null :
+                        "RIGHT";
 
             return { row: pos.row, col: pos.col, direction: nextDirection };
         });
     };
 
     return (
-        <GameContext.Provider
-            value={{
-                hand,
-                setHand,
-                stagedTiles,
-                setStagedTiles,
-                myTurn,
-                clickedTile,
-                setClickedTile,
-                removeFromHand,
-                addToHand,
-            }}
-        >
+        <GameContext.Provider value={{ hand, setHand, stagedTiles, setStagedTiles, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
             {children}
         </GameContext.Provider>
     );

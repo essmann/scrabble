@@ -42,7 +42,7 @@ export function Board({ className }: BoardProps) {
                     case "ArrowUp": newPos.row--; break;
                     case "ArrowDown": newPos.row++; break;
                 }
-                setClickedTile(newPos, true); // skipDirectionUpdate = true
+                setClickedTile(newPos, true);
                 return;
             }
 
@@ -62,9 +62,10 @@ export function Board({ className }: BoardProps) {
             }
 
             const letter = ev.key.toUpperCase() as Letter;
-            if (!hand.includes(letter)) return;
+            const letterInHand = hand.find(h => h.letter === letter);
+            if (!letterInHand) return;
 
-            const newTile = { letter, row: clickedTile.row, col: clickedTile.col };
+            const newTile = { letter: letterInHand, row: clickedTile.row, col: clickedTile.col };
 
             const nextPosition = clickedTile.direction === "RIGHT" || clickedTile.direction == null
                 ? { row: clickedTile.row, col: clickedTile.col + 1 }
@@ -116,12 +117,13 @@ export function Board({ className }: BoardProps) {
                         return (
                             <Tile
                                 key={`${rowIndex}-${colIndex}`}
-                                letter={staged ? staged.letter : letter.letter}
+                                letter={staged ? staged.letter.letter : letter.letter}
                                 type={letter.bonus}
                                 row={rowIndex}
                                 col={colIndex}
                                 staged={!!staged}
-                                score={0}
+                                stagedTile={staged}
+                                score={staged ? staged.letter.score : 0}
                                 onTilePlace={onTilePlace}
                             />
                         );
@@ -138,6 +140,7 @@ function Tile({
     row,
     col,
     staged,
+    stagedTile,
     onTilePlace,
     score,
 }: {
@@ -146,6 +149,7 @@ function Tile({
     row: number;
     col: number;
     staged: boolean;
+    stagedTile?: StagedTile;
     score: number;
     onTilePlace: (tileToPlace: StagedTile, sourceTile?: { row: number; col: number }) => boolean;
 }) {
@@ -189,13 +193,14 @@ function Tile({
             return;
         }
 
-        if (!isValidLetter(fromHand)) return;
-        onTilePlace({ letter: fromHand, row, col });
+        const letterWithScore = JSON.parse(fromHand);
+        if (!isValidLetter(letterWithScore.letter)) return;
+        onTilePlace({ letter: letterWithScore, row, col });
     };
 
     const onDragStart = (event: React.DragEvent) => {
-        if (!letter || !staged) return;
-        event.dataTransfer.setData(DRAG_TYPE.FROM_BOARD, JSON.stringify({ letter, row, col }));
+        if (!stagedTile || !staged) return;
+        event.dataTransfer.setData(DRAG_TYPE.FROM_BOARD, JSON.stringify(stagedTile));
     };
 
     return (
@@ -204,7 +209,7 @@ function Tile({
             onDrop={onDrop}
             onDragStart={onDragStart}
             draggable={staged}
-            onClick={() => setClickedTile({ row, col })} // no skipDirectionUpdate — let context toggle direction
+            onClick={() => setClickedTile({ row, col })}
             className={`
                 ${bg}
                 aspect-square flex items-center justify-center
