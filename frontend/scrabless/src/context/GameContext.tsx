@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Letter } from "../types/game";
 
-import type { ClickedTileDirection, StagedTile, TilePosition } from "../components/Game/types";
-import { generateTiles } from "../test/testTiles";
+import type { BoardTile, ClickedTileDirection, StagedTile, TilePosition } from "../components/Game/types";
+import { createEmptyBoard } from "../test/testTiles";
 
 export type ClickedTileState = {
     row: number;
@@ -26,7 +26,8 @@ type GameContextType = {
     removeFromHand: (letter: Letter) => void;
     addToHand: (letterWithScore: LetterWithScore) => void;
     stagedIsValidWord: boolean;
-    // board: LetterWithScore[][];
+    board: BoardTile[][];
+    setBoard: React.Dispatch<React.SetStateAction<BoardTile[][]>>;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -45,7 +46,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [myTurn] = useState(true);
     const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
     const [stagedIsValidWord, setStagedIsValidWord] = useState(false);
-    const [board, setBoard] = useState(generateTiles());
+    const [board, setBoard] = useState<BoardTile[][]>(createEmptyBoard());
 
     const words = ["AB", "DEZ", "QA"];
     //Word validation
@@ -119,7 +120,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <GameContext.Provider value={{ hand, setHand, stagedTiles, setStagedTiles, stagedIsValidWord, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
+        <GameContext.Provider value={{ board, setBoard, hand, setHand, stagedTiles, setStagedTiles, stagedIsValidWord, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
             {children}
         </GameContext.Provider>
     );

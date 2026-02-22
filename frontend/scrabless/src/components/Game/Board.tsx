@@ -1,8 +1,8 @@
-import { generateTiles } from "../../test/testTiles";
 import { useEffect, useState } from "react";
 import type { Letter } from "../../types/game";
 import { useGame, type LetterWithScore } from "../../context/GameContext";
 import { DRAG_TYPE, type ClickedTileDirection, type StagedTile } from "./types";
+import { createEmptyBoard } from "../../test/testTiles";
 
 interface TilePosition {
     row: number;
@@ -14,12 +14,12 @@ interface BoardProps {
 }
 
 export function Board({ className }: BoardProps) {
-    const [tiles] = useState(generateTiles());
+    const { board } = useGame();
     const { stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
 
     const isEmptyTile = (row: number, col: number) => {
-        const tile = tiles[row][col];
-        if (tile.letter.letter) return false;
+        const tile = board[row][col];
+        if (tile.letter?.letter) return false;
 
         const isStaged = stagedTiles.some(
             (t) => t.row === row && t.col === col
@@ -107,7 +107,7 @@ export function Board({ className }: BoardProps) {
             className={`${className} w-full lg:h-full lg:mt-0 md:mt-0`}
         >
             <div className="grid grid-cols-15 h-full">
-                {tiles.map((row, rowIndex) =>
+                {board.map((row, rowIndex) =>
                     row.map((tile, colIndex) => {
                         const staged = stagedTiles.find(
                             (s) => s.row === rowIndex && s.col === colIndex
@@ -116,13 +116,13 @@ export function Board({ className }: BoardProps) {
                         return (
                             <Tile
                                 key={`${rowIndex}-${colIndex}`}
-                                letter={staged ? staged.letter.letter : tile.letter.letter}
-                                type={tile.letter.bonus}
+                                letter={staged ? staged.letter.letter : tile.letter?.letter}
+                                type={tile.bonus}
                                 row={rowIndex}
                                 col={colIndex}
                                 staged={!!staged}
                                 stagedTile={staged}
-                                score={staged ? staged.letter.score : tile.score}
+                                score={staged ? staged.letter.score : tile.letter?.score ?? 0}
                                 onTilePlace={onTilePlace}
                             />
                         );
@@ -143,7 +143,7 @@ function Tile({
     onTilePlace,
     score,
 }: {
-    letter: string | null;
+    letter: string | null | undefined;
     type: string | null;
     row: number;
     col: number;
@@ -159,7 +159,7 @@ function Tile({
     let bg = "bg-gray-300";
 
     if (staged) {
-        bg = "bg-yellow-[#f0b860]";
+        bg = "bg-[#f0b860]";
     } else {
         switch (type) {
             case "DW": bg = "bg-[#e4a2a3]"; break;
@@ -218,17 +218,17 @@ function Tile({
                 lg:rounded-[0.6rem]
                 ${staged || (letter && !staged) ? "text-black  lg:text-2xl" : "text-white"}
                 ${staged ? "font-bold hover:bg-yellow-400 border-[#c89e33] lg:border-2" : "border-black"}
-                ${staged && "lrounded-md border lg:rounded-md bg-[#edc27d] lg:-border-2 lg:rounded-[0.4rem] lg:text-2xl lg:text-black text-black"}
+                ${staged && "rounded-md border lg:rounded-md bg-[#edc27d] lg:border-2 lg:rounded-[0.4rem] lg:text-2xl lg:text-black text-black"}
                 ${staged && stagedIsValidWord && "border-green-300"}
-                ${staged && !stagedIsValidWord && "border-red-500  "}
-                ${!staged && letter && "bg-[#edc27d]  border-orange-300 lg:border-2 "}
+                ${staged && !stagedIsValidWord && "border-red-500"}
+                ${!staged && letter && "bg-[#edc27d] border-orange-300 lg:border-2"}
             `}
         >
             <div>
-                {letter || (type && type !== "STAR" ? type : "")}
+                {letter || (type ? type : "")}
             </div>
             <div className="absolute left-[15%] bottom-[7%] text-[70%]">
-                {letter !== null && score}
+                {letter != null && score != null && score}
             </div>
             {isClicked && <ArrowOverlay clickDirection={clickedTile.direction} />}
         </div>

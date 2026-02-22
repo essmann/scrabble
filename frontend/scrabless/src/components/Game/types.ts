@@ -1,12 +1,8 @@
 
 //For dragging
 
-import type { Letter } from "../../types/game";
 //Generic Tile Data. This is for placeable tiles, tiles that are placed, etc.
 
-interface PlayerTile {
-    letter: Letter | null;
-}
 
 
 
@@ -18,7 +14,7 @@ export interface TilePosition {
 
 //=========TYPES========
 export type ClickedTileDirection = "DOWN" | "RIGHT";
-export type TileBonus = "DW" | "TW" | "TL" | "DL"
+export type TileBonus = "DW" | "TW" | "TL" | "DL" | "STAR"
 export type ScrabbleCharacter =
     | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
     | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T'
@@ -33,7 +29,7 @@ export type DragType = typeof DRAG_TYPE[keyof typeof DRAG_TYPE];
 
 
 export interface LetterWithScore {
-    letter: Letter;
+    letter: ScrabbleCharacter;
     score: number;
 }
 //=======BOARD========
