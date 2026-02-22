@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { DRAG_TYPE } from "./Game";
+
 import { useGame } from "../../context/GameContext";
 import type { LetterWithScore } from "../../context/GameContext";
 import type { Letter } from "../../types/game";
+import { DRAG_TYPE } from "./types";
 
 interface Props {
     removeStagedTile: (row: number, col: number) => void;

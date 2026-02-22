@@ -9,26 +9,41 @@ interface PlayerTile {
 }
 
 
-//This is from the Input Panel to the board.
-//Comes from the input panel and can be placed on the board.
-interface TemporaryTile extends PlayerTile {
-
-    staged: true;
-
-}
-
-//Already existing tile 
-interface TileToReposition {
-    sourceTile: TilePosition;
-    destinationTile: TilePosition;
-}
 
 export interface TilePosition {
     row: number;
     col: number;
 }
 
-//
 
+//=========TYPES========
 export type ClickedTileDirection = "DOWN" | "RIGHT";
+export type TileBonus = "DW" | "TW" | "TL" | "DL"
+export type ScrabbleCharacter =
+    | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
+    | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T'
+    | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
+    | '_'; // blank tile
+export const DRAG_TYPE = {
+    FROM_BOARD: "FROM_BOARD",
+    FROM_HAND: "FROM_HAND",
+} as const;
 
+export type DragType = typeof DRAG_TYPE[keyof typeof DRAG_TYPE];
+
+
+export interface LetterWithScore {
+    letter: Letter;
+    score: number;
+}
+//=======BOARD========
+export interface BoardTile {
+    letter: LetterWithScore | null;
+    bonus: string | null;
+}
+
+export interface StagedTile {
+    letter: LetterWithScore;
+    row: number;
+    col: number;
+}

@@ -1,15 +1,35 @@
-// Create empty board
-
 interface Letter {
     letter: string | null,
     bonus: string | null;
 }
 
-export function generateTiles(): Letter[][] {
-    // Add some letters
+interface LetterWithScore {
+    letter: Letter;
+    score: number;
+}
+
+const LETTER_SCORES: Record<string, number> = {
+    A: 1, E: 1, I: 1, O: 1, U: 1, L: 1, N: 1, S: 1, T: 1, R: 1,
+    D: 2, G: 2,
+    B: 3, C: 3, M: 3, P: 3,
+    F: 4, H: 4, V: 4, W: 4, Y: 4,
+    K: 5,
+    J: 8, X: 8,
+    Q: 10, Z: 10,
+};
+
+function toLetterWithScore(tile: Letter): LetterWithScore {
+    return {
+        letter: tile,
+        score: tile.letter ? (LETTER_SCORES[tile.letter] ?? 0) : 0,
+    };
+}
+
+export function generateTiles(): LetterWithScore[][] {
     let tiles: Letter[][] = Array(15).fill(null).map(() =>
         Array(15).fill(null).map(() => ({ letter: null, bonus: null }))
     );
+
     tiles[7][7] = { letter: 'H', bonus: null };
     tiles[7][8] = { letter: 'E', bonus: null };
     tiles[7][9] = { letter: 'L', bonus: null };
@@ -25,8 +45,7 @@ export function generateTiles(): Letter[][] {
     tiles[9][11] = { letter: 'R', bonus: null };
     tiles[9][12] = { letter: 'D', bonus: null };
 
-    // Add bonus squares (standard Scrabble layout)
-    // Triple Word Score (TW) - corners and middle edges
+    // Triple Word Score
     tiles[0][0] = { letter: null, bonus: 'TW' };
     tiles[0][7] = { letter: null, bonus: 'TW' };
     tiles[0][14] = { letter: null, bonus: 'TW' };
@@ -36,7 +55,7 @@ export function generateTiles(): Letter[][] {
     tiles[14][7] = { letter: null, bonus: 'TW' };
     tiles[14][14] = { letter: null, bonus: 'TW' };
 
-    // Double Word Score (DW)
+    // Double Word Score
     tiles[1][1] = { letter: null, bonus: 'DW' };
     tiles[2][2] = { letter: null, bonus: 'DW' };
     tiles[3][3] = { letter: null, bonus: 'DW' };
@@ -54,7 +73,7 @@ export function generateTiles(): Letter[][] {
     tiles[12][2] = { letter: null, bonus: 'DW' };
     tiles[13][1] = { letter: null, bonus: 'DW' };
 
-    // Triple Letter Score (TL)
+    // Triple Letter Score
     tiles[1][5] = { letter: null, bonus: 'TL' };
     tiles[1][9] = { letter: null, bonus: 'TL' };
     tiles[5][1] = { letter: null, bonus: 'TL' };
@@ -67,7 +86,7 @@ export function generateTiles(): Letter[][] {
     tiles[13][5] = { letter: null, bonus: 'TL' };
     tiles[13][9] = { letter: null, bonus: 'TL' };
 
-    // Double Letter Score (DL)
+    // Double Letter Score
     tiles[0][3] = { letter: null, bonus: 'DL' };
     tiles[0][11] = { letter: null, bonus: 'DL' };
     tiles[2][6] = { letter: null, bonus: 'DL' };
@@ -96,7 +115,5 @@ export function generateTiles(): Letter[][] {
     // Center star
     tiles[7][7] = { letter: 'H', bonus: 'STAR' };
 
-    return tiles;
-
-
+    return tiles.map(row => row.map(toLetterWithScore));
 }

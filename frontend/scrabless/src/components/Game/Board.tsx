@@ -1,9 +1,8 @@
 import { generateTiles } from "../../test/testTiles";
 import { useEffect, useState } from "react";
 import type { Letter } from "../../types/game";
-import { DRAG_TYPE, type StagedTile } from "./Game";
-import { useGame } from "../../context/GameContext";
-import type { ClickedTileDirection } from "./types";
+import { useGame, type LetterWithScore } from "../../context/GameContext";
+import { DRAG_TYPE, type ClickedTileDirection, type StagedTile } from "./types";
 
 interface TilePosition {
     row: number;
@@ -20,7 +19,7 @@ export function Board({ className }: BoardProps) {
 
     const isEmptyTile = (row: number, col: number) => {
         const tile = tiles[row][col];
-        if (tile.letter) return false;
+        if (tile.letter.letter) return false;
 
         const isStaged = stagedTiles.some(
             (t) => t.row === row && t.col === col
@@ -64,7 +63,7 @@ export function Board({ className }: BoardProps) {
             const letter = ev.key.toUpperCase() as Letter;
             const letterInHand = hand.find(h => h.letter === letter);
             if (!letterInHand) return;
-
+            if (!isEmptyTile(clickedTile.row, clickedTile.col)) return;
             const newTile = { letter: letterInHand, row: clickedTile.row, col: clickedTile.col };
 
             const nextPosition = clickedTile.direction === "RIGHT" || clickedTile.direction == null
@@ -109,21 +108,21 @@ export function Board({ className }: BoardProps) {
         >
             <div className="grid grid-cols-15 h-full">
                 {tiles.map((row, rowIndex) =>
-                    row.map((letter, colIndex) => {
+                    row.map((tile, colIndex) => {
                         const staged = stagedTiles.find(
-                            (tile) => tile.row === rowIndex && tile.col === colIndex
+                            (s) => s.row === rowIndex && s.col === colIndex
                         );
 
                         return (
                             <Tile
                                 key={`${rowIndex}-${colIndex}`}
-                                letter={staged ? staged.letter.letter : letter.letter}
-                                type={letter.bonus}
+                                letter={staged ? staged.letter.letter : tile.letter.letter}
+                                type={tile.letter.bonus}
                                 row={rowIndex}
                                 col={colIndex}
                                 staged={!!staged}
                                 stagedTile={staged}
-                                score={staged ? staged.letter.score : 0}
+                                score={staged ? staged.letter.score : tile.score}
                                 onTilePlace={onTilePlace}
                             />
                         );
@@ -215,12 +214,14 @@ function Tile({
                 aspect-square flex items-center justify-center
                 border w-full h-full box-border
                 text-[70%] select-none relative
-                font-extrabold text-white
+                font-extrabold 
                 lg:rounded-[0.6rem]
+                ${staged || (letter && !staged) ? "text-black  lg:text-2xl" : "text-white"}
                 ${staged ? "font-bold hover:bg-yellow-400 border-[#c89e33] lg:border-2" : "border-black"}
                 ${staged && "lrounded-md border lg:rounded-md bg-[#edc27d] lg:-border-2 lg:rounded-[0.4rem] lg:text-2xl lg:text-black text-black"}
                 ${staged && stagedIsValidWord && "border-green-300"}
-                ${staged && !stagedIsValidWord && "border-red-500 "}
+                ${staged && !stagedIsValidWord && "border-red-500  "}
+                ${!staged && letter && "bg-[#edc27d]  border-orange-300 lg:border-2 "}
             `}
         >
             <div>

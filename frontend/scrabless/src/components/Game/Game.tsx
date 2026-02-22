@@ -5,21 +5,11 @@ import { InputPanel } from "./InputPanel";
 import { RightPanel } from "./RightPanel";
 import type { User } from "../../hooks/useUser";
 import { useOpponent } from "./getOpponent";
-import type { LetterWithScore } from "../../context/GameContext";
 import { useGame } from "../../context/GameContext";
 
-export interface StagedTile {
-    letter: LetterWithScore;
-    row: number;
-    col: number;
-}
 
-export const DRAG_TYPE = {
-    FROM_BOARD: "FROM_BOARD",
-    FROM_HAND: "FROM_HAND",
-} as const;
 
-export type DragType = typeof DRAG_TYPE[keyof typeof DRAG_TYPE];
+
 
 export function Game({ gameState, user }: { gameState: GameState; user: User }) {
     const [myTurn] = useState(user.id == gameState.turn);

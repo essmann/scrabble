@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
 import type { Letter } from "../types/game";
-import type { StagedTile } from "../components/Game/Game";
-import type { ClickedTileDirection, TilePosition } from "../components/Game/types";
+
+import type { ClickedTileDirection, StagedTile, TilePosition } from "../components/Game/types";
+import { generateTiles } from "../test/testTiles";
 
 export type ClickedTileState = {
     row: number;
@@ -25,6 +26,7 @@ type GameContextType = {
     removeFromHand: (letter: Letter) => void;
     addToHand: (letterWithScore: LetterWithScore) => void;
     stagedIsValidWord: boolean;
+    // board: LetterWithScore[][];
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
@@ -42,8 +44,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
     const [myTurn] = useState(true);
     const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
-
     const [stagedIsValidWord, setStagedIsValidWord] = useState(false);
+    const [board, setBoard] = useState(generateTiles());
 
     const words = ["AB", "DEZ", "QA"];
     //Word validation
@@ -66,6 +68,9 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     }, [stagedTiles]);
 
 
+    const validateWord = () => {
+
+    }
     const removeFromHand = (letter: Letter) => {
         setHand(prev => {
             let found = false;
