@@ -103,6 +103,23 @@ const scrabbleLetters: Record<string, { number: number; value: number }> = {
     'Z': { number: 1, value: 10 },
     '_': { number: 2, value: 0 },
 };
+function getBonusValue(row: number, col: number): number {
+    const key = `${row},${col}`;
+    const tile = BONUS_MAP[key];
+
+    switch (tile) {
+        case "TW": return 3;     // Triple Word
+        case "DW":
+        case "STAR": return 2;   // Double Word (center counts as DW)
+        case "TL": return 3;     // Triple Letter
+        case "DL": return 2;     // Double Letter
+        default: return 1;       // Normal tile
+    }
+}
+const computeLetterScore = (letter: Letter): number => {
+    return scrabbleLetters[letter.toUpperCase()]!.value;
+}
+
 
 function generateLetterArray(): Letter[] {
     const arr: Letter[] = [];
@@ -144,7 +161,107 @@ export function removeLettersFromHand(lettersToRemove: Letter[], hand: Letter[])
     return hand;
 }
 
+
 type roomId = string;
+enum Direction {
+    "UP",
+    "SIDE"
+}
+
+
+function getDirection(move: MoveTile[]): Direction | null {
+    if (move.length === 0) return null;
+
+    const initialCol = move[0]!.col;
+    const initialRow = move[0]!.row;
+    let up = false;
+    let side = false;
+
+    for (const tile of move) {
+        if (tile.row !== initialRow) up = true;
+        if (tile.col !== initialCol) side = true;
+
+        // If both directions are different, it’s invalid/mixed
+        if (up && side) return null;
+    }
+
+    if (up) return Direction.UP;
+    if (side) return Direction.SIDE;
+    return null;
+}
+
+
+//Our letter will always be the last letter of the word.
+export function findVertical(board: Tile[][], row: number, col: number): Tile[][] | null {
+    let r = row;
+    let word: Tile[] = [];
+
+    // Move up to find start
+    while (r >= 0 && board[r]?.[col]?.letter) {
+        r--;
+    }
+
+    r++; // move back to first valid tile
+
+    // Collect downward
+    while (r < 15) {
+        const tile = board[r]?.[col];
+
+        if (!tile?.letter) break;
+
+        word.push(tile);
+        r++;
+    }
+
+    return word.length > 1 ? [word] : [];
+}
+
+export function findHorizontal(board: Tile[][], row: number, col: number): Tile[][] | null {
+    let c = col;
+    let word: Tile[] = [];
+    debugger;
+    // Move up to find start
+    while (c >= 0 && board[row]?.[c]?.letter) {
+        c--;
+    }
+
+    c++; // move back to first valid tile
+
+    // Collect downward
+    while (c < 15) {
+        const tile = board[row]?.[c];
+
+        if (!tile?.letter) break;
+
+        word.push(tile);
+        c++;
+    }
+
+    return word.length > 1 ? [word] : [];
+}
+
+function findCrossWords(move: MoveTile[], board: Tile[][]) {
+    let SCRABBLE_HEIGHT = 14;
+    let SCRABBLE_WIDTH = 14;
+    let words = [];
+
+
+    move.forEach(tile => {
+        const { row, col } = tile;
+        const side = [];
+        const up = [];
+
+        let r = row;
+        while (r >= 0 && board[r]![col]?.letter) {
+            up.push(board[r]![col]); // add to front
+            r--;
+        }
+
+    });
+
+    //Check horizontally
+};
+
 
 export class GameManager {
     private letters: Letter[] = generateLetterArray();
@@ -190,6 +307,45 @@ export class GameManager {
 
     getGame(roomId: roomId) {
         return this.games.get(roomId);
+    }
+
+
+    computeScore(move: MoveTile[], board: Tile[][]) {
+        const crossWords: Tile[][] = [];
+        const direction = getDirection(move);
+
+        if (!move.length) return crossWords;
+
+        // Compute main word in move's direction only once
+        if (direction === Direction.UP) {
+            const verticalWord = findVertical(board, move[0]!.row, move[0]!.col);
+            verticalWord && crossWords.push(...verticalWord);
+
+            // Compute horizontal crosswords for each tile
+            for (const tile of move) {
+                const horizontal = findHorizontal(board, tile.row, tile.col);
+                horizontal && crossWords.push(...horizontal);
+            }
+        } else if (direction === Direction.SIDE) {
+            const horizontalWord = findHorizontal(board, move[0]!.row, move[0]!.col);
+            horizontalWord && crossWords.push(...horizontalWord);
+
+            // Compute vertical crosswords for each tile
+            for (const tile of move) {
+                const vertical = findVertical(board, tile.row, tile.col);
+                vertical && crossWords.push(...vertical);
+            }
+        } else {
+            // Mixed or single-tile move: compute both directions for each tile
+            for (const tile of move) {
+                const horizontal = findHorizontal(board, tile.row, tile.col);
+                const vertical = findVertical(board, tile.row, tile.col);
+                horizontal && crossWords.push(...horizontal);
+                vertical && crossWords.push(...vertical);
+            }
+        }
+
+        return crossWords;
     }
 
     makeMove(roomId: roomId, userId: string, move: MoveTile[]) {
@@ -264,8 +420,19 @@ export class GameManager {
         }
         // game.players[]
         //Updating state
-        game.turn = otherTurnId;
+        // let score = 0;
+        // move.map((letter) => score += computeScore(letter.letter));
+        // game.players[currentTurnId].score += score;
         game.players[currentTurnId].hand = updatedHand;
+        game.turn = otherTurnId;
+
+        let arr = this.computeScore(move, game.board);
+
+        let arr2: any = [];
+        arr.map((tile) => {
+            tile.map((t) => arr2.push(t.letter));
+            arr2.push(" ");
+        })
 
         // Log successful move
         logger.logGameMove({
@@ -275,9 +442,22 @@ export class GameManager {
             additionalInfo: {
                 type: 'SUCCESS',
                 nextTurn: otherTurnId,
+                // score: score,
                 oldHand: oldHand,
                 letterCount: game.letters.length,
                 newHand: game.players[currentTurnId]?.hand
+
+            }
+        });
+
+        logger.logGameMove({
+            roomId,
+            playerId: currentTurnId,
+            move: move.map(t => `${t.letter}@${t.row},${t.col}`).join(','),
+            additionalInfo: {
+                type: 'TREE',
+
+                words: arr2
             }
         });
     }

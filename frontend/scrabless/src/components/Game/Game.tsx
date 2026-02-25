@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Board } from "./Board";
 import { InputPanel } from "./InputPanel";
 import { RightPanel } from "./RightPanel";
@@ -19,6 +19,9 @@ interface GameProps {
 export function Game({ hand, turn, board, user, sendWsMessage, roomId }: GameProps) {
     const myTurn = user.id === turn;
     const { stagedTiles, setStagedTiles } = useGame();
+    useEffect(() => {
+        setStagedTiles([]);
+    }, [board])
 
     const [moveLoading, setMoveLoading] = useState(false); 6
     const removeStagedTile = (row: number, col: number) => {
