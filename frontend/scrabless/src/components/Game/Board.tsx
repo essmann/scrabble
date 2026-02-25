@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGame } from "../../context/GameContext";
 import { LETTER_SCORES } from "../../context/GameContext";
 import type { ScrabbleCharacter } from "./types";
 import { DRAG_TYPE, type ClickedTileDirection, type StagedTile } from "./types";
+import clickSound from "../../assets/sounds/matthewvakaliuk73627-mouse-click-290204.mp3";
 
 interface TilePosition {
     row: number;
@@ -16,12 +17,28 @@ interface BoardProps {
 export function Board({ className }: BoardProps) {
     const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
     console.log(board);
+
+    const clickAudioRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        clickAudioRef.current = new Audio(clickSound);
+    }, []);
+
+    const playClick = () => {
+        if (!clickAudioRef.current) return;
+
+        clickAudioRef.current.pause();        // stop if playing
+        clickAudioRef.current.currentTime = 0; // rewind
+        clickAudioRef.current.play();
+    };
     const isEmptyTile = (row: number, col: number) => {
         const tile = board[row][col];
         if (tile.letter) return false;
         if (stagedTiles.some((t) => t.row === row && t.col === col)) return false;
         return true;
     };
+
+
 
     useEffect(() => {
         if (clickedTile == null) return;
@@ -51,6 +68,8 @@ export function Board({ className }: BoardProps) {
                     : { row: clickedTile.row - 1, col: clickedTile.col };
 
                 setClickedTile(prevPosition, true);
+                playClick();
+
                 return;
             }
 
@@ -68,6 +87,8 @@ export function Board({ className }: BoardProps) {
             setStagedTiles((prev) => [...prev, newTile]);
             removeFromHand(letter);
             setClickedTile(nextPosition, true);
+            playClick();
+
         };
 
         document.addEventListener("keydown", handleKeyDown);
@@ -83,11 +104,14 @@ export function Board({ className }: BoardProps) {
                 );
                 return [...stagedMinusSource, tileToPlace];
             });
+            playClick();
             return true;
         }
 
         if (isEmptyTile(tileToPlace.row, tileToPlace.col)) {
             setStagedTiles((prev) => [...prev, tileToPlace]);
+            playClick();
+
             return true;
         }
 
@@ -176,12 +200,14 @@ function Tile({
                 { letter: sourceTile.letter, row, col },
                 { row: sourceTile.row, col: sourceTile.col }
             );
+
             return;
         }
 
         const droppedLetter = JSON.parse(fromHand) as ScrabbleCharacter;
         if (!isValidLetter(droppedLetter)) return;
         onTilePlace({ letter: droppedLetter, row, col });
+
     };
 
     const onDragStart = (event: React.DragEvent) => {
