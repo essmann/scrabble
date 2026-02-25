@@ -1,3 +1,4 @@
+import { logger } from "./logger.js";
 import type { Room } from "./roomManager.js";
 
 export type Letter =
@@ -8,7 +9,7 @@ export type Letter =
 
 type TileType = "DW" | "TW" | "TL" | "DL" | "STAR";
 
-interface Tile {
+export interface Tile {
     letter: Letter | null;
     bonus?: TileType | null;
     row: number;
@@ -108,6 +109,47 @@ function generateLetterArray(): Letter[] {
     }
     return arr;
 }
+export function addLettersToHand(player: PlayerState, letters: Letter[]): Letter[] {
+    const maxLettersInHand = 7;
+    let tilesToAdd = maxLettersInHand - player.hand.length;
+    tilesToAdd = Math.min(tilesToAdd, letters.length);
+
+    const newLetters = letters.splice(0, tilesToAdd);
+
+    player.hand.push(...newLetters);
+
+    // Log the hand update
+    logger.logGameMove({
+        roomId: player.userId, // using userId as roomId placeholder if needed, or pass real roomId
+        playerId: player.userId,
+        move: " []", // no board move here
+        additionalInfo: {
+            type: 'HAND_UPDATE',
+            lettersAdded: newLetters,
+            newHand: [...player.hand] // snapshot after adding
+        }
+    });
+
+    return letters;
+}
+
+export function removeLettersFromHand(lettersToRemove: Letter[], player: PlayerState) {
+    let newHand = [] as Letter[];
+    let hand = player.hand;
+    console.log(`hand state: ${hand}. to remove: ${lettersToRemove}`);
+
+    lettersToRemove.forEach(letter => {
+
+        let foundIndex = hand.findIndex((char) => char == letter);
+        console.log(`letter to remove: ${letter}. foundIndex : ${foundIndex}`);
+        if (foundIndex !== -1) {
+            hand.splice(foundIndex, 1);
+        }
+
+    });
+
+    player.hand = hand;
+}
 
 type roomId = string;
 
@@ -124,7 +166,7 @@ export class GameManager {
             hand: [],
             score: 0,
         };
-        this.addLettersToHand(owner, _letters);
+        addLettersToHand(owner, _letters);
 
         let guest: PlayerState = {
             userId: room.guest!.id,
@@ -132,7 +174,7 @@ export class GameManager {
             hand: [],
             score: 0,
         };
-        this.addLettersToHand(guest, _letters);
+        addLettersToHand(guest, _letters);
 
         const turn = Math.random() < 0.5 ? owner.userId : guest.userId;
 
@@ -161,45 +203,90 @@ export class GameManager {
 
     makeMove(roomId: roomId, userId: string, move: Tile[]) {
         const game = this.getGame(roomId);
-        if (!game) return;
-        if (userId !== game.turn) {
-            console.log("[ILLEGAL MOVE] -- not the player's turn.");
+        if (!game) {
+            logger.logError('GAME_STATE', 'Game not found', { roomId, userId, move });
             return;
         }
-        let board = game.board;
 
-
-        move.forEach(tile => {
-            const { row, col } = tile;
-            let serverTile = board[row]![col];
-            if (!serverTile) { throw new Error("Row or column out of bounds for the move.") };
-
-            if (serverTile.letter !== null) { throw new Error("Tile already at position.") };
-            board[row]![col] = tile;
-        });
-        //Assuming it's legal and everything is fine, let's update the state entirely.
-        game.board = board;
         const currentTurnId = game.turn;
-        let otherTurnId = game.room.guest?.id == currentTurnId ? game.room.owner.id : game.room.guest?.id;
-        if (!otherTurnId) return;
-        if (game.players[currentTurnId] == undefined || game.players[otherTurnId] == undefined) return;
 
-        const updatedLetters = this.addLettersToHand(game.players[currentTurnId], game.letters);
+        // Log move attempt
+        logger.logGameMove({
+            roomId,
+            playerId: userId,
+            move: move.map(t => `${t.letter}@${t.row},${t.col}`).join(','),
+            additionalInfo: { type: 'ATTEMPT' }
+        });
+
+        // Check turn
+        if (userId !== currentTurnId) {
+            logger.logGameMove({
+                roomId,
+                playerId: userId,
+                move: move.map(t => `${t.letter}@${t.row},${t.col}`).join(','),
+                additionalInfo: { type: 'ILLEGAL', reason: 'Not your turn' }
+            });
+            return;
+        }
+
+        const board = game.board;
+
+        try {
+            move.forEach(tile => {
+                const { row, col } = tile;
+                const serverTile = board[row]?.[col];
+                if (!serverTile) throw new Error("Tile out of bounds");
+                if (serverTile.letter !== null) throw new Error("Tile already occupied");
+
+                board[row]![col] = tile;
+            });
+        } catch (err: any) {
+            logger.logGameMove({
+                roomId,
+                playerId: userId,
+                move: move.map(t => `${t.letter}@${t.row},${t.col}`).join(','),
+                additionalInfo: { type: 'ILLEGAL', reason: err.message }
+            });
+            return;
+        }
+
+        // Update hand for current player
+        const oldHand = game.players[currentTurnId]?.hand;
+
+        const updatedLetters = addLettersToHand(game.players[currentTurnId] as PlayerState, game.letters);
         game.letters = updatedLetters;
-        game.turn = otherTurnId as string;
 
+        // Switch turn
+        const otherTurnId = game.room.guest?.id === currentTurnId ? game.room.owner.id : game.room.guest?.id;
+        if (!otherTurnId) {
+            logger.logError('GAME_STATE', 'Next player not found', { roomId, currentTurnId });
+            return;
+        }
+        game.turn = otherTurnId;
+
+        // Log successful move
+        logger.logGameMove({
+            roomId,
+            playerId: currentTurnId,
+            move: move.map(t => `${t.letter}@${t.row},${t.col}`).join(','),
+            additionalInfo: {
+                type: 'SUCCESS',
+                nextTurn: otherTurnId,
+                oldHand: oldHand,
+                letterCount: game.letters.length,
+                newHand: game.players[currentTurnId]?.hand
+            }
+        });
     }
 
-    addLettersToHand(player: PlayerState, letters: Letter[]): Letter[] {
-        const maxLettersInHand = 7;
-        debugger;
-        let tilesToAdd = maxLettersInHand - player.hand.length;
-        tilesToAdd = Math.min(tilesToAdd, letters.length);
+    /**
+     * Helper to calculate a simple turn number based on moves made
+     */
 
-        const newLetters = letters.splice(0, tilesToAdd);
-        player.hand.push(...newLetters)
-        return letters;
-    }
+
+
+
+
 
     shuffleArray(array: Letter[]): Letter[] {
         const arr = [...array];

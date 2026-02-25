@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import type { Tile } from './gameManager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -38,6 +39,12 @@ interface GameStartLogData {
     roomId: string;
     ownerId: string;
     guestId: string;
+}
+interface GameMoveLogData {
+    roomId: string;
+    playerId: string;
+    move: string; // e.g., "e2->e4" or "attack:dragon"
+    additionalInfo?: Record<string, any>;
 }
 
 // ============================================================================
@@ -268,7 +275,15 @@ class Logger {
             data
         );
     }
-
+    logGameMove(data: GameMoveLogData): void {
+        this.log(
+            this.gameLogPath,
+            'INFO',
+            'GAME_MOVE',
+            `Player made a move`,
+            data
+        );
+    }
     /**
      * Log game end
      */
