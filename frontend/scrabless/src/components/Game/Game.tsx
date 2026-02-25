@@ -12,12 +12,15 @@ interface GameProps {
     turn: string;
     board: BoardTile[][];
     user: User;
+    roomId: string;
+    sendWsMessage: (msg: object) => void
 }
 
-export function Game({ hand, turn, board, user }: GameProps) {
-    const [myTurn] = useState(user.id === turn);
-    const { setStagedTiles } = useGame();
+export function Game({ hand, turn, board, user, sendWsMessage, roomId }: GameProps) {
+    const myTurn = user.id === turn;
+    const { stagedTiles, setStagedTiles } = useGame();
 
+    const [moveLoading, setMoveLoading] = useState(false); 6
     const removeStagedTile = (row: number, col: number) => {
         setStagedTiles(prev =>
             prev.filter(t => !(t.row === row && t.col === col))
@@ -32,6 +35,11 @@ export function Game({ hand, turn, board, user }: GameProps) {
         //2) Is it a valid word (use a trie)
         //Left -> Right
         //Up -> Down
+
+        const payload = stagedTiles;
+        const message = { type: "move", roomId: roomId, userId: user.id, message: payload };
+        sendWsMessage(message);
+
     };
 
     return (

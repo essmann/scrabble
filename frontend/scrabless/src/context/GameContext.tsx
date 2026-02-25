@@ -108,6 +108,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
+
     return (
         <GameContext.Provider value={{ board, setBoard, hand, setHand, turn, setTurn, stagedTiles, setStagedTiles, stagedIsValidWord, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
             {children}

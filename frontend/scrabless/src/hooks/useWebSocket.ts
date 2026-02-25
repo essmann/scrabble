@@ -1,4 +1,4 @@
-import { useEffect, useState, type Dispatch, type SetStateAction } from "react";
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { wsManager } from "../api/WebSocketManager";
 import type { WebsocketMessage } from "../types/websocket";
 import type { GameState, WSTile } from "../types/game";

@@ -1,6 +1,6 @@
 import type { Room } from "./roomManager.js";
 
-type Letter =
+export type Letter =
     | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
     | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T'
     | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
@@ -10,8 +10,11 @@ type TileType = "DW" | "TW" | "TL" | "DL" | "STAR";
 
 interface Tile {
     letter: Letter | null;
-    bonus: TileType | null;
+    bonus?: TileType | null;
+    row: number;
+    col: number;
 }
+
 
 export interface PlayerState {
     userId: string;
@@ -59,6 +62,8 @@ function createEmptyBoard(): Tile[][] {
         Array.from({ length: 15 }, (_, col) => ({
             letter: null,
             bonus: BONUS_MAP[`${row},${col}`] ?? null,
+            row: row,
+            col: col
         }))
     );
 }
@@ -161,13 +166,38 @@ export class GameManager {
             console.log("[ILLEGAL MOVE] -- not the player's turn.");
             return;
         }
+        let board = game.board;
+
+
+        move.forEach(tile => {
+            const { row, col } = tile;
+            let serverTile = board[row]![col];
+            if (!serverTile) { throw new Error("Row or column out of bounds for the move.") };
+
+            if (serverTile.letter !== null) { throw new Error("Tile already at position.") };
+            board[row]![col] = tile;
+        });
+        //Assuming it's legal and everything is fine, let's update the state entirely.
+        game.board = board;
+        const currentTurnId = game.turn;
+        let otherTurnId = game.room.guest?.id == currentTurnId ? game.room.owner.id : game.room.guest?.id;
+        if (!otherTurnId) return;
+        if (game.players[currentTurnId] == undefined || game.players[otherTurnId] == undefined) return;
+
+        const updatedLetters = this.addLettersToHand(game.players[currentTurnId], game.letters);
+        game.letters = updatedLetters;
+        game.turn = otherTurnId as string;
+
     }
 
     addLettersToHand(player: PlayerState, letters: Letter[]): Letter[] {
         const maxLettersInHand = 7;
+        debugger;
         let tilesToAdd = maxLettersInHand - player.hand.length;
         tilesToAdd = Math.min(tilesToAdd, letters.length);
-        player.hand = letters.splice(0, tilesToAdd);
+
+        const newLetters = letters.splice(0, tilesToAdd);
+        player.hand.push(...newLetters)
         return letters;
     }
 
@@ -180,5 +210,21 @@ export class GameManager {
             arr[j] = temp;
         }
         return arr;
+    }
+    getFilteredGameState(roomId: roomId, userId: string): GameState | undefined {
+        const game = this.getGame(roomId);
+        if (!game) return undefined;
+
+        const filteredPlayers = Object.fromEntries(
+            Object.entries(game.players).map(([id, player]) => [
+                id,
+                id === userId ? player : { ...player, hand: [] }
+            ])
+        );
+
+        return {
+            ...game,
+            players: filteredPlayers,
+        };
     }
 }

@@ -113,7 +113,7 @@ export function FriendRoom() {
         <div>
             {roomData?.state == "active" ? <div className='flex w-full h-full'>
                 {auth.user && (
-                    <Game hand={hand} turn={turn} board={board} user={auth.user} />
+                    <Game hand={hand} turn={turn} board={board} user={auth.user} sendWsMessage={sendMessage} roomId={roomId as string} />
                 )}
             </div> :
                 <div className='flex max-h-full w-full justify-center'>

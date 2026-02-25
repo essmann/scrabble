@@ -9,7 +9,7 @@ interface Props {
     onSubmit: () => void;
 }
 
-export function InputPanel({ removeStagedTile }: Props) {
+export function InputPanel({ removeStagedTile, onSubmit }: Props) {
     const { hand, removeFromHand, addToHand } = useGame();
 
     const onDragOver = (event: React.DragEvent) => {
@@ -48,7 +48,7 @@ export function InputPanel({ removeStagedTile }: Props) {
                     <WithdrawIcon />
                 </button>
             </div>
-            <Buttons onSubmit={() => ""} />
+            <Buttons onSubmit={onSubmit} />
         </div>
     );
 }
