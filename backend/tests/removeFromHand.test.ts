@@ -21,10 +21,10 @@ describe('removeLettersFromHand', () => {
 
         logState(player, lettersToRemove);
         debugger;
-        removeLettersFromHand(lettersToRemove, player);
+        const newHand = removeLettersFromHand(lettersToRemove, player.hand);
 
         console.log('Hand after:', player.hand);
-        expect(player.hand).toEqual(['C', 'E', 'F', 'A']);
+        expect(newHand).toEqual(['C', 'E', 'F', 'A']);
     });
 
     it('removes letters that are not in hand safely', () => {
@@ -37,11 +37,11 @@ describe('removeLettersFromHand', () => {
         const lettersToRemove: Letter[] = ['A', 'B'];
 
         logState(player, lettersToRemove);
+        const newHand = removeLettersFromHand(lettersToRemove, player.hand);
 
-        removeLettersFromHand(lettersToRemove, player);
 
         console.log('Hand after:', player.hand);
-        expect(player.hand).toEqual(['D', 'E', 'F']); // unchanged
+        expect(newHand).toEqual(['D', 'E', 'F']); // unchanged
     });
 
     it('removes all letters if needed', () => {
@@ -55,10 +55,10 @@ describe('removeLettersFromHand', () => {
 
         logState(player, lettersToRemove);
 
-        removeLettersFromHand(lettersToRemove, player);
+        const newHand = removeLettersFromHand(lettersToRemove, player.hand);
 
         console.log('Hand after:', player.hand);
-        expect(player.hand).toEqual([]);
+        expect(newHand).toEqual([]);
     });
 
     it('does not remove more occurrences than exist', () => {
@@ -72,10 +72,10 @@ describe('removeLettersFromHand', () => {
 
         logState(player, lettersToRemove);
 
-        removeLettersFromHand(lettersToRemove, player);
+        const newHand = removeLettersFromHand(lettersToRemove, player.hand);
 
         console.log('Hand after:', player.hand);
-        expect(player.hand).toEqual(['B']);
+        expect(newHand).toEqual(['B']);
     });
 
 });

@@ -16,6 +16,11 @@ export interface Tile {
     col: number;
 }
 
+export interface MoveTile {
+    letter: Letter;
+    row: number;
+    col: number;
+}
 
 export interface PlayerState {
     userId: string;
@@ -109,33 +114,21 @@ function generateLetterArray(): Letter[] {
     }
     return arr;
 }
-export function addLettersToHand(player: PlayerState, letters: Letter[]): Letter[] {
+export function addLettersToHand(hand: Letter[], letterBag: Letter[]): Letter[] {
     const maxLettersInHand = 7;
-    let tilesToAdd = maxLettersInHand - player.hand.length;
-    tilesToAdd = Math.min(tilesToAdd, letters.length);
+    let tilesToAdd = maxLettersInHand - hand.length;
+    tilesToAdd = Math.min(tilesToAdd, letterBag.length);
 
-    const newLetters = letters.splice(0, tilesToAdd);
+    const newLetters = letterBag.splice(0, tilesToAdd);
 
-    player.hand.push(...newLetters);
+    hand.push(...newLetters);
 
-    // Log the hand update
-    logger.logGameMove({
-        roomId: player.userId, // using userId as roomId placeholder if needed, or pass real roomId
-        playerId: player.userId,
-        move: " []", // no board move here
-        additionalInfo: {
-            type: 'HAND_UPDATE',
-            lettersAdded: newLetters,
-            newHand: [...player.hand] // snapshot after adding
-        }
-    });
 
-    return letters;
+
+    return hand;
 }
 
-export function removeLettersFromHand(lettersToRemove: Letter[], player: PlayerState) {
-    let newHand = [] as Letter[];
-    let hand = player.hand;
+export function removeLettersFromHand(lettersToRemove: Letter[], hand: Letter[]): Letter[] {
     console.log(`hand state: ${hand}. to remove: ${lettersToRemove}`);
 
     lettersToRemove.forEach(letter => {
@@ -148,7 +141,7 @@ export function removeLettersFromHand(lettersToRemove: Letter[], player: PlayerS
 
     });
 
-    player.hand = hand;
+    return hand;
 }
 
 type roomId = string;
@@ -163,18 +156,16 @@ export class GameManager {
         let owner: PlayerState = {
             userId: room.owner.id,
             name: room.owner.name,
-            hand: [],
+            hand: addLettersToHand([], _letters),
             score: 0,
         };
-        addLettersToHand(owner, _letters);
 
         let guest: PlayerState = {
             userId: room.guest!.id,
             name: room.guest!.name,
-            hand: [],
+            hand: addLettersToHand([], _letters),
             score: 0,
         };
-        addLettersToHand(guest, _letters);
 
         const turn = Math.random() < 0.5 ? owner.userId : guest.userId;
 
@@ -201,14 +192,18 @@ export class GameManager {
         return this.games.get(roomId);
     }
 
-    makeMove(roomId: roomId, userId: string, move: Tile[]) {
+    makeMove(roomId: roomId, userId: string, move: MoveTile[]) {
         const game = this.getGame(roomId);
         if (!game) {
             logger.logError('GAME_STATE', 'Game not found', { roomId, userId, move });
             return;
         }
-
         const currentTurnId = game.turn;
+        if (!game.players[currentTurnId]) {
+            logger.logError('GAME_STATE', 'Player whose current turn it is, does not exist.', { roomId, userId, move });
+            return;
+
+        }
 
         // Log move attempt
         logger.logGameMove({
@@ -251,10 +246,15 @@ export class GameManager {
         }
 
         // Update hand for current player
-        const oldHand = game.players[currentTurnId]?.hand;
+        const oldHand = game.players[currentTurnId]?.hand as Letter[];
+        const lettersToRemove = move?.map((tile) => tile.letter);
+        //Remove letters from hand, then repopulate with new letters
+        const filteredHand = removeLettersFromHand(lettersToRemove, oldHand);
 
-        const updatedLetters = addLettersToHand(game.players[currentTurnId] as PlayerState, game.letters);
-        game.letters = updatedLetters;
+        // game.players[currentTurnId].hand  = filteredHand;
+        // removeLettersFromHand(lettersToRemove, game.players[])
+        const updatedHand = addLettersToHand(filteredHand, game.letters);
+
 
         // Switch turn
         const otherTurnId = game.room.guest?.id === currentTurnId ? game.room.owner.id : game.room.guest?.id;
@@ -262,7 +262,10 @@ export class GameManager {
             logger.logError('GAME_STATE', 'Next player not found', { roomId, currentTurnId });
             return;
         }
+        // game.players[]
+        //Updating state
         game.turn = otherTurnId;
+        game.players[currentTurnId].hand = updatedHand;
 
         // Log successful move
         logger.logGameMove({
