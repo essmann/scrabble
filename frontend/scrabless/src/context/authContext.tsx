@@ -6,7 +6,7 @@ import { apiManager } from "../api/apiManager";
 type User = {
     id: string;
     name: string;
-} | null;
+}
 
 // Define the context shape
 type AuthContextType = {
@@ -20,10 +20,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider component
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User>(null);
+    const [user, setUser] = useState<User>({} as User);
 
     const login = (userData: User) => setUser(userData);
-    const logout = () => setUser(null);
+    const logout = () => setUser({} as User);
 
 
     return (

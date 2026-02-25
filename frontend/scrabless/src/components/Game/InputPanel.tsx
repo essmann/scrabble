@@ -1,8 +1,7 @@
 import { useState } from "react";
-
 import { useGame } from "../../context/GameContext";
-import type { LetterWithScore } from "../../context/GameContext";
-import type { Letter } from "../../types/game";
+import { LETTER_SCORES } from "../../context/GameContext";
+import type { ScrabbleCharacter } from "./types";
 import { DRAG_TYPE } from "./types";
 
 interface Props {
@@ -11,7 +10,7 @@ interface Props {
 }
 
 export function InputPanel({ removeStagedTile }: Props) {
-    const { hand, setHand, removeFromHand, addToHand } = useGame();
+    const { hand, removeFromHand, addToHand } = useGame();
 
     const onDragOver = (event: React.DragEvent) => {
         event.preventDefault();
@@ -41,8 +40,8 @@ export function InputPanel({ removeStagedTile }: Props) {
                     <ShuffleIcon />
                 </button>
                 <div className="flex bg-[#3e3e47] w-full lg:mt-1 rounded-md lg:justify-center justify-around lg:gap-3">
-                    {hand.map((letterWithScore, i) => (
-                        <Tile key={i} letterWithScore={letterWithScore} removeFromHand={removeFromHand} />
+                    {hand.map((letter, i) => (
+                        <Tile key={i} letter={letter} removeFromHand={removeFromHand} />
                     ))}
                 </div>
                 <button>
@@ -55,22 +54,23 @@ export function InputPanel({ removeStagedTile }: Props) {
 }
 
 interface TileProps {
-    letterWithScore: LetterWithScore;
-    removeFromHand: (letter: Letter) => void;
+    letter: ScrabbleCharacter;
+    removeFromHand: (letter: ScrabbleCharacter) => void;
 }
 
-function Tile({ letterWithScore, removeFromHand }: TileProps) {
+function Tile({ letter, removeFromHand }: TileProps) {
     const [isDragged, setIsDragged] = useState(false);
+    const score = LETTER_SCORES[letter];
 
     return (
         <div
             draggable
             onDragStart={e => {
-                e.dataTransfer.setData(DRAG_TYPE.FROM_HAND, JSON.stringify(letterWithScore));
+                e.dataTransfer.setData(DRAG_TYPE.FROM_HAND, JSON.stringify(letter));
                 setIsDragged(true);
             }}
             onDragEnd={e => {
-                if (e.dataTransfer.dropEffect !== "none") removeFromHand(letterWithScore.letter);
+                if (e.dataTransfer.dropEffect !== "none") removeFromHand(letter);
                 setIsDragged(false);
             }}
             className={`
@@ -84,10 +84,10 @@ function Tile({ letterWithScore, removeFromHand }: TileProps) {
             `}
         >
             <div className="flex items-center justify-center h-full">
-                {letterWithScore.letter}
+                {letter}
             </div>
             <div className="absolute right-[10%] bottom-[5%] text-[50%] font-bold">
-                {letterWithScore.score}
+                {score}
             </div>
         </div>
     );
@@ -106,16 +106,7 @@ function Buttons({ onSubmit }: { onSubmit: () => void }) {
 
 function ShuffleIcon() {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-6 h-6 lg:w-12 lg:h-8 text-white"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-12 lg:h-8 text-white">
             <path d="M18 4l3 3l-3 3" />
             <path d="M18 20l3 -3l-3 -3" />
             <path d="M3 7h3a5 5 0 0 1 5 5a5 5 0 0 0 5 5h5" />
@@ -126,16 +117,7 @@ function ShuffleIcon() {
 
 function WithdrawIcon() {
     return (
-        <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="w-6 h-6 lg:w-12 lg:h-8 text-white"
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 lg:w-12 lg:h-8 text-white">
             <path stroke="none" fill="none" d="M0 0h24v24H0z" />
             <path d="M17 20v-11.5a4.5 4.5 0 1 0 -9 0v8.5" />
             <path d="M11 14l-3 3l-3 -3" />

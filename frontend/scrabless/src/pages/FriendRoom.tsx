@@ -5,6 +5,7 @@ import { useWebSocket } from '../hooks/useWebSocket';
 import { Board } from '../components/Game/Board';
 import { Game } from '../components/Game/Game';
 import { useAuth } from '../context/authContext';
+import { useGame } from '../context/GameContext';
 
 interface RoomData {
     owner: { id: string; name: string };
@@ -24,11 +25,16 @@ export function FriendRoom() {
     const [roomData, setRoomData] = useState<RoomData | null>(null);
     // const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
     let auth = useAuth();
-    console.log("PIOASDFUHGASDPIOUHGAWPERIHUGAIPWOUEHRGÅPIOUHAERGAERG");
-    console.log(auth);
+
     const joinedRooms = new Set<string>();
     const roomId = searchParams.get('roomId');
-    const [wsMessage, gameState] = useWebSocket(roomId as string); //Subscribes to websocket messages and refreshes automatically.
+    const { setHand, setTurn, setBoard } = useGame();
+    const [wsMessage, sendMessage, turn, hand, board] = useWebSocket(
+        roomId as string,
+        setHand,
+        setBoard,
+        setTurn
+    );
 
     // const [board, setBoard] = useState();
     useEffect(() => {
@@ -104,18 +110,16 @@ export function FriendRoom() {
     }
 
     return (
-        <div className='flex flex-col p-1 h-dvh w-dvw  ' id='game-wrapper'>
-            {roomData?.state == "active" ? <div className='flex  w-full h-full  '>
-                {gameState && auth.user && (
-                    <Game gameState={gameState} user={auth.user} />
+        <div>
+            {roomData?.state == "active" ? <div className='flex w-full h-full'>
+                {auth.user && (
+                    <Game hand={hand} turn={turn} board={board} user={auth.user} />
                 )}
             </div> :
-
-                <div className='flex  max-h-full w-full justify-center '>
+                <div className='flex max-h-full w-full justify-center'>
                     <WaitingPanel />
                 </div>
             }
-
         </div>
     );
 }

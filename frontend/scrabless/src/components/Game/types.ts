@@ -28,18 +28,18 @@ export const DRAG_TYPE = {
 export type DragType = typeof DRAG_TYPE[keyof typeof DRAG_TYPE];
 
 
-export interface LetterWithScore {
-    letter: ScrabbleCharacter;
-    score: number;
-}
+// export interface LetterWithScore {
+//     letter: ScrabbleCharacter;
+//     score: number;
+// }
 //=======BOARD========
 export interface BoardTile {
-    letter: LetterWithScore | null;
+    letter: ScrabbleCharacter | null;
     bonus: string | null;
 }
 
 export interface StagedTile {
-    letter: LetterWithScore;
+    letter: ScrabbleCharacter
     row: number;
     col: number;
 }

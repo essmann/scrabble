@@ -1,7 +1,5 @@
-import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react";
-import type { Letter } from "../types/game";
-
-import type { BoardTile, ClickedTileDirection, StagedTile, TilePosition } from "../components/Game/types";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import type { BoardTile, ClickedTileDirection, ScrabbleCharacter, StagedTile, TilePosition } from "../components/Game/types";
 import { createEmptyBoard } from "../test/testTiles";
 
 export type ClickedTileState = {
@@ -10,21 +8,25 @@ export type ClickedTileState = {
     direction: ClickedTileDirection | null;
 } | null;
 
-export interface LetterWithScore {
-    letter: Letter;
-    score: number;
-}
+export const LETTER_SCORES: Record<ScrabbleCharacter, number> = {
+    A: 1, B: 3, C: 3, D: 2, E: 1, F: 4, G: 2, H: 4,
+    I: 1, J: 8, K: 5, L: 1, M: 3, N: 1, O: 1, P: 3,
+    Q: 10, R: 1, S: 1, T: 1, U: 1, V: 4, W: 4, X: 8,
+    Y: 4, Z: 10, _: 0,
+};
 
 type GameContextType = {
-    hand: LetterWithScore[];
-    setHand: React.Dispatch<React.SetStateAction<LetterWithScore[]>>;
+    hand: ScrabbleCharacter[];
+    setHand: React.Dispatch<React.SetStateAction<ScrabbleCharacter[]>>;
     stagedTiles: StagedTile[];
     setStagedTiles: React.Dispatch<React.SetStateAction<StagedTile[]>>;
     myTurn: boolean;
+    turn: string;
+    setTurn: React.Dispatch<React.SetStateAction<string>>;
     clickedTile: ClickedTileState;
     setClickedTile: (pos: TilePosition | null, skipDirectionUpdate?: boolean) => void;
-    removeFromHand: (letter: Letter) => void;
-    addToHand: (letterWithScore: LetterWithScore) => void;
+    removeFromHand: (letter: ScrabbleCharacter) => void;
+    addToHand: (letter: ScrabbleCharacter) => void;
     stagedIsValidWord: boolean;
     board: BoardTile[][];
     setBoard: React.Dispatch<React.SetStateAction<BoardTile[][]>>;
@@ -33,50 +35,37 @@ type GameContextType = {
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
-    const [hand, setHand] = useState<LetterWithScore[]>([
-        { letter: 'A', score: 1 },
-        { letter: 'B', score: 3 },
-        { letter: 'C', score: 3 },
-        { letter: 'Q', score: 10 },
-        { letter: 'D', score: 2 },
-        { letter: 'E', score: 1 },
-        { letter: 'Z', score: 10 },
-    ]);
+    const [hand, setHand] = useState<ScrabbleCharacter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
     const [myTurn] = useState(true);
+    const [turn, setTurn] = useState("");
     const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
     const [stagedIsValidWord, setStagedIsValidWord] = useState(false);
     const [board, setBoard] = useState<BoardTile[][]>(createEmptyBoard());
 
     const words = ["AB", "DEZ", "QA"];
-    //Word validation
+
     useEffect(() => {
         if (stagedTiles.length === 0) {
             setStagedIsValidWord(false);
             return;
         }
 
-        // Determine direction by checking if rows differ
         const isVertical = stagedTiles.some(t => t.row !== stagedTiles[0].row);
 
         const sorted = [...stagedTiles].sort((a, b) =>
             isVertical ? a.row - b.row : a.col - b.col
         );
 
-        const word = sorted.map(t => t.letter.letter).join("");
-
+        const word = sorted.map(t => t.letter).join("");
         setStagedIsValidWord(words.includes(word));
     }, [stagedTiles]);
 
-
-    const validateWord = () => {
-
-    }
-    const removeFromHand = (letter: Letter) => {
+    const removeFromHand = (letter: ScrabbleCharacter) => {
         setHand(prev => {
             let found = false;
             return prev.filter(l => {
-                if (!found && l.letter === letter) {
+                if (!found && l === letter) {
                     found = true;
                     return false;
                 }
@@ -85,8 +74,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
-    const addToHand = (letterWithScore: LetterWithScore) => {
-        setHand(prev => [...prev, letterWithScore]);
+    const addToHand = (letter: ScrabbleCharacter) => {
+        setHand(prev => [...prev, letter]);
     };
 
     const setClickedTile = (pos: TilePosition | null, skipDirectionUpdate = false) => {
@@ -120,7 +109,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
 
     return (
-        <GameContext.Provider value={{ board, setBoard, hand, setHand, stagedTiles, setStagedTiles, stagedIsValidWord, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
+        <GameContext.Provider value={{ board, setBoard, hand, setHand, turn, setTurn, stagedTiles, setStagedTiles, stagedIsValidWord, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
             {children}
         </GameContext.Provider>
     );

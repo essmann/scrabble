@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import type { Letter } from "../../types/game";
-import { useGame, type LetterWithScore } from "../../context/GameContext";
+import { useGame } from "../../context/GameContext";
+import { LETTER_SCORES } from "../../context/GameContext";
+import type { ScrabbleCharacter } from "./types";
 import { DRAG_TYPE, type ClickedTileDirection, type StagedTile } from "./types";
-import { createEmptyBoard } from "../../test/testTiles";
 
 interface TilePosition {
     row: number;
@@ -14,18 +14,12 @@ interface BoardProps {
 }
 
 export function Board({ className }: BoardProps) {
-    const { board } = useGame();
-    const { stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
-
+    const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
+    console.log(board);
     const isEmptyTile = (row: number, col: number) => {
         const tile = board[row][col];
-        if (tile.letter?.letter) return false;
-
-        const isStaged = stagedTiles.some(
-            (t) => t.row === row && t.col === col
-        );
-        if (isStaged) return false;
-
+        if (tile.letter) return false;
+        if (stagedTiles.some((t) => t.row === row && t.col === col)) return false;
         return true;
     };
 
@@ -60,11 +54,12 @@ export function Board({ className }: BoardProps) {
                 return;
             }
 
-            const letter = ev.key.toUpperCase() as Letter;
-            const letterInHand = hand.find(h => h.letter === letter);
+            const letter = ev.key.toUpperCase() as ScrabbleCharacter;
+            const letterInHand = hand.find(h => h === letter);
             if (!letterInHand) return;
             if (!isEmptyTile(clickedTile.row, clickedTile.col)) return;
-            const newTile = { letter: letterInHand, row: clickedTile.row, col: clickedTile.col };
+
+            const newTile: StagedTile = { letter, row: clickedTile.row, col: clickedTile.col };
 
             const nextPosition = clickedTile.direction === "RIGHT" || clickedTile.direction == null
                 ? { row: clickedTile.row, col: clickedTile.col + 1 }
@@ -82,14 +77,12 @@ export function Board({ className }: BoardProps) {
     const onTilePlace = (tileToPlace: StagedTile, sourceTile?: TilePosition): boolean => {
         if (sourceTile) {
             if (!isEmptyTile(tileToPlace.row, tileToPlace.col)) return false;
-
             setStagedTiles((prev) => {
                 const stagedMinusSource = prev.filter(
                     (p) => !(p.row === sourceTile.row && p.col === sourceTile.col)
                 );
                 return [...stagedMinusSource, tileToPlace];
             });
-
             return true;
         }
 
@@ -102,10 +95,8 @@ export function Board({ className }: BoardProps) {
     };
 
     return (
-        <div
-            id="board"
-            className={`${className} w-full lg:h-full lg:mt-0 md:mt-0`}
-        >
+
+        <div id="board" className={`${className} w-full lg:h-full lg:mt-0 md:mt-0`}>
             <div className="grid grid-cols-15 h-full">
                 {board.map((row, rowIndex) =>
                     row.map((tile, colIndex) => {
@@ -116,13 +107,12 @@ export function Board({ className }: BoardProps) {
                         return (
                             <Tile
                                 key={`${rowIndex}-${colIndex}`}
-                                letter={staged ? staged.letter.letter : tile.letter?.letter}
+                                letter={staged ? staged.letter : tile.letter ?? null}
                                 type={tile.bonus}
                                 row={rowIndex}
                                 col={colIndex}
                                 staged={!!staged}
                                 stagedTile={staged}
-                                score={staged ? staged.letter.score : tile.letter?.score ?? 0}
                                 onTilePlace={onTilePlace}
                             />
                         );
@@ -141,23 +131,20 @@ function Tile({
     staged,
     stagedTile,
     onTilePlace,
-    score,
 }: {
-    letter: string | null | undefined;
+    letter: ScrabbleCharacter | null;
     type: string | null;
     row: number;
     col: number;
     staged: boolean;
     stagedTile?: StagedTile;
-    score: number;
-    onTilePlace: (tileToPlace: StagedTile, sourceTile?: { row: number; col: number }) => boolean;
+    onTilePlace: (tileToPlace: StagedTile, sourceTile?: TilePosition) => boolean;
 }) {
     const { clickedTile, setClickedTile, stagedIsValidWord } = useGame();
-
+    const score = letter ? LETTER_SCORES[letter] : null;
     const isClicked = clickedTile?.row === row && clickedTile?.col === col;
 
     let bg = "bg-gray-300";
-
     if (staged) {
         bg = "bg-[#f0b860]";
     } else {
@@ -170,10 +157,10 @@ function Tile({
         }
     }
 
-    function onDragOver(event: React.DragEvent) {
+    const onDragOver = (event: React.DragEvent) => {
         event.preventDefault();
         event.dataTransfer.dropEffect = letter ? "none" : "move";
-    }
+    };
 
     const onDrop = (e: React.DragEvent) => {
         e.preventDefault();
@@ -184,7 +171,7 @@ function Tile({
         if (!fromHand && !fromBoard) return;
 
         if (fromBoard) {
-            const sourceTile = JSON.parse(fromBoard);
+            const sourceTile = JSON.parse(fromBoard) as StagedTile;
             onTilePlace(
                 { letter: sourceTile.letter, row, col },
                 { row: sourceTile.row, col: sourceTile.col }
@@ -192,9 +179,9 @@ function Tile({
             return;
         }
 
-        const letterWithScore = JSON.parse(fromHand);
-        if (!isValidLetter(letterWithScore.letter)) return;
-        onTilePlace({ letter: letterWithScore, row, col });
+        const droppedLetter = JSON.parse(fromHand) as ScrabbleCharacter;
+        if (!isValidLetter(droppedLetter)) return;
+        onTilePlace({ letter: droppedLetter, row, col });
     };
 
     const onDragStart = (event: React.DragEvent) => {
@@ -216,7 +203,7 @@ function Tile({
                 text-[70%] select-none relative
                 font-extrabold 
                 lg:rounded-[0.6rem]
-                ${staged || (letter && !staged) ? "text-black  lg:text-2xl" : "text-white"}
+                ${staged || (letter && !staged) ? "text-black lg:text-2xl" : "text-white"}
                 ${staged ? "font-bold hover:bg-yellow-400 border-[#c89e33] lg:border-2" : "border-black"}
                 ${staged && "rounded-md border lg:rounded-md bg-[#edc27d] lg:border-2 lg:rounded-[0.4rem] lg:text-2xl lg:text-black text-black"}
                 ${staged && stagedIsValidWord && "border-green-300"}
@@ -224,18 +211,16 @@ function Tile({
                 ${!staged && letter && "bg-[#edc27d] border-orange-300 lg:border-2"}
             `}
         >
-            <div>
-                {letter || (type ? type : "")}
-            </div>
+            <div>{letter || (type ? type : "")}</div>
             <div className="absolute left-[15%] bottom-[7%] text-[70%]">
-                {letter != null && score != null && score}
+                {score != null && score}
             </div>
             {isClicked && <ArrowOverlay clickDirection={clickedTile.direction} />}
         </div>
     );
 }
 
-function isValidLetter(value: string): value is Letter {
+function isValidLetter(value: string): value is ScrabbleCharacter {
     return /^[A-Z_]$/.test(value);
 }
 

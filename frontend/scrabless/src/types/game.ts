@@ -1,3 +1,4 @@
+import type { ScrabbleCharacter } from "../components/Game/types";
 import type { Room } from "./room";
 export type Letter =
     | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
@@ -5,7 +6,7 @@ export type Letter =
     | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
     | '_'; // blank tile
 interface BoardState {
-    board: Tile[][];
+    board: WSTile[][];
 
 }
 type TileType = "DW" | "TW" | "TL" | "DL"
@@ -31,4 +32,10 @@ export interface PlayerState {
     hand: Letter[] | [];
     score: number;
 
+}
+
+export interface WSTile {
+    letter: ScrabbleCharacter;
+    row: number;
+    col: number;
 }

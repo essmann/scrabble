@@ -1,30 +1,23 @@
 import type { Room } from "./roomManager.js";
+
 type Letter =
     | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
     | 'K' | 'L' | 'M' | 'N' | 'O' | 'P' | 'Q' | 'R' | 'S' | 'T'
     | 'U' | 'V' | 'W' | 'X' | 'Y' | 'Z'
-    | '_'; // blank tile
+    | '_';
 
-interface GameStartMessage {
-    type: "game_start",
-    playerState: PlayerState,
+type TileType = "DW" | "TW" | "TL" | "DL" | "STAR";
+
+interface Tile {
+    letter: Letter | null;
+    bonus: TileType | null;
 }
+
 export interface PlayerState {
     userId: string;
     name: string;
-    hand: Letter[] | [];
+    hand: Letter[];
     score: number;
-
-}
-interface BoardState {
-    board: Tile[][];
-
-}
-type TileType = "DW" | "TW" | "TL" | "DL"
-interface Tile {
-    letter: Letter | null;
-    type: TileType;
-
 }
 
 export interface GameState {
@@ -32,102 +25,45 @@ export interface GameState {
     players: {
         [userId: string]: PlayerState;
     }
-    letters: Letter[],
-    turn: string; //userId
-    board: BoardState | [];
-
+    letters: Letter[];
+    turn: string;
+    board: Tile[][];
 }
 
+const BONUS_MAP: Record<string, TileType> = {
+    "0,0": "TW", "0,7": "TW", "0,14": "TW",
+    "7,0": "TW", "7,14": "TW",
+    "14,0": "TW", "14,7": "TW", "14,14": "TW",
+    "1,1": "DW", "2,2": "DW", "3,3": "DW", "4,4": "DW",
+    "1,13": "DW", "2,12": "DW", "3,11": "DW", "4,10": "DW",
+    "13,1": "DW", "12,2": "DW", "11,3": "DW", "10,4": "DW",
+    "13,13": "DW", "12,12": "DW", "11,11": "DW", "10,10": "DW",
+    "7,7": "STAR",
+    "1,5": "TL", "1,9": "TL",
+    "5,1": "TL", "5,5": "TL", "5,9": "TL", "5,13": "TL",
+    "9,1": "TL", "9,5": "TL", "9,9": "TL", "9,13": "TL",
+    "13,5": "TL", "13,9": "TL",
+    "0,3": "DL", "0,11": "DL",
+    "2,6": "DL", "2,8": "DL",
+    "3,0": "DL", "3,7": "DL", "3,14": "DL",
+    "6,2": "DL", "6,6": "DL", "6,8": "DL", "6,12": "DL",
+    "7,3": "DL", "7,11": "DL",
+    "8,2": "DL", "8,6": "DL", "8,8": "DL", "8,12": "DL",
+    "11,0": "DL", "11,7": "DL", "11,14": "DL",
+    "12,6": "DL", "12,8": "DL",
+    "14,3": "DL", "14,11": "DL",
+};
 
-type roomId = string;
-export class GameManager {
-    private letters: Letter[] = generateLetterArray() as Letter[];
-
-    private games = new Map<roomId, GameState>();
-    //Room ID -> GameState
-
-    createGame(room: Room): GameState {
-        let _letters = this.shuffleArray(this.letters);
-
-        let owner: PlayerState = {
-            userId: room.owner.id,
-            name: room.owner.name,
-            hand: [],
-            score: 0,
-        };
-
-        this.addLettersToHand(owner, _letters); //Removes letters from the pouch
-
-        let guest: PlayerState = {
-            userId: room.guest!.id,
-            name: room.guest!.name,
-            hand: [],
-            score: 0,
-        }
-        this.addLettersToHand(guest, _letters); //Removes letters from the pouch
-
-        let turn = Math.random() < 0.5 ? owner.userId : guest.userId;
-
-        let newGameState: GameState = {
-            room: room,
-            players: {
-                [room.owner.id]: owner,
-                [room.guest!.id]: guest
-            },
-            letters: _letters,
-            turn: turn,
-            board: []
-        }
-        this.games.set(room.id, newGameState);
-        return newGameState;
-
-    }
-
-
-    deleteGame(roomId: roomId) {
-        this.games.delete(roomId);
-
-    }
-
-    getGame(roomId: roomId) {
-        return this.games.get(roomId);
-    }
-
-
-
-
-
-
-
-    //Utility methods
-    addLettersToHand(player: PlayerState, letters: Letter[]): Letter[] {
-        let _hand = player.hand;
-        const maxLettersInHand = 7;
-        let tilesToAdd = maxLettersInHand - _hand.length;
-
-        while (tilesToAdd > letters.length) {
-            tilesToAdd--;
-        }
-        let newHand = letters.splice(0, tilesToAdd);
-        player.hand = newHand;
-        return letters;
-
-    }
-
-    shuffleArray(array: Letter[]): Letter[] {
-        const arr = [...array];
-        for (let i = arr.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            const temp = arr[i]!;
-            arr[i] = arr[j]!;
-            arr[j] = temp;
-        }
-        return arr;
-    }
-
+function createEmptyBoard(): Tile[][] {
+    return Array.from({ length: 15 }, (_, row) =>
+        Array.from({ length: 15 }, (_, col) => ({
+            letter: null,
+            bonus: BONUS_MAP[`${row},${col}`] ?? null,
+        }))
+    );
 }
 
-let scrabbleLetters = {
+const scrabbleLetters: Record<string, { number: number; value: number }> = {
     'E': { number: 12, value: 1 },
     'A': { number: 9, value: 1 },
     'I': { number: 9, value: 1 },
@@ -154,19 +90,95 @@ let scrabbleLetters = {
     'X': { number: 1, value: 8 },
     'Q': { number: 1, value: 10 },
     'Z': { number: 1, value: 10 },
-    '_': { number: 2, value: 0 } // blank tiles
+    '_': { number: 2, value: 0 },
 };
-
 
 function generateLetterArray(): Letter[] {
     const arr: Letter[] = [];
-
     for (const [key, value] of Object.entries(scrabbleLetters)) {
         const letter = key as Letter;
         for (let i = 0; i < value.number; i++) {
             arr.push(letter);
         }
     }
-
     return arr;
+}
+
+type roomId = string;
+
+export class GameManager {
+    private letters: Letter[] = generateLetterArray();
+    private games = new Map<roomId, GameState>();
+
+    createGame(room: Room): GameState {
+        let _letters = this.shuffleArray(this.letters);
+
+        let owner: PlayerState = {
+            userId: room.owner.id,
+            name: room.owner.name,
+            hand: [],
+            score: 0,
+        };
+        this.addLettersToHand(owner, _letters);
+
+        let guest: PlayerState = {
+            userId: room.guest!.id,
+            name: room.guest!.name,
+            hand: [],
+            score: 0,
+        };
+        this.addLettersToHand(guest, _letters);
+
+        const turn = Math.random() < 0.5 ? owner.userId : guest.userId;
+
+        const newGameState: GameState = {
+            room,
+            players: {
+                [room.owner.id]: owner,
+                [room.guest!.id]: guest,
+            },
+            letters: _letters,
+            turn,
+            board: createEmptyBoard(),
+        };
+
+        this.games.set(room.id, newGameState);
+        return newGameState;
+    }
+
+    deleteGame(roomId: roomId) {
+        this.games.delete(roomId);
+    }
+
+    getGame(roomId: roomId) {
+        return this.games.get(roomId);
+    }
+
+    makeMove(roomId: roomId, userId: string, move: Tile[]) {
+        const game = this.getGame(roomId);
+        if (!game) return;
+        if (userId !== game.turn) {
+            console.log("[ILLEGAL MOVE] -- not the player's turn.");
+            return;
+        }
+    }
+
+    addLettersToHand(player: PlayerState, letters: Letter[]): Letter[] {
+        const maxLettersInHand = 7;
+        let tilesToAdd = maxLettersInHand - player.hand.length;
+        tilesToAdd = Math.min(tilesToAdd, letters.length);
+        player.hand = letters.splice(0, tilesToAdd);
+        return letters;
+    }
+
+    shuffleArray(array: Letter[]): Letter[] {
+        const arr = [...array];
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            const temp = arr[i]!;
+            arr[i] = arr[j]!;
+            arr[j] = temp;
+        }
+        return arr;
+    }
 }
