@@ -36,6 +36,8 @@ export type DragType = typeof DRAG_TYPE[keyof typeof DRAG_TYPE];
 export interface BoardTile {
     letter: ScrabbleCharacter | null;
     bonus: string | null;
+    row: number;
+    col: number;
 }
 
 export interface StagedTile {

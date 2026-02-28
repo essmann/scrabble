@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useGame } from "../../context/GameContext";
 import { LETTER_SCORES } from "../../context/GameContext";
-import type { ScrabbleCharacter } from "./types";
+import type { BoardTile, ScrabbleCharacter } from "./types";
 import { DRAG_TYPE, getLetterScore, type ClickedTileDirection, type StagedTile } from "./types";
 import clickSound from "../../assets/sounds/matthewvakaliuk73627-mouse-click-290204.mp3";
-import { computeScore } from "./utils";
+import { computeScore, type ComputeScoreResult } from "./utils";
 
 interface TilePosition {
     row: number;
@@ -19,13 +19,21 @@ export function Board({ className }: BoardProps) {
     const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
 
     const [lastScore, setLastScore] = useState<number | null>(null);
-    const [lastWord, setLastWord] = useState(null);
+    const [scoredWord, setScoredWord] = useState<BoardTile[][] | null>(null);
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
-        const score = computeScore(stagedTiles, board);
+
+        const result = computeScore(stagedTiles, board);
+        if (!result) return;
+        let { score, crossWords } = result;
+        setScoredWord(crossWords);
         console.log(score);
     }, [stagedTiles])
+
+    useEffect(() => {
+
+    }, [scoredWord])
 
     useEffect(() => {
         clickAudioRef.current = new Audio(clickSound);

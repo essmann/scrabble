@@ -85,11 +85,13 @@ function mergeBoard(board: BoardTile[][], staged: StagedTile[]): BoardTile[][] {
     return merged;
 }
 
-export function computeScore(move: StagedTile[], board: BoardTile[][]) {
+export type ComputeScoreResult = { score: number, crossWords: BoardTile[][] } | null
+
+export function computeScore(move: StagedTile[], board: BoardTile[][]): ComputeScoreResult {
     const crossWords: BoardTile[][] = [];
     const direction = getDirection(move);
 
-    if (!move.length) return crossWords;
+    // if (!move.length) return crossWords;
 
     // Merge staged tiles into board so find functions can see them
     const mergedBoard = mergeBoard(board, move);
@@ -119,7 +121,7 @@ export function computeScore(move: StagedTile[], board: BoardTile[][]) {
         }
     }
 
-    if (crossWords.length == 0) return;
+    if (crossWords.length == 0) return null;
 
     let score = 0;
     for (const words of crossWords) {
@@ -160,7 +162,6 @@ export function computeScore(move: StagedTile[], board: BoardTile[][]) {
         console.log(crossWords);
 
     }
-
-    return score;
+    return { score: score, crossWords: crossWords }
 
 }

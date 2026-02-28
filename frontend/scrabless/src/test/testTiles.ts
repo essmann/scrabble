@@ -5,6 +5,8 @@ export function createEmptyBoard(): BoardTile[][] {
         Array.from({ length: 15 }, (_, col) => ({
             letter: null,
             bonus: BONUS_MAP[`${row},${col}`] ?? null,
+            row: row,
+            col: col
         }))
     );
 }
