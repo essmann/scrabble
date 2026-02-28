@@ -16,8 +16,8 @@ interface BoardProps {
 
 export function Board({ className }: BoardProps) {
     const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
-    console.log(board);
 
+    const [lastScore, setLastScore] = useState<number | null>(null);
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {

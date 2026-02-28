@@ -1,6 +1,8 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { BoardTile, ClickedTileDirection, ScrabbleCharacter, StagedTile, TilePosition } from "../components/Game/types";
 import { createEmptyBoard } from "../test/testTiles";
+import type { GameState, PlayerState } from "../types/game";
+import { useUser } from "../hooks/useUser";
 
 export type ClickedTileState = {
     row: number;
@@ -30,11 +32,17 @@ type GameContextType = {
     stagedIsValidWord: boolean;
     board: BoardTile[][];
     setBoard: React.Dispatch<React.SetStateAction<BoardTile[][]>>;
+    gameState: GameState;
+    setGameState: React.Dispatch<React.SetStateAction<GameState>>;
+    player: PlayerState | null;
+    opponent: PlayerState | null;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
+    const user = useUser();
+    const [gameState, setGameState] = useState<GameState>({} as GameState);
     const [hand, setHand] = useState<ScrabbleCharacter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
     const [myTurn] = useState(true);
@@ -45,6 +53,12 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
 
     const words = ["AB", "DEZ", "QA"];
 
+    const players = gameState.players ?? {};
+    const player = user ? (players[user.id] ?? null) : null;
+    const opponentId = user ? Object.keys(players).find(id => id !== user.id) : undefined;
+    const opponent = opponentId ? (players[opponentId] ?? null) : null;
+
+
     useEffect(() => {
         if (stagedTiles.length === 0) {
             setStagedIsValidWord(false);
@@ -52,7 +66,6 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         }
 
         const isVertical = stagedTiles.some(t => t.row !== stagedTiles[0].row);
-
         const sorted = [...stagedTiles].sort((a, b) =>
             isVertical ? a.row - b.row : a.col - b.col
         );
@@ -65,10 +78,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         setHand(prev => {
             let found = false;
             return prev.filter(l => {
-                if (!found && l === letter) {
-                    found = true;
-                    return false;
-                }
+                if (!found && l === letter) { found = true; return false; }
                 return true;
             });
         });
@@ -79,38 +89,32 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     };
 
     const setClickedTile = (pos: TilePosition | null, skipDirectionUpdate = false) => {
-        if (pos === null) {
-            setClickedTileState(null);
-            return;
-        }
+        if (pos === null) { setClickedTileState(null); return; }
 
         if (skipDirectionUpdate) {
-            setClickedTileState(prev => ({
-                row: pos.row,
-                col: pos.col,
-                direction: prev?.direction ?? null,
-            }));
+            setClickedTileState(prev => ({ row: pos.row, col: pos.col, direction: prev?.direction ?? null }));
             return;
         }
 
         setClickedTileState(prev => {
             const sameTile = prev?.row === pos.row && prev?.col === pos.col;
-            if (!sameTile) {
-                return { row: pos.row, col: pos.col, direction: "RIGHT" };
-            }
+            if (!sameTile) return { row: pos.row, col: pos.col, direction: "RIGHT" };
 
             const nextDirection: ClickedTileDirection | null =
                 prev?.direction === "RIGHT" ? "DOWN" :
-                    prev?.direction === "DOWN" ? null :
-                        "RIGHT";
+                    prev?.direction === "DOWN" ? null : "RIGHT";
 
             return { row: pos.row, col: pos.col, direction: nextDirection };
         });
     };
 
-
     return (
-        <GameContext.Provider value={{ board, setBoard, hand, setHand, turn, setTurn, stagedTiles, setStagedTiles, stagedIsValidWord, myTurn, clickedTile, setClickedTile, removeFromHand, addToHand }}>
+        <GameContext.Provider value={{
+            gameState, setGameState, board, setBoard, hand, setHand,
+            turn, setTurn, stagedTiles, setStagedTiles,
+            stagedIsValidWord, myTurn, clickedTile, setClickedTile,
+            removeFromHand, addToHand, player, opponent,
+        }}>
             {children}
         </GameContext.Provider>
     );

@@ -52,7 +52,6 @@ class WebSocketManager {
             };
 
             this.socket.onmessage = (event) => {
-                console.log("📨 Received message:", event.data);
                 try {
                     const data = JSON.parse(event.data);
                     this.listeners.forEach((callback) => callback(data));

@@ -31,6 +31,7 @@ export interface PlayerState {
     name: string;
     hand: Letter[] | [];
     score: number;
+    time: number;
 
 }
 

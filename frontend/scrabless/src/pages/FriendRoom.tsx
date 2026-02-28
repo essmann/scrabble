@@ -33,7 +33,7 @@ export function FriendRoom() {
         roomId as string,
         setHand,
         setBoard,
-        setTurn
+        setTurn,
     );
 
     // const [board, setBoard] = useState();

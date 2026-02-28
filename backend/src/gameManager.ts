@@ -27,6 +27,7 @@ export interface PlayerState {
     name: string;
     hand: Letter[];
     score: number;
+    time: number;
 }
 
 export interface GameState {
@@ -266,7 +267,42 @@ function findCrossWords(move: MoveTile[], board: Tile[][]) {
 export class GameManager {
     private letters: Letter[] = generateLetterArray();
     private games = new Map<roomId, GameState>();
+    private timers = new Map<roomId, NodeJS.Timeout>
+    private DEFAULT_TIME = 60 * 15; //15 minutes
 
+
+
+    private timerInterval: NodeJS.Timeout | null = null;
+
+    startTimer(roomId: string, onTimeout: (roomId: string, userId: string) => void) {
+
+        let timerInterval = setInterval(() => {
+            const game = this.getGame(roomId);
+            if (!game) {
+                this.stopTimer(roomId);
+                return;
+            }
+
+            const activePlayer = game.players[game.turn];
+            if (!activePlayer) return;
+
+            activePlayer.time -= 1;
+
+            if (activePlayer.time <= 0) {
+                activePlayer.time = 0;
+                this.stopTimer(roomId);
+                onTimeout(roomId, game.turn);
+            }
+        }, 1000);
+        this.timers.set(roomId, timerInterval)
+    }
+
+    stopTimer(roomId: string) {
+        const timer = this.timers.get(roomId);
+        if (timer) {
+            clearInterval(timer);
+        }
+    }
     createGame(room: Room): GameState {
         let _letters = this.shuffleArray(this.letters);
 
@@ -275,6 +311,7 @@ export class GameManager {
             name: room.owner.name,
             hand: addLettersToHand([], _letters),
             score: 0,
+            time: this.DEFAULT_TIME
         };
 
         let guest: PlayerState = {
@@ -282,6 +319,8 @@ export class GameManager {
             name: room.guest!.name,
             hand: addLettersToHand([], _letters),
             score: 0,
+            time: this.DEFAULT_TIME
+
         };
 
         const turn = Math.random() < 0.5 ? owner.userId : guest.userId;
@@ -298,6 +337,11 @@ export class GameManager {
         };
 
         this.games.set(room.id, newGameState);
+        this.startTimer(room.id, (roomId, userId) => {
+            console.log(`${userId} won the game.`);
+            return;
+        })
+
         return newGameState;
     }
 

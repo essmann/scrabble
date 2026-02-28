@@ -52,8 +52,6 @@ export function Game({ hand, turn, board, user, sendWsMessage, roomId }: GamePro
                     <div className="bg-[#3C3C4B] rounded-sm w-full p-3 lg:flex-1 flex gap-4 lg:justify-center items-center lg:items-start lg:min-w-sm lg:overflow-scroll">
                         <RightPanel
                             className={''}
-                            user={{ id: "asdfga", name: "test" } as User}
-                            opponent={{ id: "asdfga", name: "test" } as User}
                             myTurn={myTurn || false}
                         />
                     </div>
