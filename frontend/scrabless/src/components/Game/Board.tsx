@@ -2,8 +2,9 @@ import { useEffect, useRef, useState } from "react";
 import { useGame } from "../../context/GameContext";
 import { LETTER_SCORES } from "../../context/GameContext";
 import type { ScrabbleCharacter } from "./types";
-import { DRAG_TYPE, type ClickedTileDirection, type StagedTile } from "./types";
+import { DRAG_TYPE, getLetterScore, type ClickedTileDirection, type StagedTile } from "./types";
 import clickSound from "../../assets/sounds/matthewvakaliuk73627-mouse-click-290204.mp3";
+import { computeScore } from "./utils";
 
 interface TilePosition {
     row: number;
@@ -18,7 +19,13 @@ export function Board({ className }: BoardProps) {
     const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord } = useGame();
 
     const [lastScore, setLastScore] = useState<number | null>(null);
+    const [lastWord, setLastWord] = useState(null);
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
+
+    useEffect(() => {
+        const tiles = computeScore(stagedTiles, board);
+        console.log(tiles);
+    }, [stagedTiles])
 
     useEffect(() => {
         clickAudioRef.current = new Audio(clickSound);
@@ -120,30 +127,34 @@ export function Board({ className }: BoardProps) {
 
     return (
 
-        <div id="board" className={`${className} w-full lg:h-full lg:mt-0 md:mt-0`}>
-            <div className="grid grid-cols-15 h-full">
-                {board.map((row, rowIndex) =>
-                    row.map((tile, colIndex) => {
-                        const staged = stagedTiles.find(
-                            (s) => s.row === rowIndex && s.col === colIndex
-                        );
+        <>
+            <div id="board" className={`${className} w-full lg:h-full lg:mt-0 md:mt-0`}>
+                <div className="grid grid-cols-15 h-full">
+                    {board.map((row, rowIndex) =>
+                        row.map((tile, colIndex) => {
+                            const staged = stagedTiles.find(
+                                (s) => s.row === rowIndex && s.col === colIndex
+                            );
 
-                        return (
-                            <Tile
-                                key={`${rowIndex}-${colIndex}`}
-                                letter={staged ? staged.letter : tile.letter ?? null}
-                                type={tile.bonus}
-                                row={rowIndex}
-                                col={colIndex}
-                                staged={!!staged}
-                                stagedTile={staged}
-                                onTilePlace={onTilePlace}
-                            />
-                        );
-                    })
-                )}
+                            return (
+                                <Tile
+                                    key={`${rowIndex}-${colIndex}`}
+                                    letter={staged ? staged.letter : tile.letter ?? null}
+                                    type={tile.bonus}
+                                    row={rowIndex}
+                                    col={colIndex}
+                                    staged={!!staged}
+                                    stagedTile={staged}
+                                    onTilePlace={onTilePlace}
+                                    lastScore={lastScore}
+                                />
+                            );
+                        })
+                    )}
+                </div>
             </div>
-        </div>
+            {/* <ScoreOverlay score={lastScore} /> */}
+        </>
     );
 }
 
@@ -155,6 +166,7 @@ function Tile({
     staged,
     stagedTile,
     onTilePlace,
+    lastScore
 }: {
     letter: ScrabbleCharacter | null;
     type: string | null;
@@ -163,6 +175,7 @@ function Tile({
     staged: boolean;
     stagedTile?: StagedTile;
     onTilePlace: (tileToPlace: StagedTile, sourceTile?: TilePosition) => boolean;
+    lastScore: number | null
 }) {
     const { clickedTile, setClickedTile, stagedIsValidWord } = useGame();
     const score = letter ? LETTER_SCORES[letter] : null;
@@ -264,6 +277,16 @@ function ArrowOverlay({ clickDirection }: { clickDirection: ClickedTileDirection
                     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 12H5m14 0-4 4m4-4-4-4" />
                 </svg>
             )}
+        </div>
+    );
+}
+
+function ScoreOverlay({ score }: { score: number | null }) {
+    if (!score) return null;
+
+    return (
+        <div className="absolute">
+            <div>{score}</div>
         </div>
     );
 }
