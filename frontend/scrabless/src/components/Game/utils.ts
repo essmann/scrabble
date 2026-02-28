@@ -1,4 +1,4 @@
-import type { BoardTile, StagedTile } from "./types";
+import { getLetterScore, type BoardTile, type StagedTile } from "./types";
 
 class Direction {
     public static up = "UP"
@@ -119,5 +119,48 @@ export function computeScore(move: StagedTile[], board: BoardTile[][]) {
         }
     }
 
-    return crossWords;
+    if (crossWords.length == 0) return;
+
+    let score = 0;
+    for (const words of crossWords) {
+        for (const letter of words) {
+
+            //if the letter is in our own "word" we include DL, TL etc.
+
+            score += getLetterScore(letter.letter!);
+        }
+    }
+
+    //compute the bonuses
+    for (const word of move) {
+        let { row, col } = word;
+        let bonus = board[row][col].bonus;
+
+        let letterScore = getLetterScore(word.letter);
+
+        console.log(word);
+        console.log(bonus);
+
+        if (bonus == "TL") {
+            score -= letterScore;
+            score += letterScore * 3;
+        }
+        else if (bonus == "DL") {
+            let letterScore = getLetterScore(word.letter);
+            score -= letterScore;
+            score += letterScore * 2;
+        }
+        else if (bonus == "TW") {
+            score *= 3;
+        }
+        else if (bonus == 'DW') {
+            score *= 2;
+        }
+
+        console.log(crossWords);
+
+    }
+
+    return score;
+
 }

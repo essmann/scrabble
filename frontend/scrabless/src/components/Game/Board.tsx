@@ -23,8 +23,8 @@ export function Board({ className }: BoardProps) {
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
     useEffect(() => {
-        const tiles = computeScore(stagedTiles, board);
-        console.log(tiles);
+        const score = computeScore(stagedTiles, board);
+        console.log(score);
     }, [stagedTiles])
 
     useEffect(() => {
