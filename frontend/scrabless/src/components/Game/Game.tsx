@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Board } from "./Board";
 import { InputPanel } from "./InputPanel";
 import { RightPanel } from "./RightPanel";
@@ -6,6 +6,7 @@ import type { User } from "../../hooks/useUser";
 import { useOpponent } from "./getOpponent";
 import { useGame } from "../../context/GameContext";
 import type { BoardTile, ScrabbleCharacter } from "./types";
+import successSound from "../../assets/sounds/successNoise.mp3";
 
 interface GameProps {
     hand: ScrabbleCharacter[];
@@ -19,10 +20,21 @@ interface GameProps {
 export function Game({ hand, turn, board, user, sendWsMessage, roomId }: GameProps) {
     const myTurn = user.id === turn;
     const { stagedTiles, setStagedTiles } = useGame();
+    const successAudioRef = useRef<HTMLAudioElement | null>(null);
+    useEffect(() => {
+        successAudioRef.current = new Audio(successSound);
+
+    }, []);
     useEffect(() => {
         setStagedTiles([]);
     }, [board])
+    const playSuccess = () => {
+        if (!successAudioRef.current) return;
 
+        successAudioRef.current.pause();        // stop if playing
+        successAudioRef.current.currentTime = 0; // rewind
+        successAudioRef.current.play();
+    }
     const [moveLoading, setMoveLoading] = useState(false); 6
     const removeStagedTile = (row: number, col: number) => {
         setStagedTiles(prev =>
@@ -42,6 +54,7 @@ export function Game({ hand, turn, board, user, sendWsMessage, roomId }: GamePro
         const payload = stagedTiles;
         const message = { type: "move", roomId: roomId, userId: user.id, message: payload };
         sendWsMessage(message);
+        playSuccess();
 
     };
 

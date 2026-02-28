@@ -21,22 +21,22 @@ export function Board({ className }: BoardProps) {
     const [lastScore, setLastScore] = useState<number | null>(null);
     const [scoredWord, setScoredWord] = useState<BoardTile[][] | null>(null);
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
-
     useEffect(() => {
-
         const result = computeScore(stagedTiles, board);
-        if (!result) return;
+        if (!result) {
+            setScoredWord(null);  // clear when no valid word
+            return;
+        }
         let { score, crossWords } = result;
         setScoredWord(crossWords);
         console.log(score);
     }, [stagedTiles])
 
-    useEffect(() => {
 
-    }, [scoredWord])
 
     useEffect(() => {
         clickAudioRef.current = new Audio(clickSound);
+
     }, []);
 
     const playClick = () => {
@@ -46,6 +46,7 @@ export function Board({ className }: BoardProps) {
         clickAudioRef.current.currentTime = 0; // rewind
         clickAudioRef.current.play();
     };
+
     const isEmptyTile = (row: number, col: number) => {
         const tile = board[row][col];
         if (tile.letter) return false;
@@ -143,7 +144,9 @@ export function Board({ className }: BoardProps) {
                             const staged = stagedTiles.find(
                                 (s) => s.row === rowIndex && s.col === colIndex
                             );
-
+                            const isScoredTile = scoredWord?.some(word =>
+                                word.some(tile => tile.row === rowIndex && tile.col === colIndex)
+                            ) ?? false;
                             return (
                                 <Tile
                                     key={`${rowIndex}-${colIndex}`}
@@ -155,6 +158,7 @@ export function Board({ className }: BoardProps) {
                                     stagedTile={staged}
                                     onTilePlace={onTilePlace}
                                     lastScore={lastScore}
+                                    isScored={isScoredTile}
                                 />
                             );
                         })
@@ -174,7 +178,8 @@ function Tile({
     staged,
     stagedTile,
     onTilePlace,
-    lastScore
+    lastScore,
+    isScored
 }: {
     letter: ScrabbleCharacter | null;
     type: string | null;
@@ -183,7 +188,8 @@ function Tile({
     staged: boolean;
     stagedTile?: StagedTile;
     onTilePlace: (tileToPlace: StagedTile, sourceTile?: TilePosition) => boolean;
-    lastScore: number | null
+    lastScore: number | null,
+    isScored: boolean
 }) {
     const { clickedTile, setClickedTile, stagedIsValidWord } = useGame();
     const score = letter ? LETTER_SCORES[letter] : null;
@@ -254,10 +260,12 @@ function Tile({
                 ${staged ? "font-bold hover:bg-yellow-400 border-[#c89e33] lg:border-2" : "border-black"}
                 ${staged && "rounded-md border lg:rounded-md bg-[#edc27d] lg:border-2 lg:rounded-[0.4rem] lg:text-2xl lg:text-black text-black"}
                 ${staged && stagedIsValidWord && "border-green-300"}
-                ${staged && !stagedIsValidWord && "border-red-500"}
-                ${!staged && letter && "bg-[#edc27d] border-orange-300 lg:border-2"}
+                
+                ${!staged && letter && !isScored && "bg-[#edc27d] border-orange-300 lg:border-2"}
+                ${isScored && letter && "border-green-300 bg-[#f0b860]"}
             `}
         >
+            {/* ${staged && !stagedIsValidWord && "border-red-500"} */}
             <div>{letter || (type ? type : "")}</div>
             <div className="absolute left-[15%] bottom-[7%] text-[70%]">
                 {score != null && score}

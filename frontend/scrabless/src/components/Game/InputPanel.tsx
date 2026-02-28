@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useGame } from "../../context/GameContext";
 import { LETTER_SCORES } from "../../context/GameContext";
 import type { ScrabbleCharacter } from "./types";
