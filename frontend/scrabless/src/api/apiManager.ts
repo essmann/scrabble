@@ -5,19 +5,18 @@ interface User {
     id: string;
 }
 export class apiManager {
-    public static expressUrl = import.meta.env.VITE_EXPRESS_URL || "http://localhost:3000";
-    public static wsUrl = import.meta.env.VITE_WS_URL || "ws://localhost:8080";
+    public static expressUrl = (import.meta.env.VITE_EXPRESS_URL || "http://localhost:3000").replace(/\/$/, ""); public static wsUrl = this.expressUrl;
 
     private static postOptions = {
         method: "POST",
         credentials: "include",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
         }
     } as RequestInit;
 
     private static getOptions = {
-        credentials: "include"
+        credentials: "include",
     } as RequestInit;
 
     public static async createRoom(type: RoomType) {

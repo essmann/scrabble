@@ -23,6 +23,7 @@ export interface GameState {
     letters: Letter[],
     turn: string; //userId
     board: BoardState | [];
+    lastWord?: WSTile[];
 
 }
 

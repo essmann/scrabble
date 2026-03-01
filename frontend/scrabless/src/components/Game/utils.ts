@@ -1,12 +1,15 @@
 import { getLetterScore, type BoardTile, type StagedTile } from "./types";
 
-class Direction {
+export class Direction {
     public static up = "UP"
     public static side = "SIDE"
 }
 
 
-function getDirection(move: StagedTile[]): Direction | null {
+function validateWords(crossWords: BoardTile[][], trie: any) {
+
+}
+export function getDirection(move: StagedTile[]): Direction | null {
     if (move.length === 0) return null;
 
     const initialCol = move[0]!.col;

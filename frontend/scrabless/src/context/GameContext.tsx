@@ -1,9 +1,10 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { BoardTile, ClickedTileDirection, ScrabbleCharacter, StagedTile, TilePosition } from "../components/Game/types";
 import { createEmptyBoard } from "../test/testTiles";
-import type { GameState, PlayerState } from "../types/game";
+import type { GameState, PlayerState, WSTile } from "../types/game";
 import { useUser } from "../hooks/useUser";
-
+import { getDirection } from "../components/Game/utils";
+import { getScrabbleTrie } from "../components/Game/trie";
 export type ClickedTileState = {
     row: number;
     col: number;
@@ -30,17 +31,21 @@ type GameContextType = {
     removeFromHand: (letter: ScrabbleCharacter) => void;
     addToHand: (letter: ScrabbleCharacter) => void;
     stagedIsValidWord: boolean;
+    setStagedIsValidWord: React.Dispatch<React.SetStateAction<boolean>>;
     board: BoardTile[][];
     setBoard: React.Dispatch<React.SetStateAction<BoardTile[][]>>;
     gameState: GameState;
     setGameState: React.Dispatch<React.SetStateAction<GameState>>;
     player: PlayerState | null;
     opponent: PlayerState | null;
+    scoredWord: BoardTile[][] | null;
+    setScoredWord: React.Dispatch<React.SetStateAction<BoardTile[][] | null>>;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
+    const trie = getScrabbleTrie();
     const user = useUser();
     const [gameState, setGameState] = useState<GameState>({} as GameState);
     const [hand, setHand] = useState<ScrabbleCharacter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
@@ -50,6 +55,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
     const [stagedIsValidWord, setStagedIsValidWord] = useState(false);
     const [board, setBoard] = useState<BoardTile[][]>(createEmptyBoard());
+    const [scoredWord, setScoredWord] = useState<BoardTile[][] | null>(null);
 
     const words = ["AB", "DEZ", "QA"];
 
@@ -57,22 +63,48 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const player = user ? (players[user.id] ?? null) : null;
     const opponentId = user ? Object.keys(players).find(id => id !== user.id) : undefined;
     const opponent = opponentId ? (players[opponentId] ?? null) : null;
-
-
     useEffect(() => {
-        if (stagedTiles.length === 0) {
+        if (!stagedTiles.length) {
             setStagedIsValidWord(false);
             return;
         }
-
-        const isVertical = stagedTiles.some(t => t.row !== stagedTiles[0].row);
-        const sorted = [...stagedTiles].sort((a, b) =>
+        const direction = getDirection(stagedTiles);
+        if (!direction && stagedTiles.length > 1) {
+            console.log("[ValidWord] No valid direction, multiple axes");
+            setStagedIsValidWord(false);
+            return;
+        }
+        const isVertical = direction === "vertical";
+        const sortedTiles = [...stagedTiles].sort((a, b) =>
             isVertical ? a.row - b.row : a.col - b.col
         );
+        // const mainWord = sortedTiles
+        //     .map(t => t.letter.toLowerCase())
+        //     .join("");
 
-        const word = sorted.map(t => t.letter).join("");
-        setStagedIsValidWord(words.includes(word));
-    }, [stagedTiles]);
+        const wordsToCheck = [
+            ...(scoredWord ?? [])
+        ];
+
+        console.log("[ValidWord] Cross words:", (scoredWord ?? []).map(w =>
+            w.map(t => t.letter!.toLowerCase()).join("")
+        ));
+
+        const allValid = wordsToCheck.every(item => {
+            let word: string;
+            if (typeof item === "string") {
+                word = item;
+            } else {
+                word = item.map(t => t.letter!.toLowerCase()).join("");
+            }
+            const valid = word.length > 1 && trie.search(word);
+            console.log(`[ValidWord] "${word}" → ${valid ? "✓" : "✗"}`);
+            return valid;
+        });
+
+        console.log("[ValidWord] All valid:", allValid);
+        setStagedIsValidWord(allValid);
+    }, [stagedTiles, scoredWord, trie]);
 
     const removeFromHand = (letter: ScrabbleCharacter) => {
         setHand(prev => {
@@ -112,8 +144,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         <GameContext.Provider value={{
             gameState, setGameState, board, setBoard, hand, setHand,
             turn, setTurn, stagedTiles, setStagedTiles,
-            stagedIsValidWord, myTurn, clickedTile, setClickedTile,
-            removeFromHand, addToHand, player, opponent,
+            stagedIsValidWord, setStagedIsValidWord, myTurn, clickedTile, setClickedTile,
+            removeFromHand, addToHand, player, opponent, scoredWord, setScoredWord
         }}>
             {children}
         </GameContext.Provider>

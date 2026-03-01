@@ -29,8 +29,8 @@ export function RightPanel({ className, myTurn }: { className: string, myTurn: b
 
     return (
         <div className={className + " flex gap-2 w-full"}>
-            <PlayerPanel time={playerTime} name={player.name} isActive={myTurn} score={0} />
-            <PlayerPanel time={opponentTime} name={opponent.name} isActive={!myTurn} score={0} />
+            <PlayerPanel time={playerTime} name={player.name} isActive={myTurn} score={player.score} />
+            <PlayerPanel time={opponentTime} name={opponent.name} isActive={!myTurn} score={opponent.score} />
         </div>
     );
 }

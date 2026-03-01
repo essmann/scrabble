@@ -38,6 +38,7 @@ export interface GameState {
     letters: Letter[];
     turn: string;
     board: Tile[][];
+    lastWord?: Tile[];
 }
 
 const BONUS_MAP: Record<string, TileType> = {
@@ -354,42 +355,82 @@ export class GameManager {
     }
 
 
-    computeScore(move: MoveTile[], board: Tile[][]) {
-        const crossWords: Tile[][] = [];
+    computeScore(move: MoveTile[], board: Tile[][]): number {
+        const words: Tile[][] = [];
         const direction = getDirection(move);
+        const newTilePositions = new Set(move.map(t => `${t.row},${t.col}`));
 
-        if (!move.length) return crossWords;
+        if (!move.length) return 0;
 
-        // Compute main word in move's direction only once
         if (direction === Direction.UP) {
             const verticalWord = findVertical(board, move[0]!.row, move[0]!.col);
-            verticalWord && crossWords.push(...verticalWord);
+            verticalWord && words.push(...verticalWord);
 
-            // Compute horizontal crosswords for each tile
             for (const tile of move) {
                 const horizontal = findHorizontal(board, tile.row, tile.col);
-                horizontal && crossWords.push(...horizontal);
+                horizontal && words.push(...horizontal);
             }
         } else if (direction === Direction.SIDE) {
             const horizontalWord = findHorizontal(board, move[0]!.row, move[0]!.col);
-            horizontalWord && crossWords.push(...horizontalWord);
+            horizontalWord && words.push(...horizontalWord);
 
-            // Compute vertical crosswords for each tile
             for (const tile of move) {
                 const vertical = findVertical(board, tile.row, tile.col);
-                vertical && crossWords.push(...vertical);
+                vertical && words.push(...vertical);
             }
         } else {
-            // Mixed or single-tile move: compute both directions for each tile
+            // Single tile or mixed: compute both directions
             for (const tile of move) {
                 const horizontal = findHorizontal(board, tile.row, tile.col);
                 const vertical = findVertical(board, tile.row, tile.col);
-                horizontal && crossWords.push(...horizontal);
-                vertical && crossWords.push(...vertical);
+                horizontal && words.push(...horizontal);
+                vertical && words.push(...vertical);
             }
         }
 
-        return crossWords;
+        let totalScore = 0;
+
+        for (const word of words) {
+            let wordScore = 0;
+            let wordMultiplier = 1;
+
+            for (const tile of word) {
+                const isNewTile = newTilePositions.has(`${tile.row},${tile.col}`);
+                const letterValue = computeLetterScore(tile.letter!);
+
+                if (isNewTile) {
+                    const bonus = tile.bonus;
+
+                    // Letter multipliers apply first
+                    if (bonus === "DL") {
+                        wordScore += letterValue * 2;
+                    } else if (bonus === "TL") {
+                        wordScore += letterValue * 3;
+                    } else {
+                        wordScore += letterValue;
+                    }
+
+                    // Word multipliers are stacked and applied at the end
+                    if (bonus === "DW" || bonus === "STAR") {
+                        wordMultiplier *= 2;
+                    } else if (bonus === "TW") {
+                        wordMultiplier *= 3;
+                    }
+                } else {
+                    // Already-placed tiles contribute face value only, no bonus
+                    wordScore += letterValue;
+                }
+            }
+
+            totalScore += wordScore * wordMultiplier;
+        }
+
+        // Bingo: using all 7 tiles in one move awards a 50-point bonus
+        if (move.length === 7) {
+            totalScore += 50;
+        }
+
+        return totalScore;
     }
 
     makeMove(roomId: roomId, userId: string, move: MoveTile[]) {
@@ -470,14 +511,9 @@ export class GameManager {
         game.players[currentTurnId].hand = updatedHand;
         game.turn = otherTurnId;
 
-        let arr = this.computeScore(move, game.board);
-
-        let arr2: any = [];
-        arr.map((tile) => {
-            tile.map((t) => arr2.push(t.letter));
-            arr2.push(" ");
-        })
-
+        const score = this.computeScore(move, game.board);
+        game.players[currentTurnId].score += score;
+        game.lastWord = move;
         // Log successful move
         logger.logGameMove({
             roomId,
@@ -488,22 +524,13 @@ export class GameManager {
                 nextTurn: otherTurnId,
                 // score: score,
                 oldHand: oldHand,
+                score: score,
                 letterCount: game.letters.length,
                 newHand: game.players[currentTurnId]?.hand
 
             }
         });
 
-        logger.logGameMove({
-            roomId,
-            playerId: currentTurnId,
-            move: move.map(t => `${t.letter}@${t.row},${t.col}`).join(','),
-            additionalInfo: {
-                type: 'TREE',
-
-                words: arr2
-            }
-        });
     }
 
     /**

@@ -42,7 +42,7 @@ export function Game({ hand, turn, board, user, sendWsMessage, roomId }: GamePro
         );
     };
 
-    const makeMove = () => {
+    const makeMove = (skip = false) => {
         //Shouldn't be called if it isn't the players turn
         //Check staged tiles. 
         //Client-side validation
@@ -52,7 +52,8 @@ export function Game({ hand, turn, board, user, sendWsMessage, roomId }: GamePro
         //Up -> Down
 
         const payload = stagedTiles;
-        const message = { type: "move", roomId: roomId, userId: user.id, message: payload };
+        let message = { type: "move", roomId: roomId, userId: user.id, message: payload };
+
         sendWsMessage(message);
         playSuccess();
 

@@ -13,24 +13,35 @@ import { WebSocketManager, type AuthenticatedWebSocket } from './ws/websocketMan
 import { WSMessageHandler } from './ws/WSMessageHandler.js';
 import { parseMessage, parseCookies } from './utils/index.js';
 import { logger } from './logger.js';
-
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 const expressPort = 3000;
 
-
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
-    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    res.header('Access-Control-Allow-Credentials', 'true');
+    const allowedOrigins = [
+        'http://localhost:5173',
+        'https://unpromised-prefraternally-luca.ngrok-free.dev',
+        'https://c.com',
+        'https://boobies.com'
+    ];
+
+    const origin = req.headers.origin;
+    if (origin && allowedOrigins.includes(origin)) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Credentials', 'true');
 
     if (req.method === 'OPTIONS') {
-        return res.sendStatus(200);
+        return res.sendStatus(200); // handle preflight
     }
+
     next();
 });
+
 
 app.use(cookieParser());
 app.use(express.json());

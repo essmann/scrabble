@@ -1,7 +1,7 @@
 import { type Request, type Response, type NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { randomUUID } from 'crypto';
-
+import { production } from '../server.config.js';
 export const SECRET = process.env.JWT_SECRET || 'Edm4FJIJCL46sUfDfIw6qymzC84M7eoZrsfj2m5TQYQ';
 
 // Extend Express Request type
@@ -75,11 +75,14 @@ export const userMiddleware = (req: Request, res: Response, next: NextFunction) 
             { expiresIn: '7d' }
         );
 
+        //HTTPS etc
+
+
         // Set cookie with optimal settings for localhost development
         res.cookie('userToken', token, {
             httpOnly: true,           // Prevents JavaScript access (XSS protection)
-            sameSite: 'lax',          // 'lax' is better for navigation than 'strict'
-            secure: false,            // Set to true in production with HTTPS
+            sameSite: production ? "none" : "lax",          // 'lax' is better for navigation than 'strict'
+            secure: production,            // Set to true in production with HTTPS
             maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
             path: '/'                 // Available on all paths
         });
