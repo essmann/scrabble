@@ -38,7 +38,7 @@ export interface GameState {
     letters: Letter[];
     turn: string;
     board: Tile[][];
-    lastWord?: Tile[];
+    lastWord?: { words: Tile[][], score: number };
 }
 
 const BONUS_MAP: Record<string, TileType> = {
@@ -355,12 +355,12 @@ export class GameManager {
     }
 
 
-    computeScore(move: MoveTile[], board: Tile[][]): number {
+    computeScore(move: MoveTile[], board: Tile[][]): { score: number, words: Tile[][] } | null {
         const words: Tile[][] = [];
         const direction = getDirection(move);
         const newTilePositions = new Set(move.map(t => `${t.row},${t.col}`));
 
-        if (!move.length) return 0;
+        if (!move.length) return null;
 
         if (direction === Direction.UP) {
             const verticalWord = findVertical(board, move[0]!.row, move[0]!.col);
@@ -429,8 +429,12 @@ export class GameManager {
         if (move.length === 7) {
             totalScore += 50;
         }
-
-        return totalScore;
+        if (words.length === 0 && move.length === 1) {
+            // Score the single tile at face value
+            const tile = board[move[0]!.row]![move[0]!.col]!;
+            return { score: computeLetterScore(tile.letter!), words: [[tile]] };
+        }
+        return { score: totalScore, words: words };
     }
 
     makeMove(roomId: roomId, userId: string, move: MoveTile[]) {
@@ -474,7 +478,10 @@ export class GameManager {
                 if (!serverTile) throw new Error("Tile out of bounds");
                 if (serverTile.letter !== null) throw new Error("Tile already occupied");
 
-                board[row]![col] = tile;
+                board[row]![col] = {
+                    ...serverTile,   // keeps row, col, and bonus
+                    letter: tile.letter
+                };
             });
         } catch (err: any) {
             logger.logGameMove({
@@ -510,10 +517,13 @@ export class GameManager {
         // game.players[currentTurnId].score += score;
         game.players[currentTurnId].hand = updatedHand;
         game.turn = otherTurnId;
+        const result = this.computeScore(move, game.board);
+        if (!result) return;
 
-        const score = this.computeScore(move, game.board);
+        const { score, words } = result;
+
         game.players[currentTurnId].score += score;
-        game.lastWord = move;
+        game.lastWord = { words: words, score: score };
         // Log successful move
         logger.logGameMove({
             roomId,

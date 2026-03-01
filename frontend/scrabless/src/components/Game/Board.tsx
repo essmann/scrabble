@@ -20,17 +20,14 @@ export function Board({ className }: BoardProps) {
     const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord, gameState, scoredWord, setScoredWord } = useGame();
 
     const [lastScore, setLastScore] = useState<number | null>(null);
-    const [lastMove, setLastMove] = useState<WSTile[] | null>(null);
+    const [lastSubmittedMove, setLastSubmittedMove] = useState<WSTile[][] | null>(null);
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
+    //Compute the score of the last scrabble entry. This will be outlined in blue.
     useEffect(() => {
         if (gameState && gameState.lastWord) {
-            setLastMove(gameState.lastWord);
-            const scoreLastWord = computeScore(gameState.lastWord as StagedTile[], board);
-            if (scoreLastWord) {
-                const { score } = scoreLastWord;
-                setLastScore(score);
-            }
+            setLastSubmittedMove(gameState.lastWord.words);
+            setLastScore(gameState.lastWord.score);
             console.log(`Last move: ${JSON.stringify(gameState.lastWord)}`);
         }
     }, [gameState]);
@@ -150,11 +147,11 @@ export function Board({ className }: BoardProps) {
                         const isScoredTile = scoredWord?.some(word =>
                             word.some(tile => tile.row === rowIndex && tile.col === colIndex)
                         ) ?? false;
-                        const isPartOfLastWord = lastMove?.some((word) => {
-                            if (rowIndex === word.row && colIndex === word.col) return true;
-                        }) ?? false;
+                        const isPartOfLastWord = lastSubmittedMove?.some(word =>
+                            word.some(tile => tile.row === rowIndex && tile.col === colIndex)
+                        ) ?? false;
                         const isFirstOfLastWord =
-                            lastMove?.[0]?.row === rowIndex && lastMove?.[0]?.col === colIndex;
+                            lastSubmittedMove?.[0]?.[0]?.row === rowIndex && lastSubmittedMove?.[0]?.[0]?.col === colIndex;
 
                         return (
                             <Tile
