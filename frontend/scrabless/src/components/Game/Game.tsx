@@ -57,6 +57,15 @@ export function Game({ turn, board, user, sendWsMessage, roomId }: GameProps) {
         playSuccess();
 
     };
+    const resign = () => {
+        const message = { type: "RESIGN", userId: user.id, roomId: roomId };
+
+        sendWsMessage(message);
+    }
+    const skipTurn = () => {
+        const message = { type: "SKIP_TURN", userId: user.id, roomId: roomId };
+
+    }
 
     return (
         <div className="main h-dvh w-dvw flex justify-center bg-[#16161E] 0 overflow-y-scroll">
@@ -75,6 +84,8 @@ export function Game({ turn, board, user, sendWsMessage, roomId }: GameProps) {
                                 <InputPanel
                                     removeStagedTile={removeStagedTile}
                                     onSubmit={makeMove}
+                                    resign={resign}
+                                    skipTurn={skipTurn}
                                 />
                             </div>
                         </div>

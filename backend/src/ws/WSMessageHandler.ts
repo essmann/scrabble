@@ -3,11 +3,15 @@ import { gameManager, roomManager } from "../main.js";
 import type { Room } from "../roomManager.js";
 import type { SocketMessage } from "../types/SocketMessage.js";
 import { WebSocketManager, type AuthenticatedWebSocket } from "./websocketManager.js";
-
+import { GameEndType } from "../gameManager.js";
 interface MoveMessage extends RoomSocketMessage {
     userId: string;
     roomId: string;
     message: { letter: Letter; row: number; col: number }[];
+}
+
+interface ResignMessage extends RoomSocketMessage {
+    userId: string;
 }
 export interface RoomSocketMessage extends SocketMessage {
     roomId: string; // required
@@ -22,6 +26,11 @@ export class WSMessageHandler {
                     return;
                 }
                 break;
+            case "RESIGN":
+                if (!msg.roomId) {
+                    ws.send(JSON.stringify({ type: "error", message: "roomId is required" }));
+                    return;
+                }
         }
 
         switch (msg.type) {
@@ -36,6 +45,23 @@ export class WSMessageHandler {
                 } catch (e) {
                     console.error("[WS] Move failed:", e);
                     ws.send(JSON.stringify({ type: "move_error", message: (e as Error).message }));
+                }
+                break;
+            case "RESIGN":
+                const resignmsg = msg as ResignMessage;
+                if (resignmsg.userId !== ws.userId) return;
+
+                try {
+
+                    if (!resignmsg.roomId) break;
+                    if (!resignmsg.userId) break;
+                    const winnerUserId = roomManager.getOpponent(resignmsg.userId, resignmsg.roomId);
+                    if (!winnerUserId) break;
+
+                    gameManager.endGame(winnerUserId, resignmsg.roomId, "RESIGN");
+                    this.broadcastFilteredGameState(resignmsg.roomId);
+                } catch (error) {
+
                 }
                 break;
             default:

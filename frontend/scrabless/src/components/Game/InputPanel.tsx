@@ -7,9 +7,11 @@ import { DRAG_TYPE } from "./types";
 interface Props {
     removeStagedTile: (row: number, col: number) => void;
     onSubmit: () => void;
+    resign: () => void;
+    skipTurn: () => void;
 }
 
-export function InputPanel({ removeStagedTile, onSubmit }: Props) {
+export function InputPanel({ removeStagedTile, onSubmit, resign, skipTurn }: Props) {
     const { hand, removeFromHand, addToHand } = useGame();
 
     const onDragOver = (event: React.DragEvent) => {
@@ -48,7 +50,7 @@ export function InputPanel({ removeStagedTile, onSubmit }: Props) {
                     <WithdrawIcon />
                 </button>
             </div>
-            <Buttons onSubmit={onSubmit} />
+            <Buttons onSubmit={onSubmit} skipTurn={skipTurn} resign={resign} />
         </div>
     );
 }
@@ -93,11 +95,11 @@ function Tile({ letter, removeFromHand }: TileProps) {
     );
 }
 
-function Buttons({ onSubmit }: { onSubmit: () => void }) {
+function Buttons({ onSubmit, resign, skipTurn }: { onSubmit: () => void, resign: () => void, skipTurn: () => void }) {
     return (
         <div id="btns" className="lg:*:p-3 flex justify-center lg:gap-5 gap-2 mt-2 lg:mt-2 bg-[#2C2C38]">
-            <button className="bg-[#333333] rounded-md text-white font-bold border-black border-1 flex-1">Resign</button>
-            <button className="bg-[#333333] rounded-md text-white font-bold border-black border-1 flex-1">Skip</button>
+            <button className="bg-[#333333] rounded-md text-white font-bold border-black border-1 flex-1" onClick={resign}>Resign</button>
+            <button className="bg-[#333333] rounded-md text-white font-bold border-black border-1 flex-1" onClick={skipTurn}>Skip</button>
             <button className="bg-[#333333] rounded-md text-white font-bold border-black border-1 flex-1">Swap</button>
             <button className="bg-[#4DD9E8] rounded-md text-white font-bold border-black border-1 flex-1" onClick={onSubmit}>Submit</button>
         </div>

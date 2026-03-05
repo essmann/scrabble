@@ -66,6 +66,14 @@ export class RoomManager {
         return true;
     }
 
+    getOpponent(userId: string, roomId: string) {
+        const room = this.getRoom(roomId);
+        if (!room?.guest || !room.owner.id) return null;
+
+        if (room.owner.id === userId) return room.guest.id;
+        if (room.guest.id === userId) return room.owner.id;
+        return null;
+    }
     removeUserRooms(userId: string): void {
         const roomId = this.userToRoom.get(userId);
 

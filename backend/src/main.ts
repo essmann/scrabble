@@ -163,7 +163,6 @@ wss.on('connection', handleWebSocketConnection);
 app.post('/create-room', (req, res) => {
     const userId = req.userId;
     const userName = req.name;
-
     if (!userId) {
         logger.logError('ROOM_CREATION', 'Unauthorized room creation attempt');
         return res.status(401).json({ error: 'Unauthorized' });

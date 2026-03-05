@@ -1,10 +1,15 @@
+import type { GameState } from "../../types/game";
 import { getLetterScore, type BoardTile, type StagedTile } from "./types";
 
 export class Direction {
     public static up = "UP"
     public static side = "SIDE"
 }
-
+export const getOpponent = (gameState: GameState, userId: string) => {
+    if (!gameState?.players) return null;
+    const opponentId = Object.keys(gameState.players).find(id => id !== userId);
+    return opponentId ? gameState.players[opponentId] : null;
+}
 
 // function validateWords(crossWords: BoardTile[][], trie: any) {
 

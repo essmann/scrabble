@@ -1,5 +1,5 @@
 import { logger } from "./logger.js";
-import type { Room } from "./roomManager.js";
+import type { Room, User } from "./roomManager.js";
 
 export type Letter =
     | 'A' | 'B' | 'C' | 'D' | 'E' | 'F' | 'G' | 'H' | 'I' | 'J'
@@ -28,6 +28,7 @@ export interface PlayerState {
     hand: Letter[];
     score: number;
     time: number;
+
 }
 
 export interface GameState {
@@ -39,7 +40,13 @@ export interface GameState {
     turn: string;
     board: Tile[][];
     lastWord?: { words: Tile[][], score: number };
+    result?: {
+        winnerId: string;
+        reason: GameEndType;
+    }
 }
+
+export type GameEndType = "OUT_OF_TIME" | "RESIGN" | "LONG_DISCONNECT";
 
 const BONUS_MAP: Record<string, TileType> = {
     "0,0": "TW", "0,7": "TW", "0,14": "TW",
@@ -354,7 +361,26 @@ export class GameManager {
         return this.games.get(roomId);
     }
 
+    endGame(winnerUserId: string, roomId: roomId, reason: GameEndType) {
 
+
+        // this.stopTimer(roomId);
+        console.log("[GAME] End game request in process.");
+
+        const game = this.getGame(roomId);
+        if (!game) return;
+        //validate victory
+        switch (reason) {
+            case "RESIGN":
+                game.result = { winnerId: winnerUserId, reason: "RESIGN" };
+                break;
+            case "LONG_DISCONNECT":
+                break;
+            default:
+                break;
+        }
+
+    }
     computeScore(move: MoveTile[], board: Tile[][]): { score: number, words: Tile[][] } | null {
         const words: Tile[][] = [];
         const direction = getDirection(move);

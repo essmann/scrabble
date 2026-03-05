@@ -45,6 +45,7 @@ export class WebSocketManager {
         return false;
     }
     static broadcastToRoom(roomId: string, message: any, excludeUserId?: string): void {
+        console.log(`Attempting to broadcast to room: ${roomId}. Message: ${message}`);
         const room = roomManager.getRoom(roomId);
         if (!room) return;
 

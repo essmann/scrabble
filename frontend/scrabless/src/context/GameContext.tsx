@@ -63,6 +63,8 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const player = user ? (players[user.id] ?? null) : null;
     const opponentId = user ? Object.keys(players).find(id => id !== user.id) : undefined;
     const opponent = opponentId ? (players[opponentId] ?? null) : null;
+
+
     useEffect(() => {
         if (!stagedTiles.length) {
             setStagedIsValidWord(false);
