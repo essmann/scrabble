@@ -1,0 +1,7 @@
+REFACTORING
+
+- useWebsocket should only return gameState, from there we destructure what we want.
+
+- GameContext should include everything related to just the game logic, and should be refactored for readability
+
+- 

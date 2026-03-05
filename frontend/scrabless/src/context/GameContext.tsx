@@ -1,10 +1,10 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode, useCallback, useMemo } from "react";
 import type { BoardTile, ClickedTileDirection, ScrabbleCharacter, StagedTile, TilePosition } from "../components/Game/types";
 import { createEmptyBoard } from "../test/testTiles";
 import type { GameState, PlayerState } from "../types/game";
 import { useUser } from "../hooks/useUser";
-import { getDirection } from "../components/Game/utils";
-import { getScrabbleTrie } from "../components/Game/trie";
+import { wsManager } from "../api/WebSocketManager";
+import { useWordValidation } from "../hooks/useWordValidation";
 export type ClickedTileState = {
     row: number;
     col: number;
@@ -40,97 +40,88 @@ type GameContextType = {
     opponent: PlayerState | null;
     scoredWord: BoardTile[][] | null;
     setScoredWord: React.Dispatch<React.SetStateAction<BoardTile[][] | null>>;
+    sendWsMessage: (msg: object) => void;
 };
 
 const GameContext = createContext<GameContextType | undefined>(undefined);
 
 export const GameProvider = ({ children }: { children: ReactNode }) => {
-    const trie = getScrabbleTrie();
     const user = useUser();
     const [gameState, setGameState] = useState<GameState>({} as GameState);
     const [hand, setHand] = useState<ScrabbleCharacter[]>(['A', 'B', 'C', 'Q', 'D', 'E', 'Z']);
     const [stagedTiles, setStagedTiles] = useState<StagedTile[]>([]);
-    const [myTurn] = useState(true);
     const [turn, setTurn] = useState("");
+    const myTurn = user?.id ? turn === user.id : false;
     const [clickedTile, setClickedTileState] = useState<ClickedTileState>(null);
-    const [stagedIsValidWord, setStagedIsValidWord] = useState(false);
     const [board, setBoard] = useState<BoardTile[][]>(createEmptyBoard());
     const [scoredWord, setScoredWord] = useState<BoardTile[][] | null>(null);
+    const [stagedIsValidWord, setStagedIsValidWord] = useState(false);
 
-    const [boardTilesWithLetters, setBoardTilesWithLetters] = useState<StagedTile[]>([] as StagedTile[]);
-    useEffect(() => {
+    // Compute board tiles with letters (memoized to avoid recomputation)
+    const boardTilesWithLetters = useMemo(() => {
         const boardTiles: StagedTile[] = [];
         board.forEach((row, rIdx) =>
             row.forEach((tile, cIdx) => {
                 if (tile.letter) boardTiles.push({ row: rIdx, col: cIdx, letter: tile.letter });
             })
         );
+        return boardTiles;
+    }, [board]);
 
-        setBoardTilesWithLetters(boardTiles);
-    }, [board])
-    // const words = ["AB", "DEZ", "QA"];
+    // Sync board and turn from gameState when it arrives from server
+    useEffect(() => {
+        if (!gameState || !user?.id) return;
+        if (!gameState.turn || !gameState.players) return;
+
+        console.log("[GameContext] Syncing gameState:", gameState);
+
+        if (gameState.turn) {
+            console.log("[GameContext] Setting turn to:", gameState.turn);
+            setTurn(gameState.turn);
+        }
+
+        if (gameState.players[user.id]?.hand && Array.isArray(gameState.players[user.id].hand)) {
+            const playerHand = gameState.players[user.id].hand as ScrabbleCharacter[];
+            console.log("[GameContext] Setting hand to:", playerHand);
+            setHand(playerHand);
+        }
+
+        if (gameState.board) {
+            let boardData: any[][] | null = null;
+
+            // Handle direct array format
+            if (Array.isArray(gameState.board)) {
+                const boardArray = gameState.board as any[];
+                if (boardArray.length > 0 && Array.isArray(boardArray[0])) {
+                    boardData = boardArray;
+                }
+            }
+            // Handle nested object format (e.g., { board: [...] })
+            else if (typeof gameState.board === 'object' && 'board' in gameState.board) {
+                const nestedBoard = (gameState.board as any).board;
+                if (Array.isArray(nestedBoard) && nestedBoard.length > 0) {
+                    boardData = nestedBoard;
+                }
+            }
+
+            if (boardData) {
+                const boardToSet = convertBoardTiles(boardData);
+                console.log("[GameContext] Setting board, size:", boardToSet.length);
+                setBoard(boardToSet);
+            }
+        }
+    }, [gameState, user?.id]);
 
     const players = gameState.players ?? {};
     const player = user ? (players[user.id] ?? null) : null;
     const opponentId = user ? Object.keys(players).find(id => id !== user.id) : undefined;
     const opponent = opponentId ? (players[opponentId] ?? null) : null;
 
-    const isTouching = (tileA: StagedTile, tileB: StagedTile) => {
-        const dr = Math.abs(tileA.row - tileB.row);
-        const dc = Math.abs(tileA.col - tileB.col);
-        return dr <= 1 && dc <= 1 && !(dr === 0 && dc === 0);
-    };
-
+    // Validate staged word using custom hook
+    const isValidWord = useWordValidation(stagedTiles, boardTilesWithLetters, scoredWord);
     useEffect(() => {
-        let isValid = false;
-
-        do {
-            if (!stagedTiles.length) break;
-
-            const direction = getDirection(stagedTiles);
-            if (!direction && stagedTiles.length > 1) {
-                console.log("[ValidWord] No valid direction, multiple axes");
-                break;
-            }
-
-            const isVertical = direction === "vertical";
-            [...stagedTiles].sort((a, b) =>
-                isVertical ? a.row - b.row : a.col - b.col
-            );
-            if (boardTilesWithLetters.length > 0) {
-                const touchesBoard = stagedTiles.some((tile) =>
-                    boardTilesWithLetters.some((boardTile) => isTouching(tile, boardTile))
-                );
-                console.log(`[ValidWord] Any staged tile touches board? ${touchesBoard}`);
-                if (!touchesBoard) break;
-
-                const allConnected = stagedTiles.every((tile) =>
-                    boardTilesWithLetters.some((boardTile) => isTouching(tile, boardTile)) ||
-                    stagedTiles.some((other) => other !== tile && isTouching(tile, other))
-                );
-                console.log(`[ValidWord] All staged tiles connected (board or each other)? ${allConnected}`);
-                if (!allConnected) break;
-            }
-
-            const wordsToCheck = [...(scoredWord ?? [])];
-            console.log("[ValidWord] Cross words:", (scoredWord ?? []).map(w =>
-                w.map(t => t.letter!.toLowerCase()).join("")
-            ));
-            const allValid = wordsToCheck.length > 0 && wordsToCheck.every(item => {
-                const word = typeof item === "string"
-                    ? item
-                    : item.map(t => t.letter!.toLowerCase()).join("");
-                const valid = word.length > 1 && trie.search(word);
-                console.log(`[ValidWord] "${word}" → ${valid ? "✓" : "✗"}`);
-                return valid;
-            });
-
-            console.log("[ValidWord] All valid:", allValid);
-            isValid = allValid;
-        } while (false);
-
-        setStagedIsValidWord(isValid);
-    }, [stagedTiles, scoredWord, trie]);
+        setStagedIsValidWord(isValidWord);
+    }, [isValidWord]);
     const removeFromHand = (letter: ScrabbleCharacter) => {
         setHand(prev => {
             let found = false;
@@ -165,12 +156,29 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
         });
     };
 
+    const sendWsMessage = useCallback((msg: object) => {
+        console.log("[GameContext] Sending message:", msg);
+        wsManager.sendMessage(msg);
+    }, []);
+
+    // Convert WSTile (from server) to BoardTile (frontend format)
+    const convertBoardTiles = (wsTiles: any[][]): BoardTile[][] => {
+        return wsTiles.map((row, rowIdx) =>
+            row.map((tile, colIdx) => ({
+                letter: tile?.letter || null,
+                bonus: tile?.bonus || null,
+                row: rowIdx,
+                col: colIdx,
+            }))
+        );
+    };
+
     return (
         <GameContext.Provider value={{
             gameState, setGameState, board, setBoard, hand, setHand,
             turn, setTurn, stagedTiles, setStagedTiles,
             stagedIsValidWord, setStagedIsValidWord, myTurn, clickedTile, setClickedTile,
-            removeFromHand, addToHand, player, opponent, scoredWord, setScoredWord
+            removeFromHand, addToHand, player, opponent, scoredWord, setScoredWord, sendWsMessage
         }}>
             {children}
         </GameContext.Provider>

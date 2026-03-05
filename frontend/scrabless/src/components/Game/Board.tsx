@@ -6,6 +6,7 @@ import { DRAG_TYPE, type ClickedTileDirection, type StagedTile } from "./types";
 import clickSound from "../../assets/sounds/matthewvakaliuk73627-mouse-click-290204.mp3";
 import { computeScore } from "./utils";
 import type { WSTile } from "../../types/game";
+import { useBoardKeyboard } from "../../hooks/useBoardKeyboard";
 
 interface TilePosition {
     row: number;
@@ -17,37 +18,42 @@ interface BoardProps {
     onSubmit: () => void;
 }
 
+function isPartOfLastMove(row: number, col: number, lastMove: WSTile[][] | null | undefined): boolean {
+    if (!lastMove) return false;
+    for (const item of lastMove) {
+        if (Array.isArray(item)) {
+            if (item.some(tile => tile?.row === row && tile?.col === col)) return true;
+        } else if ((item as any)?.row === row && (item as any)?.col === col) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getFirstTile(lastMove: WSTile[][] | null | undefined): { row: number; col: number } | null {
+    if (!lastMove || lastMove.length === 0) return null;
+    const firstItem = lastMove[0];
+    if (Array.isArray(firstItem) && firstItem.length > 0) {
+        return { row: firstItem[0]?.row, col: firstItem[0]?.col };
+    } else if ((firstItem as any)?.row !== undefined) {
+        return { row: (firstItem as any).row, col: (firstItem as any).col };
+    }
+    return null;
+}
+
 export function Board({ className, onSubmit }: BoardProps) {
-    const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, gameState, scoredWord, setScoredWord } = useGame();
+    const {
+        board,
+        stagedTiles, setStagedTiles,
+        clickedTile, setClickedTile,
+        hand, addToHand, removeFromHand,
+        gameState,
+        scoredWord, setScoredWord,
+    } = useGame();
 
     const [lastScore, setLastScore] = useState<number | null>(null);
-    const [croswordScore, setCrosswordScore] = useState<number | null>(null);
     const [lastSubmittedMove, setLastSubmittedMove] = useState<WSTile[][] | null>(null);
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
-
-    //Compute the score of the last scrabble entry. This will be outlined in blue.
-    useEffect(() => {
-        if (gameState && gameState.lastWord) {
-            setLastSubmittedMove(gameState.lastWord.words);
-            setLastScore(gameState.lastWord.score);
-            console.log(`Last move: ${JSON.stringify(gameState.lastWord)}`);
-        }
-    }, [gameState]);
-
-    useEffect(() => {
-        const result = computeScore(stagedTiles, board);
-        if (!result) {
-            setScoredWord(null);
-            return;
-        }
-        let { score, crossWords } = result;
-        setScoredWord(crossWords);
-        setCrosswordScore(score);
-        console.log("SCORED WORDS: ");
-        console.log(crossWords);
-
-        console.log(score);
-    }, [stagedTiles]);
 
     useEffect(() => {
         clickAudioRef.current = new Audio(clickSound);
@@ -60,6 +66,18 @@ export function Board({ className, onSubmit }: BoardProps) {
         clickAudioRef.current.play();
     };
 
+    useEffect(() => {
+        if (gameState?.lastWord) {
+            setLastSubmittedMove(gameState.lastWord.words);
+            setLastScore(gameState.lastWord.score);
+        }
+    }, [gameState]);
+
+    useEffect(() => {
+        const result = computeScore(stagedTiles, board);
+        setScoredWord(result ? result.crossWords : null);
+    }, [stagedTiles]);
+
     const isEmptyTile = (row: number, col: number) => {
         const tile = board[row][col];
         if (tile.letter) return false;
@@ -67,77 +85,27 @@ export function Board({ className, onSubmit }: BoardProps) {
         return true;
     };
 
-    useEffect(() => {
-        if (clickedTile == null) return;
-
-        const handleKeyDown = (ev: KeyboardEvent) => {
-            if (ev.key === "ArrowUp" || ev.key === "ArrowDown" || ev.key === "ArrowRight" || ev.key === "ArrowLeft") {
-                let newPos = { row: clickedTile.row, col: clickedTile.col };
-                switch (ev.key) {
-                    case "ArrowLeft": newPos.col--; break;
-                    case "ArrowRight": newPos.col++; break;
-                    case "ArrowUp": newPos.row--; break;
-                    case "ArrowDown": newPos.row++; break;
-                }
-                setClickedTile(newPos, true);
-                return;
-            }
-
-            if (ev.key === 'Backspace') {
-                const lastTile = stagedTiles[stagedTiles.length - 1];
-                if (!lastTile) return;
-
-                addToHand(lastTile.letter);
-                setStagedTiles((prev) => prev.slice(0, -1));
-
-                const prevPosition = clickedTile.direction === "RIGHT" || clickedTile.direction == null
-                    ? { row: clickedTile.row, col: clickedTile.col - 1 }
-                    : { row: clickedTile.row - 1, col: clickedTile.col };
-
-                setClickedTile(prevPosition, true);
-                playClick();
-                return;
-            }
-
-            if (ev.key === 'Enter') {
-
-                if (stagedTiles.length == 0) return;
-
-                onSubmit();
-                playClick();
-                return;
-            }
-
-            const letter = ev.key.toUpperCase() as ScrabbleCharacter;
-            const letterInHand = hand.find(h => h === letter);
-            if (!letterInHand) return;
-            if (!isEmptyTile(clickedTile.row, clickedTile.col)) return;
-
-            const newTile: StagedTile = { letter, row: clickedTile.row, col: clickedTile.col };
-
-            const nextPosition = clickedTile.direction === "RIGHT" || clickedTile.direction == null
-                ? { row: clickedTile.row, col: clickedTile.col + 1 }
-                : { row: clickedTile.row + 1, col: clickedTile.col };
-
-            setStagedTiles((prev) => [...prev, newTile]);
-            removeFromHand(letter);
-            setClickedTile(nextPosition, true);
-            playClick();
-        };
-
-        document.addEventListener("keydown", handleKeyDown);
-        return () => document.removeEventListener("keydown", handleKeyDown);
-    }, [clickedTile, stagedTiles, hand]);
+    // All keyboard logic lives here now
+    useBoardKeyboard({
+        clickedTile,
+        setClickedTile,
+        stagedTiles,
+        setStagedTiles,
+        hand,
+        addToHand,
+        removeFromHand,
+        board,
+        onSubmit,
+        playClick,
+    });
 
     const onTilePlace = (tileToPlace: StagedTile, sourceTile?: TilePosition): boolean => {
         if (sourceTile) {
             if (!isEmptyTile(tileToPlace.row, tileToPlace.col)) return false;
-            setStagedTiles((prev) => {
-                const stagedMinusSource = prev.filter(
-                    (p) => !(p.row === sourceTile.row && p.col === sourceTile.col)
-                );
-                return [...stagedMinusSource, tileToPlace];
-            });
+            setStagedTiles((prev) => [
+                ...prev.filter((p) => !(p.row === sourceTile.row && p.col === sourceTile.col)),
+                tileToPlace,
+            ]);
             playClick();
             return true;
         }
@@ -160,13 +128,11 @@ export function Board({ className, onSubmit }: BoardProps) {
                             (s) => s.row === rowIndex && s.col === colIndex
                         );
                         const isScoredTile = scoredWord?.some(word =>
-                            word.some(tile => tile.row === rowIndex && tile.col === colIndex)
+                            word.some(t => t.row === rowIndex && t.col === colIndex)
                         ) ?? false;
-                        const isPartOfLastWord = lastSubmittedMove?.some(word =>
-                            word.some(tile => tile.row === rowIndex && tile.col === colIndex)
-                        ) ?? false;
-                        const isFirstOfLastWord =
-                            lastSubmittedMove?.[0]?.[0]?.row === rowIndex && lastSubmittedMove?.[0]?.[0]?.col === colIndex;
+                        const isPartOfLastWord = isPartOfLastMove(rowIndex, colIndex, lastSubmittedMove);
+                        const firstTile = getFirstTile(lastSubmittedMove);
+                        const isFirstOfLastWord = firstTile?.row === rowIndex && firstTile?.col === colIndex;
 
                         return (
                             <Tile
@@ -182,7 +148,6 @@ export function Board({ className, onSubmit }: BoardProps) {
                                 isScored={isScoredTile}
                                 isPartOfLastWord={isPartOfLastWord}
                                 isFirstOfLastWord={isFirstOfLastWord}
-                                crossWordScore={croswordScore}
                             />
                         );
                     })
@@ -204,7 +169,6 @@ function Tile({
     isScored,
     isPartOfLastWord,
     isFirstOfLastWord,
-    crossWordScore
 }: {
     letter: ScrabbleCharacter | null;
     type: string | null;
@@ -217,24 +181,38 @@ function Tile({
     isScored: boolean;
     isPartOfLastWord: boolean;
     isFirstOfLastWord: boolean;
-    crossWordScore: number | null,
 }) {
     const { clickedTile, setClickedTile, stagedIsValidWord, stagedTiles } = useGame();
     const score = letter ? LETTER_SCORES[letter] : null;
     const isClicked = clickedTile?.row === row && clickedTile?.col === col;
 
-    let bg = "bg-gray-300";
+    let bgColor = "bg-gray-300";
     if (staged) {
-        bg = "bg-[#f0b860]";
+        bgColor = "bg-[#f0b860]";
     } else {
         switch (type) {
-            case "DW": bg = "bg-[#e4a2a3]"; break;
-            case "TW": bg = "bg-[#bf4e4e]"; break;
-            case "TL": bg = "bg-[#0c679c]"; break;
-            case "DL": bg = "bg-[#68a2c3]"; break;
-            default: bg = "bg-[#c4c4d1] border rounded-sm";
+            case "DW": bgColor = "bg-[#e4a2a3]"; break;
+            case "TW": bgColor = "bg-[#bf4e4e]"; break;
+            case "TL": bgColor = "bg-[#0c679c]"; break;
+            case "DL": bgColor = "bg-[#68a2c3]"; break;
+            default: bgColor = "bg-[#c4c4d1] border rounded-sm";
         }
     }
+
+    const borderClass = (() => {
+        if (staged && stagedIsValidWord) return "border-2 border-green-300 lg:border-2";
+        if (staged) return "border-2 border-[#c89e33] lg:border-2";
+        if (isPartOfLastWord && stagedTiles.length === 0) return "border-2 border-blue-500 lg:border-2";
+        if (isScored && letter) return "border-2 border-green-300 lg:border-2";
+        if (letter && !isScored) return "border-2 border-orange-300 lg:border-2";
+        return "border-black";
+    })();
+
+    if (staged && stagedIsValidWord) bgColor = "bg-[#edc27d]";
+    else if (staged) bgColor = "bg-[#edc27d]";
+    else if (isPartOfLastWord && stagedTiles.length === 0) bgColor = "bg-[#edc27d]";
+    else if (isScored && letter) bgColor = "bg-[#f0b860]";
+    else if (letter && !isScored) bgColor = "bg-[#edc27d]";
 
     const onDragOver = (event: React.DragEvent) => {
         event.preventDefault();
@@ -243,24 +221,18 @@ function Tile({
 
     const onDrop = (e: React.DragEvent) => {
         e.preventDefault();
-
         const fromBoard = e.dataTransfer.getData(DRAG_TYPE.FROM_BOARD);
         const fromHand = e.dataTransfer.getData(DRAG_TYPE.FROM_HAND);
-
         if (!fromHand && !fromBoard) return;
 
         if (fromBoard) {
             const sourceTile = JSON.parse(fromBoard) as StagedTile;
-            onTilePlace(
-                { letter: sourceTile.letter, row, col },
-                { row: sourceTile.row, col: sourceTile.col }
-            );
+            onTilePlace({ letter: sourceTile.letter, row, col }, { row: sourceTile.row, col: sourceTile.col });
             return;
         }
 
         const droppedLetter = JSON.parse(fromHand) as ScrabbleCharacter;
-        if (!isValidLetter(droppedLetter)) return;
-        onTilePlace({ letter: droppedLetter, row, col });
+        if (isValidLetter(droppedLetter)) onTilePlace({ letter: droppedLetter, row, col });
     };
 
     const onDragStart = (event: React.DragEvent) => {
@@ -276,7 +248,7 @@ function Tile({
             draggable={staged}
             onClick={() => setClickedTile({ row, col })}
             className={`
-                ${bg}
+                ${bgColor} ${borderClass}
                 aspect-square flex items-center justify-center
                 border w-full h-full box-border
                 text-[70%] select-none relative
@@ -284,26 +256,17 @@ function Tile({
                 ${!stagedIsValidWord && isScored && "border-red-500"}
                 ${staged || letter ? "text-black lg:text-2xl" : "text-white"}
                 ${staged ? "hover:bg-yellow-400 font-bold rounded-md lg:rounded-[0.4rem]" : ""}
-                ${isScored && "border-green-300"}
-                ${(() => {
-                    if (staged && stagedIsValidWord) return "bg-[#edc27d] border-2 border-green-300 lg:border-2";
-                    if (staged) return "bg-[#edc27d] border-2 border-[#c89e33] lg:border-2";
-                    if (isPartOfLastWord && stagedTiles.length === 0) return "bg-[#edc27d] border-2 border-blue-500 lg:border-2";
-                    if (isScored && letter) return "bg-[#f0b860] border-2 border-green-300 lg:border-2";
-                    if (letter && !isScored) return "bg-[#edc27d] border-2 border-orange-300 lg:border-2";
-                    return "border-black";
-                })()}
             `}
         >
             <div>{letter || (type ? type : "")}</div>
             <div className="absolute left-[15%] bottom-[7%] text-[70%]">
                 {score != null && score}
             </div>
-            {isFirstOfLastWord && stagedTiles.length === 0 && (
-                <ScoreOverlay score={lastScore} color="bg-blue-500" />
+            {isPartOfLastWord && stagedTiles.length === 0 && (
+                <ScoreOverlay score={isFirstOfLastWord ? lastScore : null} color="bg-blue-500" />
             )}
-            {isScored && stagedTiles[0]?.col == col && stagedTiles[0]?.row == row && stagedTiles && (
-                <ScoreOverlay score={crossWordScore} color={stagedIsValidWord ? "bg-green-600" : "bg-red-500"} />
+            {isScored && stagedTiles.length > 0 && (
+                <ScoreOverlay score={null} color={stagedIsValidWord ? "bg-green-600" : "bg-red-500"} />
             )}
             {isClicked && <ArrowOverlay clickDirection={clickedTile.direction} />}
         </div>
@@ -316,7 +279,6 @@ function isValidLetter(value: string): value is ScrabbleCharacter {
 
 function ArrowOverlay({ clickDirection }: { clickDirection: ClickedTileDirection | null }) {
     if (clickDirection == null) return null;
-
     return (
         <div className="absolute h-full w-full flex items-center justify-center bg-[#333333] rounded-md opacity-90">
             {clickDirection === "DOWN" ? (
@@ -332,12 +294,11 @@ function ArrowOverlay({ clickDirection }: { clickDirection: ClickedTileDirection
     );
 }
 
-function ScoreOverlay({ score, color }: { score: number | null, color: string }) {
+function ScoreOverlay({ score, color }: { score: number | null; color: string }) {
     if (!score) return null;
-
     return (
-        <div className="absolute inset-0 z-10  flex right-15  bottom-15     items-center justify-center pointer-events-none">
-            <div className={`${color} rounded-xl px-1  text-white text-xs font-bold`}>
+        <div className="absolute inset-0 z-10 flex right-15 bottom-15 items-center justify-center pointer-events-none">
+            <div className={`${color} rounded-xl px-1 text-white text-xs font-bold`}>
                 {score}
             </div>
         </div>

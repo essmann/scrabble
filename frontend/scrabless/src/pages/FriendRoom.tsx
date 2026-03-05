@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiManager } from '../api/apiManager';
-import { useWebSocket } from '../hooks/useWebSocket';
+import { useGameSync } from '../hooks/useGameSync';
 import { Game } from '../components/Game/Game';
 import { useAuth } from '../context/authContext';
 import { useGame } from '../context/GameContext';
-import type { GameState, PlayerState } from '../types/game';
+import type { GameEndType, GameState, PlayerState } from '../types/game';
 import type { User } from '../types/room';
 import { getOpponent } from '../components/Game/utils';
 interface RoomData {
@@ -24,34 +24,23 @@ export function FriendRoom() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [roomData, setRoomData] = useState<RoomData | null>(null);
-    const { gameState } = useGame();
-    // const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+    const { gameState, setGameState } = useGame();
     let auth = useAuth();
-
-    const joinedRooms = new Set<string>();
+    const joinedRoomsRef = useRef(new Set<string>());
     const roomId = searchParams.get('roomId');
-    const { setHand, setTurn, setBoard } = useGame();
-    const [wsMessage, sendMessage, turn, hand, board] = useWebSocket(
-        roomId as string,
-        setHand,
-        setBoard,
-        setTurn,
-    );
 
-    // const [board, setBoard] = useState();
+    // Setup WebSocket sync for this room
+    useGameSync(roomId ?? undefined, setGameState);
+
     useEffect(() => {
-        console.log("auth.user");
-        console.log(auth.user);
-
-
         if (!roomId) {
             navigate('/');
             return;
         }
 
-        if (joinedRooms.has(roomId)) return;
+        if (joinedRoomsRef.current.has(roomId)) return;
 
-        joinedRooms.add(roomId);
+        joinedRoomsRef.current.add(roomId);
 
         const joinRoom = async () => {
             try {
@@ -74,13 +63,13 @@ export function FriendRoom() {
     }, [roomId, navigate]);
 
     useEffect(() => {
-        switch (wsMessage.type) {
-            case "game_state":
-                setRoomData((prev) => {
-                    return prev ? { ...prev, state: "active" } : prev;
-                })
+        // Update room state when game starts (turn changes from undefined to a userId)
+        if (gameState?.turn) {
+            setRoomData((prev) => {
+                return prev ? { ...prev, state: "active" } : prev;
+            })
         }
-    }, [wsMessage])
+    }, [gameState?.turn])
 
 
 
@@ -96,7 +85,6 @@ export function FriendRoom() {
     if (error) {
         return (
             <div className='bg-linear-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-screen flex justify-center items-center'>
-                <h1 className='text-white text-2xl'>{ }</h1>
                 <div className='flex flex-col gap-4 items-center'>
                     <div className='text-red-400 text-xl'>❌ Error</div>
                     <div className='text-white/70'>{error}</div>
@@ -113,18 +101,16 @@ export function FriendRoom() {
 
     return (
         <div>
-            {roomData?.state == "active" ?
+            {roomData?.state === "active" ?
                 <div className='flex w-full h-full relative'>
                     {auth.user && (
-                        <Game hand={hand} turn={turn} board={board} user={auth.user} sendWsMessage={sendMessage} roomId={roomId as string} />
+                        <Game user={auth.user} roomId={roomId as string} />
                     )}
-                    {gameState?.result && <GameEndPanel gameState={gameState} currentUser={auth.user as User} getOpponent={() => getOpponent(gameState, auth.user.id)} onHome={function (): void {
-                        throw new Error('Function not implemented.');
-                    }} />}
+                    {gameState?.result && <GameEndPanel gameState={gameState} currentUser={auth.user as User} getOpponent={() => getOpponent(gameState, auth.user.id)} onHome={() => navigate("/")} />}
                 </div>
                 :
                 <div className='flex max-h-full w-full justify-center'>
-                    <WaitingPanel />
+                    <WaitingPanel roomId={roomId as string} />
                 </div>
             }
         </div>
@@ -133,70 +119,98 @@ export function FriendRoom() {
 
 export default FriendRoom;
 
-function WaitingPanel() {
+function WaitingPanel({ roomId }: { roomId: string }) {
+    const roomUrl = `${window.location.origin}/friend-room?roomId=${roomId}`;
 
     return (
-        <div className='bg-green-500 max-w-3xl w-full items-center justify-center flex-col gap-5 p-5'>
-            <h1 className='text-4xl'>Challenge a friend</h1>
+        <div className='bg-green-500 max-w-3xl w-full flex items-center justify-center flex-col gap-5 p-5 rounded'>
+            <h1 className='text-4xl font-bold'>Challenge a friend</h1>
 
-            <div className='bg-green-100 p-4 border-green-400 '>
-                <div>Time: </div>
+            <div className='bg-green-100 p-4 border border-green-400 rounded'>
+                <div className='font-semibold'>Time:</div>
                 <div>Untimed</div>
             </div>
 
-            <div className='flex gap-3 items-center '>
-                <div className='text-xl'>Copy link</div>
-                <div>http://localhost:5173/friend-room?roomId=ce2aedfe-36cd-4080-ad67-520d4f447f1d</div>
-
+            <div className='flex flex-col gap-2 items-start w-full'>
+                <div className='text-lg font-semibold'>Share this link:</div>
+                <div className='bg-white p-3 rounded break-all text-sm text-gray-800 w-full'>{roomUrl}</div>
             </div>
-
 
             <div>
-                <button className='bg-red-600 p-5 rounded-md'>Cancel</button>
+                <button className='bg-red-600 hover:bg-red-700 px-6 py-2 rounded-md text-white font-semibold transition-colors'>Cancel</button>
             </div>
         </div>
-    )
-
-
-
-
+    );
 }
 
-function GameEndPanel({ gameState, currentUser, getOpponent, onHome }: {
+function GameEndPanel({
+    gameState,
+    currentUser,
+    getOpponent,
+    onHome,
+    onRematch,
+}: {
     gameState: GameState;
     currentUser: User;
     getOpponent: () => PlayerState | null;
     onHome: () => void;
+    onRematch?: () => void;
 }) {
     const opponent = getOpponent();
-    if (!opponent || !gameState.players?.[opponent.userId]) return null;
+    const currentPlayerState = gameState.players?.[currentUser.id];
+    const opponentState = opponent ? gameState.players?.[opponent.userId] : null;
+
+    if (!currentPlayerState || !opponentState) return null;
+
     const didWin = gameState.result?.winnerId === currentUser.id;
 
+    const formatReason = (reason?: GameEndType) => {
+        if (!reason) return "";
+        switch (reason) {
+            case "OUT_OF_TIME":
+                return "Out of time";
+            case "RESIGN":
+                return "Opponent resigned";
+            case "LONG_DISCONNECT":
+                return "Opponent disconnected";
+            default:
+                return reason;
+        }
+    };
+
     return (
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-[#1a1a1a] border border-[#2e2e2e] rounded p-10 flex flex-col items-center gap-5 min-w-[240px]">
+        <div className="absolute inset-0 bg-black/80 backdrop-blur-[1px] flex items-center justify-center z-50">
+            <div className="relative lg:left-[12%] bg-[#1a1a1a] border border-[#2e2e2e] rounded p-8 flex flex-col items-center gap-4 min-w-[320px]">
                 <span className="text-xs tracking-widest uppercase text-[#555] font-mono">
-                    {gameState.result?.reason?.toLowerCase()}
+                    {formatReason(gameState.result?.reason)}
                 </span>
                 <span className={`text-3xl font-semibold ${didWin ? 'text-[#c8f0a0]' : 'text-[#e07070]'}`}>
                     {didWin ? 'You won' : 'You lost'}
                 </span>
-                <div className={`text-[1] font-semibold text-white flex justify-between w-full gap-4`}>
+                <div className="text-base font-semibold text-white flex justify-between w-full">
                     <div>{currentUser.name}</div>
-                    <div>{opponent.name}</div>
-
+                    <div>{opponentState.name}</div>
                 </div>
-                <div className={`text-3xl font-semibold text-white flex justify-between w-full`}>
-                    <div>{gameState.players[currentUser.id].score}</div>
-                    <div>{gameState.players[opponent?.userId].score}</div>
-
+                <div className="text-2xl font-semibold text-white flex justify-between w-full">
+                    <div>{currentPlayerState.score}</div>
+                    <div>{opponentState.score}</div>
                 </div>
-                <button onClick={onHome} className="mt-2 px-5 py-2 border border-[#3a3a3a] text-[#aaa] text-sm font-mono rounded hover:bg-white/5 transition-colors">
-                    home
-                </button>
-                <button className="mt-2 px-5 py-2 border border-[#3a3a3a] text-[#aaa] text-sm font-mono rounded hover:bg-white/5 transition-colors">
-                    rematch
-                </button>
+                <div className="flex gap-4 mt-4">
+                    <button
+                        onClick={onHome}
+                        className="px-5 py-2 border border-[#3a3a3a] text-[#aaa] text-sm font-mono rounded hover:bg-white/5 transition-colors"
+                    >
+                        Home
+                    </button>
+                    {onRematch && (
+                        <button
+                            onClick={onRematch}
+                            className="px-5 py-2 border border-[#3a3a3a] text-[#aaa] text-sm font-mono rounded hover:bg-white/5 transition-colors"
+                        >
+                            Rematch
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
