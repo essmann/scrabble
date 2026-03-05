@@ -57,6 +57,17 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [board, setBoard] = useState<BoardTile[][]>(createEmptyBoard());
     const [scoredWord, setScoredWord] = useState<BoardTile[][] | null>(null);
 
+    const [boardTilesWithLetters, setBoardTilesWithLetters] = useState<StagedTile[]>([] as StagedTile[]);
+    useEffect(() => {
+        const boardTiles: StagedTile[] = [];
+        board.forEach((row, rIdx) =>
+            row.forEach((tile, cIdx) => {
+                if (tile.letter) boardTiles.push({ row: rIdx, col: cIdx, letter: tile.letter });
+            })
+        );
+
+        setBoardTilesWithLetters(boardTiles);
+    }, [board])
     // const words = ["AB", "DEZ", "QA"];
 
     const players = gameState.players ?? {};
@@ -64,50 +75,62 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const opponentId = user ? Object.keys(players).find(id => id !== user.id) : undefined;
     const opponent = opponentId ? (players[opponentId] ?? null) : null;
 
+    const isTouching = (tileA: StagedTile, tileB: StagedTile) => {
+        const dr = Math.abs(tileA.row - tileB.row);
+        const dc = Math.abs(tileA.col - tileB.col);
+        return dr <= 1 && dc <= 1 && !(dr === 0 && dc === 0);
+    };
 
     useEffect(() => {
-        if (!stagedTiles.length) {
-            setStagedIsValidWord(false);
-            return;
-        }
-        const direction = getDirection(stagedTiles);
-        if (!direction && stagedTiles.length > 1) {
-            console.log("[ValidWord] No valid direction, multiple axes");
-            setStagedIsValidWord(false);
-            return;
-        }
-        const isVertical = direction === "vertical";
-        [...stagedTiles].sort((a, b) =>
-            isVertical ? a.row - b.row : a.col - b.col
-        );
-        // const mainWord = sortedTiles
-        //     .map(t => t.letter.toLowerCase())
-        //     .join("");
+        let isValid = false;
 
-        const wordsToCheck = [
-            ...(scoredWord ?? [])
-        ];
+        do {
+            if (!stagedTiles.length) break;
 
-        console.log("[ValidWord] Cross words:", (scoredWord ?? []).map(w =>
-            w.map(t => t.letter!.toLowerCase()).join("")
-        ));
-
-        const allValid = wordsToCheck.every(item => {
-            let word: string;
-            if (typeof item === "string") {
-                word = item;
-            } else {
-                word = item.map(t => t.letter!.toLowerCase()).join("");
+            const direction = getDirection(stagedTiles);
+            if (!direction && stagedTiles.length > 1) {
+                console.log("[ValidWord] No valid direction, multiple axes");
+                break;
             }
-            const valid = word.length > 1 && trie.search(word);
-            console.log(`[ValidWord] "${word}" → ${valid ? "✓" : "✗"}`);
-            return valid;
-        });
 
-        console.log("[ValidWord] All valid:", allValid);
-        setStagedIsValidWord(allValid);
+            const isVertical = direction === "vertical";
+            [...stagedTiles].sort((a, b) =>
+                isVertical ? a.row - b.row : a.col - b.col
+            );
+            if (boardTilesWithLetters.length > 0) {
+                const touchesBoard = stagedTiles.some((tile) =>
+                    boardTilesWithLetters.some((boardTile) => isTouching(tile, boardTile))
+                );
+                console.log(`[ValidWord] Any staged tile touches board? ${touchesBoard}`);
+                if (!touchesBoard) break;
+
+                const allConnected = stagedTiles.every((tile) =>
+                    boardTilesWithLetters.some((boardTile) => isTouching(tile, boardTile)) ||
+                    stagedTiles.some((other) => other !== tile && isTouching(tile, other))
+                );
+                console.log(`[ValidWord] All staged tiles connected (board or each other)? ${allConnected}`);
+                if (!allConnected) break;
+            }
+
+            const wordsToCheck = [...(scoredWord ?? [])];
+            console.log("[ValidWord] Cross words:", (scoredWord ?? []).map(w =>
+                w.map(t => t.letter!.toLowerCase()).join("")
+            ));
+            const allValid = wordsToCheck.length > 0 && wordsToCheck.every(item => {
+                const word = typeof item === "string"
+                    ? item
+                    : item.map(t => t.letter!.toLowerCase()).join("");
+                const valid = word.length > 1 && trie.search(word);
+                console.log(`[ValidWord] "${word}" → ${valid ? "✓" : "✗"}`);
+                return valid;
+            });
+
+            console.log("[ValidWord] All valid:", allValid);
+            isValid = allValid;
+        } while (false);
+
+        setStagedIsValidWord(isValid);
     }, [stagedTiles, scoredWord, trie]);
-
     const removeFromHand = (letter: ScrabbleCharacter) => {
         setHand(prev => {
             let found = false;

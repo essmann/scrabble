@@ -14,9 +14,10 @@ interface TilePosition {
 
 interface BoardProps {
     className: string;
+    onSubmit: () => void;
 }
 
-export function Board({ className }: BoardProps) {
+export function Board({ className, onSubmit }: BoardProps) {
     const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, gameState, scoredWord, setScoredWord } = useGame();
 
     const [lastScore, setLastScore] = useState<number | null>(null);
@@ -94,6 +95,15 @@ export function Board({ className }: BoardProps) {
                     : { row: clickedTile.row - 1, col: clickedTile.col };
 
                 setClickedTile(prevPosition, true);
+                playClick();
+                return;
+            }
+
+            if (ev.key === 'Enter') {
+
+                if (stagedTiles.length == 0) return;
+
+                onSubmit();
                 playClick();
                 return;
             }

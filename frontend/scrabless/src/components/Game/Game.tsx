@@ -78,7 +78,7 @@ export function Game({ turn, board, user, sendWsMessage, roomId }: GameProps) {
                         />
                     </div>
                     <div id="board" className="w-full lg:h-full lg:mt-0 md:mt-0 lg:flex-3 aspect-square">
-                        <Board className={''} />
+                        <Board className={''} onSubmit={makeMove} />
                         <div id="input" className="bg-[#2C2C38] w-full p-1 rounded-md lg:flex-6 lg:mt-0 mt-auto border-box">
                             <div className="flex border-box justify-between items-center text-center">
                                 <InputPanel
