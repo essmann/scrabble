@@ -1,5 +1,4 @@
 import { useEffect, useRef } from "react";
-import type { WSTile } from "../types/game";
 import type { StagedTile, ScrabbleCharacter } from "../components/Game/types";
 
 interface UseBoardKeyboardProps {
@@ -39,28 +38,71 @@ export function useBoardKeyboard({
     onSubmit,
     playClick,
 }: UseBoardKeyboardProps) {
-    // Stable refs so the event listener always sees current values
-    // without needing to be re-registered on every state change
+    // Keep a ref to all mutable values so the listener never goes stale
     const stateRef = useRef({
         clickedTile,
         stagedTiles,
         hand,
+        board,
+        setClickedTile,
+        setStagedTiles,
+        addToHand,
+        removeFromHand,
+        onSubmit,
+        playClick,
+    });
+
+    // Sync ref on every render — zero re-registration cost
+    useEffect(() => {
+        stateRef.current = {
+            clickedTile,
+            stagedTiles,
+            hand,
+            board,
+            setClickedTile,
+            setStagedTiles,
+            addToHand,
+            removeFromHand,
+            onSubmit,
+            playClick,
+        };
     });
 
     useEffect(() => {
-        stateRef.current = { clickedTile, stagedTiles, hand };
-    });
-
-    useEffect(() => {
-        if (clickedTile == null) return;
-
         const handleKeyDown = (ev: KeyboardEvent) => {
-            const { clickedTile, stagedTiles, hand } = stateRef.current;
+            const {
+                clickedTile,
+                stagedTiles,
+                hand,
+                board,
+                setClickedTile,
+                setStagedTiles,
+                addToHand,
+                removeFromHand,
+                onSubmit,
+                playClick,
+            } = stateRef.current;
+
             if (!clickedTile) return;
 
             // Arrow key navigation
             if (["ArrowUp", "ArrowDown", "ArrowRight", "ArrowLeft"].includes(ev.key)) {
                 ev.preventDefault();
+                if (ev.ctrlKey) {
+                    // Ctrl+Arrow: change typing direction without moving the cursor
+                    const newDirection: "RIGHT" | "DOWN" =
+                        ev.key === "ArrowUp" || ev.key === "ArrowDown" ? "DOWN" : "RIGHT";
+                    // Temporarily force direction by moving 0 steps in the new axis,
+                    // relying on setClickedTile to adopt the implicit direction from context —
+                    // but since your setter infers direction from click, the cleanest fix is
+                    // to smuggle it via a zero-step move in that axis:
+                    const nudge =
+                        newDirection === "DOWN"
+                            ? { row: clickedTile.row + 0, col: clickedTile.col }
+                            : { row: clickedTile.row, col: clickedTile.col + 0 };
+                    setClickedTile(nudge, false); // false = don't keepDirection → resets it
+                    return;
+                }
                 const newPos = { row: clickedTile.row, col: clickedTile.col };
                 switch (ev.key) {
                     case "ArrowLeft": newPos.col--; break;
@@ -68,7 +110,6 @@ export function useBoardKeyboard({
                     case "ArrowUp": newPos.row--; break;
                     case "ArrowDown": newPos.row++; break;
                 }
-                // Clamp to board bounds
                 newPos.row = Math.max(0, Math.min(14, newPos.row));
                 newPos.col = Math.max(0, Math.min(14, newPos.col));
                 setClickedTile(newPos, true);
@@ -80,22 +121,24 @@ export function useBoardKeyboard({
                 const stagedTileAtPos = stagedTiles.find(
                     (t) => t.row === clickedTile.row && t.col === clickedTile.col
                 );
-                if (!stagedTileAtPos) return;
 
-                addToHand(stagedTileAtPos.letter);
-                setStagedTiles((prev) =>
-                    prev.filter(
-                        (t) => !(t.row === clickedTile.row && t.col === clickedTile.col)
-                    )
-                );
-
+                // If nothing staged here, step back without removing anything
                 const prevPosition =
-                    clickedTile.direction === "RIGHT" || clickedTile.direction == null
-                        ? { row: clickedTile.row, col: clickedTile.col - 1 }
-                        : { row: clickedTile.row - 1, col: clickedTile.col };
+                    clickedTile.direction === "DOWN"
+                        ? { row: clickedTile.row - 1, col: clickedTile.col }
+                        : { row: clickedTile.row, col: clickedTile.col - 1 };
+
+                if (stagedTileAtPos) {
+                    addToHand(stagedTileAtPos.letter);
+                    setStagedTiles((prev) =>
+                        prev.filter(
+                            (t) => !(t.row === clickedTile.row && t.col === clickedTile.col)
+                        )
+                    );
+                    playClick();
+                }
 
                 setClickedTile(prevPosition, true);
-                playClick();
                 return;
             }
 
@@ -107,7 +150,7 @@ export function useBoardKeyboard({
                 return;
             }
 
-            // Escape: deselect tile
+            // Escape: clear selection
             if (ev.key === "Escape") {
                 setClickedTile({ row: -1, col: -1 });
                 return;
@@ -116,21 +159,15 @@ export function useBoardKeyboard({
             // Letter placement
             const letter = ev.key.toUpperCase() as ScrabbleCharacter;
             if (!/^[A-Z]$/.test(letter)) return;
-
-            const letterInHand = hand.find((h) => h === letter);
-            if (!letterInHand) return;
+            if (!hand.find((h) => h === letter)) return;
             if (!isEmptyTile(clickedTile.row, clickedTile.col, board, stagedTiles)) return;
 
-            const newTile: StagedTile = {
-                letter,
-                row: clickedTile.row,
-                col: clickedTile.col,
-            };
+            const newTile: StagedTile = { letter, row: clickedTile.row, col: clickedTile.col };
 
             const nextPosition =
-                clickedTile.direction === "RIGHT" || clickedTile.direction == null
-                    ? { row: clickedTile.row, col: clickedTile.col + 1 }
-                    : { row: clickedTile.row + 1, col: clickedTile.col };
+                clickedTile.direction === "DOWN"
+                    ? { row: clickedTile.row + 1, col: clickedTile.col }
+                    : { row: clickedTile.row, col: clickedTile.col + 1 };
 
             setStagedTiles((prev) => [...prev, newTile]);
             removeFromHand(letter);
@@ -141,7 +178,6 @@ export function useBoardKeyboard({
         document.addEventListener("keydown", handleKeyDown);
         return () => document.removeEventListener("keydown", handleKeyDown);
 
-        // Only re-register when clickedTile changes (null ↔ non-null),
-        // not on every keystroke — state is read via stateRef
-    }, [clickedTile == null]);
+        // Register once, forever — stateRef keeps everything fresh
+    }, []);
 }

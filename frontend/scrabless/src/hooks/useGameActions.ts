@@ -84,6 +84,7 @@ export function useGameActions({
      */
     const makeMove = () => {
         if (!validWord || stagedTiles.length === 0) {
+            console.log(stagedTiles);
             console.log("Move is invalid. Not submitting.");
             return;
         }

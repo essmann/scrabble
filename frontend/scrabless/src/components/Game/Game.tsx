@@ -17,6 +17,9 @@ export function Game({ user, roomId }: GameProps) {
     const { turn, board, stagedTiles, setStagedTiles, sendWsMessage, stagedIsValidWord } = useGame();
     const { makeMove, resign, skipTurn } = useGameActions({ stagedTiles, userId, roomId, sendWsMessage, validWord: stagedIsValidWord });
     console.log("[Game] Rendered with turn:", turn, "myId:", user.id, "isMyTurn:", user.id === turn);
+
+
+    console.log(`CALLED FROM GAME: ${stagedTiles}`);
     const myTurn = user.id === turn;
     const successAudioRef = useRef<HTMLAudioElement | null>(null);
     useEffect(() => {

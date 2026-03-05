@@ -122,26 +122,44 @@ export default FriendRoom;
 function WaitingPanel({ roomId }: { roomId: string }) {
     const roomUrl = `${window.location.origin}/friend-room?roomId=${roomId}`;
 
+    const copyToClipboard = () => {
+        navigator.clipboard.writeText(roomUrl);
+        alert("Link copied to clipboard!");
+    };
+
     return (
-        <div className='bg-green-500 max-w-3xl w-full flex items-center justify-center flex-col gap-5 p-5 rounded'>
-            <h1 className='text-4xl font-bold'>Challenge a friend</h1>
+        <div className="max-w-md w-full bg-green-50 rounded-xl shadow-lg p-6 flex flex-col items-center gap-6">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-green-800 text-center">
+                Challenge a Friend
+            </h1>
 
-            <div className='bg-green-100 p-4 border border-green-400 rounded'>
-                <div className='font-semibold'>Time:</div>
-                <div>Untimed</div>
+            <div className="w-full bg-green-100 border border-green-300 rounded-lg p-4 flex flex-col gap-1">
+                <span className="font-semibold text-green-700">Time:</span>
+                <span className="text-green-800">Untimed</span>
             </div>
 
-            <div className='flex flex-col gap-2 items-start w-full'>
-                <div className='text-lg font-semibold'>Share this link:</div>
-                <div className='bg-white p-3 rounded break-all text-sm text-gray-800 w-full'>{roomUrl}</div>
+            <div className="w-full flex flex-col gap-2">
+                <span className="text-lg font-semibold text-green-900">Share this link:</span>
+                <div className="flex w-full gap-2">
+                    <div className="bg-white p-3 rounded-lg break-all text-gray-800 flex-1 select-all">
+                        {roomUrl}
+                    </div>
+                    <button
+                        onClick={copyToClipboard}
+                        className="bg-green-600 hover:bg-green-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors"
+                    >
+                        Copy
+                    </button>
+                </div>
             </div>
 
-            <div>
-                <button className='bg-red-600 hover:bg-red-700 px-6 py-2 rounded-md text-white font-semibold transition-colors'>Cancel</button>
-            </div>
+            <button className="bg-red-600 hover:bg-red-700 text-white font-semibold px-6 py-2 rounded-lg transition-colors">
+                Cancel
+            </button>
         </div>
     );
 }
+
 
 function GameEndPanel({
     gameState,
