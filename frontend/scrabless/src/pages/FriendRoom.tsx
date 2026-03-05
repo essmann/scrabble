@@ -1,8 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { apiManager } from '../api/apiManager';
 import { useWebSocket } from '../hooks/useWebSocket';
-import { Board } from '../components/Game/Board';
 import { Game } from '../components/Game/Game';
 import { useAuth } from '../context/authContext';
 import { useGame } from '../context/GameContext';
@@ -85,7 +84,7 @@ export function FriendRoom() {
 
     if (loading) {
         return (
-            <div className='bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-screen flex justify-center items-center'>
+            <div className='bg-linear-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-screen flex justify-center items-center'>
                 <div className='text-white text-xl'>Loading room...</div>
             </div>
         );
@@ -93,7 +92,7 @@ export function FriendRoom() {
 
     if (error) {
         return (
-            <div className='bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-screen flex justify-center items-center'>
+            <div className='bg-linear-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-screen flex justify-center items-center'>
                 <h1 className='text-white text-2xl'>{ }</h1>
                 <div className='flex flex-col gap-4 items-center'>
                     <div className='text-red-400 text-xl'>❌ Error</div>

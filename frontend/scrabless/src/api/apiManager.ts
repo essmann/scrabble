@@ -5,7 +5,7 @@ interface User {
     id: string;
 }
 export class apiManager {
-    public static expressUrl = (import.meta.env.VITE_EXPRESS_URL || "http://localhost:3000").replace(/\/$/, ""); public static wsUrl = this.expressUrl;
+    public static expressUrl = (import.meta.env.VITE_EXPRESS_URL || "api").replace(/\/$/, ""); public static wsUrl = this.expressUrl;
 
     private static postOptions = {
         method: "POST",

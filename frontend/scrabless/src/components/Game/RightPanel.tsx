@@ -35,7 +35,7 @@ export function RightPanel({ className, myTurn }: { className: string, myTurn: b
     );
 }
 
-function PlayerPanel({ name, className, time, isActive, score }: {
+function PlayerPanel({ name, time, isActive, score }: {
     name: string,
     className?: string,
     time: number,

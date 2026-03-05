@@ -1,9 +1,7 @@
 import { useState } from "react";
-import type { User } from "../types/room";
 import { Board } from "./Game/Board";
 import { InputPanel } from "./Game/InputPanel";
 import { RightPanel } from "./Game/RightPanel";
-import type { Letter } from "../types/game";
 import { useGame } from "../context/GameContext";
 
 
@@ -12,16 +10,14 @@ export function TestGame() {
 
     const [myTurn] = useState(true);
 
-    const { stagedTiles, setStagedTiles } = useGame();
+    const { setStagedTiles } = useGame();
     //Staged tiles are the temporary tiles placed on the board by the client.
     const removeStagedTile = (row: number, col: number) => {
         setStagedTiles(prev =>
             prev.filter(t => !(t.row === row && t.col === col))
         );
     };
-    const addStagedTile = (row: number, col: number) => {
 
-    }
 
     const makeMove = () => {
 
@@ -43,8 +39,6 @@ export function TestGame() {
                     <div className="bg-[#3C3C4B]  rounded-sm w-full p-3 lg:flex-1 flex gap-4 lg:justify-center  items-center lg:items-start lg:min-w-sm lg:overflow-scroll ">
                         <RightPanel
                             className={''}
-                            user={{ id: "asdfga", name: "test" } as User}
-                            opponent={{ id: "asdfga", name: "test" } as User}
                             myTurn={myTurn || false}
                         />
                     </div>

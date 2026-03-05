@@ -9,12 +9,12 @@ interface BoardState {
     board: WSTile[][];
 
 }
-type TileType = "DW" | "TW" | "TL" | "DL"
-interface Tile {
-    letter: Letter | null;
-    type: TileType;
+// type TileType = "DW" | "TW" | "TL" | "DL"
+// interface Tile {
+//     letter: Letter | null;
+//     type: TileType;
 
-}
+// }
 export interface GameState {
     room: Room;
     players: {
@@ -25,7 +25,7 @@ export interface GameState {
     board: BoardState | [];
     lastWord?: { words: WSTile[][], score: number };
 
-}
+}2
 
 export interface PlayerState {
     userId: string;

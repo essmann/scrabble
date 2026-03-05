@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { BoardTile, ClickedTileDirection, ScrabbleCharacter, StagedTile, TilePosition } from "../components/Game/types";
 import { createEmptyBoard } from "../test/testTiles";
-import type { GameState, PlayerState, WSTile } from "../types/game";
+import type { GameState, PlayerState } from "../types/game";
 import { useUser } from "../hooks/useUser";
 import { getDirection } from "../components/Game/utils";
 import { getScrabbleTrie } from "../components/Game/trie";
@@ -57,7 +57,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
     const [board, setBoard] = useState<BoardTile[][]>(createEmptyBoard());
     const [scoredWord, setScoredWord] = useState<BoardTile[][] | null>(null);
 
-    const words = ["AB", "DEZ", "QA"];
+    // const words = ["AB", "DEZ", "QA"];
 
     const players = gameState.players ?? {};
     const player = user ? (players[user.id] ?? null) : null;
@@ -75,7 +75,7 @@ export const GameProvider = ({ children }: { children: ReactNode }) => {
             return;
         }
         const isVertical = direction === "vertical";
-        const sortedTiles = [...stagedTiles].sort((a, b) =>
+        [...stagedTiles].sort((a, b) =>
             isVertical ? a.row - b.row : a.col - b.col
         );
         // const mainWord = sortedTiles

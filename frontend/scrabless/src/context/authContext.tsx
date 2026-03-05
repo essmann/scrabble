@@ -1,6 +1,5 @@
 // AuthContext.tsx
 import { createContext, useContext, useState, type ReactNode } from "react";
-import { apiManager } from "../api/apiManager";
 
 // Define the user type
 type User = {

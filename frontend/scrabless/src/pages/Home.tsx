@@ -1,13 +1,9 @@
-import { Link } from 'react-router-dom';
-import { createRoom } from '../api/createRoom';
 import '../index.css'
 import { apiManager } from '../api/apiManager';
 import { useState } from 'react';
 export default function Home() {
 
     const [showFriendMenu, setShowFriendMenu] = useState(false);
-    const [showNormalMenu, setShowNormalMenu] = useState(false);
-    const [showBotMenu, setShowBotMenu] = useState(false);
 
     async function handleShareRoom() {
         apiManager.createRoom("friend");
@@ -30,9 +26,9 @@ export default function Home() {
     }
 
     return (
-        <div id="home" className='bg-gradient-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-full flex justify-center items-center'>
+        <div id="home" className='bg-linear-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-full flex justify-center items-center'>
             <div className='flex flex-col gap-4 max-w-md w-full px-8'>
-                <h1 className="text-5xl md:text-6xl font-bold mb-8 text-center tracking-wide bg-gradient-to-br from-indigo-400 to-purple-500 bg-clip-text text-transparent">
+                <h1 className="text-5xl md:text-6xl font-bold mb-8 text-center tracking-wide bg-linear-to-br from-indigo-400 to-purple-500 bg-clip-text text-transparent">
                     essscrabbles
                 </h1>
 
@@ -66,7 +62,7 @@ export default function Home() {
 function FriendMenu({ onClose, onCreateRoom }: any) {
     return (
         <div className='fixed inset-0 bg-black/60 backdrop-blur-sm flex justify-center items-center z-50'>
-            <div className='flex flex-col gap-4 max-w-md w-full px-8 bg-gradient-to-br from-[#1a1a2e]/95 to-[#0f0f1e]/95 rounded-2xl p-8 border border-white/10'>
+            <div className='flex flex-col gap-4 max-w-md w-full px-8 bg-linear-to-br from-[#1a1a2e]/95 to-[#0f0f1e]/95 rounded-2xl p-8 border border-white/10'>
                 <h2 className="text-3xl font-bold mb-4 text-center text-white/90">
                     Play with Friend
                 </h2>

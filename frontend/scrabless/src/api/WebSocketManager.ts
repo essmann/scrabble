@@ -7,7 +7,10 @@ class WebSocketManager {
     private static instance: WebSocketManager;
     private socket: WebSocket | null = null;
     private listeners: Set<MessageCallback> = new Set();
-    private _url: string = import.meta.env.VITE_WS_URL || "ws://localhost:3000";
+    private _url: string =
+        import.meta.env.VITE_WS_URL ||
+        `${window.location.protocol === "https:" ? "wss" : "ws"}://${window.location.host}/api`;
+
     private connectionPromise: Promise<void> | null = null;
     private isConnecting: boolean = false;
 
@@ -22,6 +25,8 @@ class WebSocketManager {
 
     connect(url: string = this._url): Promise<void> {
         console.log("Attempting to connect to WebSocket...");
+        console.log(`Websocket URL: ${this._url}`);
+
 
         // Return existing promise if already connecting
         if (this.connectionPromise && this.isConnecting) {

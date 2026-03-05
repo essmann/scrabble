@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from "react";
 import { wsManager } from "../api/WebSocketManager";
 import type { WebsocketMessage } from "../types/websocket";
-import type { GameState, WSTile } from "../types/game";
+import type { GameState } from "../types/game";
 import { useAuth } from "../context/authContext";
 import type { BoardTile, ScrabbleCharacter } from "../components/Game/types";
 import { useGame } from "../context/GameContext";

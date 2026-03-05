@@ -6,9 +6,9 @@ export class Direction {
 }
 
 
-function validateWords(crossWords: BoardTile[][], trie: any) {
+// function validateWords(crossWords: BoardTile[][], trie: any) {
 
-}
+// }
 export function getDirection(move: StagedTile[]): Direction | null {
     if (move.length === 0) return null;
 
@@ -93,16 +93,10 @@ export type ComputeScoreResult = { score: number, crossWords: BoardTile[][] } | 
 export function computeScore(move: StagedTile[], board: BoardTile[][]): ComputeScoreResult {
     const crossWords: BoardTile[][] = [];
     const direction = getDirection(move);
-
-    // if (!move.length) return crossWords;
-
-    // Merge staged tiles into board so find functions can see them
     const mergedBoard = mergeBoard(board, move);
-
     if (direction === Direction.up) {
         const verticalWord = findVertical(mergedBoard, move[0]!.row, move[0]!.col);
         verticalWord && crossWords.push(...verticalWord);
-
         for (const tile of move) {
             const horizontal = findHorizontal(mergedBoard, tile.row, tile.col);
             horizontal && crossWords.push(...horizontal);
@@ -110,7 +104,6 @@ export function computeScore(move: StagedTile[], board: BoardTile[][]): ComputeS
     } else if (direction === Direction.side) {
         const horizontalWord = findHorizontal(mergedBoard, move[0]!.row, move[0]!.col);
         horizontalWord && crossWords.push(...horizontalWord);
-
         for (const tile of move) {
             const vertical = findVertical(mergedBoard, tile.row, tile.col);
             vertical && crossWords.push(...vertical);
@@ -123,29 +116,24 @@ export function computeScore(move: StagedTile[], board: BoardTile[][]): ComputeS
             vertical && crossWords.push(...vertical);
         }
     }
-
     if (crossWords.length == 0) return null;
-
     let score = 0;
+    const scoredTiles = new Set<string>();
     for (const words of crossWords) {
         for (const letter of words) {
-
-            //if the letter is in our own "word" we include DL, TL etc.
-
+            const key = `${letter.row},${letter.col}`;
+            if (scoredTiles.has(key)) continue;
+            scoredTiles.add(key);
             score += getLetterScore(letter.letter!);
         }
     }
-
     //compute the bonuses
     for (const word of move) {
         let { row, col } = word;
         let bonus = board[row][col].bonus;
-
         let letterScore = getLetterScore(word.letter);
-
         console.log(word);
         console.log(bonus);
-
         if (bonus == "TL") {
             score -= letterScore;
             score += letterScore * 3;
@@ -161,10 +149,7 @@ export function computeScore(move: StagedTile[], board: BoardTile[][]): ComputeS
         else if (bonus == 'DW') {
             score *= 2;
         }
-
         console.log(crossWords);
-
     }
     return { score: score, crossWords: crossWords }
-
 }

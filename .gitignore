@@ -1,2 +1,4 @@
 backend/src/logs/
 *.log
+
+.env

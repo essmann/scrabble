@@ -23,7 +23,11 @@ app.use((req, res, next) => {
         'http://localhost:5173',
         'https://unpromised-prefraternally-luca.ngrok-free.dev',
         'https://c.com',
-        'https://boobies.com'
+        'https://boobies.com',
+        'http://scrabble.loseyourip.com',
+        'https://scrabble.loseyourip.com',
+
+        'http://scrabble.loseyourip.com:5173'
     ];
 
     const origin = req.headers.origin;
@@ -269,6 +273,7 @@ app.get('/friend-room', (req, res) => {
 });
 
 app.get("/user", (req, res) => {
+    console.log("Trying to get user information.");
     res.json({ id: req.userId, name: req.name });
 
 })

@@ -2,8 +2,7 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import FriendRoom from './pages/FriendRoom'
-import { Sidebar } from './components/Sidebar';
-import { AuthProvider, useAuth } from './context/authContext';
+import { useAuth } from './context/authContext';
 import { useEffect, useRef, useState } from 'react';
 import { apiManager } from './api/apiManager';
 import { TestGame } from './components/TestGame';

@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { useGame } from "../../context/GameContext";
 import { LETTER_SCORES } from "../../context/GameContext";
-import type { BoardTile, ScrabbleCharacter } from "./types";
-import { DRAG_TYPE, getLetterScore, type ClickedTileDirection, type StagedTile } from "./types";
+import type { ScrabbleCharacter } from "./types";
+import { DRAG_TYPE, type ClickedTileDirection, type StagedTile } from "./types";
 import clickSound from "../../assets/sounds/matthewvakaliuk73627-mouse-click-290204.mp3";
-import { computeScore, type ComputeScoreResult } from "./utils";
+import { computeScore } from "./utils";
 import type { WSTile } from "../../types/game";
 
 interface TilePosition {
@@ -17,9 +17,10 @@ interface BoardProps {
 }
 
 export function Board({ className }: BoardProps) {
-    const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, stagedIsValidWord, gameState, scoredWord, setScoredWord } = useGame();
+    const { board, stagedTiles, setStagedTiles, clickedTile, setClickedTile, hand, addToHand, removeFromHand, gameState, scoredWord, setScoredWord } = useGame();
 
     const [lastScore, setLastScore] = useState<number | null>(null);
+    const [croswordScore, setCrosswordScore] = useState<number | null>(null);
     const [lastSubmittedMove, setLastSubmittedMove] = useState<WSTile[][] | null>(null);
     const clickAudioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -40,6 +41,10 @@ export function Board({ className }: BoardProps) {
         }
         let { score, crossWords } = result;
         setScoredWord(crossWords);
+        setCrosswordScore(score);
+        console.log("SCORED WORDS: ");
+        console.log(crossWords);
+
         console.log(score);
     }, [stagedTiles]);
 
@@ -167,6 +172,7 @@ export function Board({ className }: BoardProps) {
                                 isScored={isScoredTile}
                                 isPartOfLastWord={isPartOfLastWord}
                                 isFirstOfLastWord={isFirstOfLastWord}
+                                crossWordScore={croswordScore}
                             />
                         );
                     })
@@ -188,6 +194,7 @@ function Tile({
     isScored,
     isPartOfLastWord,
     isFirstOfLastWord,
+    crossWordScore
 }: {
     letter: ScrabbleCharacter | null;
     type: string | null;
@@ -200,6 +207,7 @@ function Tile({
     isScored: boolean;
     isPartOfLastWord: boolean;
     isFirstOfLastWord: boolean;
+    crossWordScore: number | null,
 }) {
     const { clickedTile, setClickedTile, stagedIsValidWord, stagedTiles } = useGame();
     const score = letter ? LETTER_SCORES[letter] : null;
@@ -263,7 +271,7 @@ function Tile({
                 border w-full h-full box-border
                 text-[70%] select-none relative
                 font-extrabold lg:rounded-[0.6rem]
-                ${!stagedIsValidWord && isScored && "bg-red-500"}
+                ${!stagedIsValidWord && isScored && "border-red-500"}
                 ${staged || letter ? "text-black lg:text-2xl" : "text-white"}
                 ${staged ? "hover:bg-yellow-400 font-bold rounded-md lg:rounded-[0.4rem]" : ""}
                 ${isScored && "border-green-300"}
@@ -282,7 +290,10 @@ function Tile({
                 {score != null && score}
             </div>
             {isFirstOfLastWord && stagedTiles.length === 0 && (
-                <ScoreOverlay score={lastScore} />
+                <ScoreOverlay score={lastScore} color="bg-blue-500" />
+            )}
+            {isScored && stagedTiles[0]?.col == col && stagedTiles[0]?.row == row && stagedTiles && (
+                <ScoreOverlay score={crossWordScore} color={stagedIsValidWord ? "bg-green-600" : "bg-red-500"} />
             )}
             {isClicked && <ArrowOverlay clickDirection={clickedTile.direction} />}
         </div>
@@ -311,12 +322,12 @@ function ArrowOverlay({ clickDirection }: { clickDirection: ClickedTileDirection
     );
 }
 
-function ScoreOverlay({ score }: { score: number | null }) {
+function ScoreOverlay({ score, color }: { score: number | null, color: string }) {
     if (!score) return null;
 
     return (
         <div className="absolute inset-0 z-10  flex right-15  bottom-15     items-center justify-center pointer-events-none">
-            <div className="bg-blue-500 rounded-xl px-1  text-white text-xs font-bold">
+            <div className={`${color} rounded-xl px-1  text-white text-xs font-bold`}>
                 {score}
             </div>
         </div>
