@@ -13,6 +13,7 @@ import { WebSocketManager, type AuthenticatedWebSocket } from './ws/websocketMan
 import { WSMessageHandler } from './ws/WSMessageHandler.js';
 import { parseMessage, parseCookies } from './utils/index.js';
 import { logger } from './logger.js';
+import { AlreadyInRoomError, formatError, RoomRole, UnauthorizedError } from './types/Error/error.js';
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
@@ -163,9 +164,20 @@ wss.on('connection', handleWebSocketConnection);
 app.post('/create-room', (req, res) => {
     const userId = req.userId;
     const userName = req.name;
+
     if (!userId) {
         logger.logError('ROOM_CREATION', 'Unauthorized room creation attempt');
-        return res.status(401).json({ error: 'Unauthorized' });
+
+        return res.status(401).json(formatError("unauthorized", "userId not found"));
+    }
+
+    const existingRoom = roomManager.getRoomByUserId(userId);
+    if (existingRoom) {
+        const role: RoomRole = existingRoom.owner.id === userId ? 'owner' : 'guest';
+        logger.logAlreadyInRoom(userId, existingRoom.id, role, 'create_room');
+
+        return res.status(409).json(formatError("already_in_room", "used is already in another room.", { role: role, roomId: existingRoom.id, state: existingRoom }));
+
     }
 
     const owner: User = {
@@ -176,7 +188,10 @@ app.post('/create-room', (req, res) => {
     const roomId = roomManager.createRoom(owner);
     logger.logRoomCreation(roomId, userId, userName);
 
-    res.json({ roomId, message: "Successfully created room" });
+    return res.status(201).json({
+        roomId,
+        message: "Successfully created room"
+    });
 });
 
 // Helper function to start game
@@ -223,7 +238,17 @@ app.get('/friend-room', (req, res) => {
     if (!userId) {
         return res.status(401).json({ error: 'Unauthorized' });
     }
-
+    const existingRoom = roomManager.getRoomByUserId(userId);
+    if (existingRoom && existingRoom.id !== roomId) {
+        const role = existingRoom.owner.id === userId ? 'owner' : 'guest';
+        logger.logAlreadyInRoom(userId, existingRoom.id, role, 'join_room');
+        return res.status(409).json({
+            error: 'already_in_room',
+            role,
+            roomId: existingRoom.id,
+            state: existingRoom.state
+        });
+    }
     const room = roomManager.getRoom(roomId);
 
     if (!room) {

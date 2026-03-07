@@ -4,6 +4,7 @@ interface User {
     name: string;
     id: string;
 }
+
 export class apiManager {
     public static expressUrl = (import.meta.env.VITE_EXPRESS_URL || "api").replace(/\/$/, ""); public static wsUrl = this.expressUrl;
 
@@ -24,20 +25,25 @@ export class apiManager {
             switch (type) {
                 case "friend": {
                     const res = await fetch(this.expressUrl + "/create-room", this.postOptions);
-                    if (!res.ok) {
-                        throw new Error(`Failed to create room: ${res.status}`); // FIX: backticks, not Error`...`
-                    }
+
                     const data = await res.json();
+
+                    if (!res.ok) {
+                        return data;
+                    }
+
                     return { roomId: data.roomId };
                 }
+
                 case "search":
                     return { error: "Search rooms not implemented yet" };
+
                 default:
                     return { error: "Invalid room type" };
             }
         } catch (error) {
             console.error("Error creating room:", error);
-            return { error: error instanceof Error ? error.message : "Unknown error" };
+            return { error: "network_error" };
         }
     }
 
@@ -85,4 +91,26 @@ export class apiManager {
             throw error; // Re-throw so caller can handle
         }
     }
+    static async leaveRoom(roomId: string) {
+        try {
+
+            let response = await fetch(this.expressUrl + "/leave-room", this.getOptions);
+            if (!response.ok) {
+                throw new Error("failed to leave room");
+            }
+        } catch (error) {
+
+        }
+    }
+    private static async getErrorMessage(response: Response) {
+        const text = await response.text();
+
+        try {
+            const json = JSON.parse(text);
+            return json.error || json.message || text;
+        } catch {
+            return text;
+        }
+    }
+
 }

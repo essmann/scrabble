@@ -16,7 +16,11 @@ export interface User {
 export class RoomManager {
     private rooms = new Map<string, Room>(); // roomId -> Room
     private userToRoom = new Map<string, string>(); // userId -> roomId
-
+    getRoomByUserId(userId: string): Room | null {
+        const roomId = this.userToRoom.get(userId);
+        if (!roomId) return null;
+        return this.rooms.get(roomId) ?? null;
+    }
     createRoom(owner: User): string {
         // Clean up any existing room for this user
         this.removeUserRooms(owner.id);

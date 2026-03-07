@@ -245,7 +245,19 @@ class Logger {
             data
         );
     }
+    logRoomInfo(message: string, data?: Record<string, any>) {
+        this.log(this.roomLogPath, 'INFO', 'ROOM_INFO', message, data);
+    }
 
+    logAlreadyInRoom(userId: string, existingRoomId: string, role: 'owner' | 'guest', attemptedAction: 'create_room' | 'join_room'): void {
+        this.log(
+            this.roomLogPath,
+            'WARN',
+            'ROOM_ALREADY_IN_ROOM',
+            `User attempted to ${attemptedAction} but is already in a room`,
+            { userId, existingRoomId, role, attemptedAction }
+        );
+    }
     /**
      * Log room cleanup
      */

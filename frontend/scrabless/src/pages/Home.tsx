@@ -1,10 +1,13 @@
 import '../index.css'
 import { apiManager } from '../api/apiManager';
 import { useState } from 'react';
+import AlreadyInRoomModal from '../components/Modals/AlreadyInRoomModal';
+import { type AlreadyInRoomError } from '../types/Errors/ApiError';
 export default function Home() {
 
     const [showFriendMenu, setShowFriendMenu] = useState(false);
-
+    const [modal, setModal] = useState(false);
+    const [roomId, setRoomId] = useState("");
     async function handleShareRoom() {
         apiManager.createRoom("friend");
     }
@@ -12,7 +15,16 @@ export default function Home() {
     async function handleCreateRoom() {
         const { roomId, error } = await apiManager.createRoom("friend");
         if (error) {
-            console.error(error);
+            if (error.code === "already_in_room") {
+                const e = error as AlreadyInRoomError;
+                console.log(e);
+                setRoomId(e.meta.roomId);
+                setModal(true);
+            }
+            else {
+                console.error(error);
+            }
+
         } else {
             console.log("Room created:", roomId);
             // Get the current URL
@@ -27,6 +39,11 @@ export default function Home() {
 
     return (
         <div id="home" className='bg-linear-to-br from-[#1a1a2e] to-[#0f0f1e] w-full h-full flex justify-center items-center'>
+            {modal && <AlreadyInRoomModal
+                onRejoin={() => setModal(false)}
+                onAbort={() => console.log("Aborted")}
+                roomId={roomId}
+            />}
             <div className='flex flex-col gap-4 max-w-md w-full px-8'>
                 <h1 className="text-5xl md:text-6xl font-bold mb-8 text-center tracking-wide bg-linear-to-br from-indigo-400 to-purple-500 bg-clip-text text-transparent">
                     essscrabbles

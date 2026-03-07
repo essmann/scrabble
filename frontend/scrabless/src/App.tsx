@@ -13,6 +13,7 @@ async function authenticate() {
   return user;
 }
 
+
 function App() {
   const [authDone, setAuthDone] = useState(false);
   const auth = useAuth();
